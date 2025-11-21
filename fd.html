@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Course Creator - WCAG Training</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f8fa; color: #222; padding: 2em; }
+    h2 { color: #1a60a5; }
+    .card { background: #fff; border-radius: 8px; padding: 2em; margin-bottom: 1em; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+    button, select { font-size: 1em; padding: 0.5em 1.2em; margin-top: 1em; }
+    .feedback { color: #096324; font-weight: bold; margin: 0.7em 0;}
+    .animation { transition: background 0.4s;}
+    .incorrect { background: #ffeaea; }
+    .correct { background: #daffe4; }
+    .tip { background: #e7f4fc; padding: 1em; border-radius: 6px; margin-top: 1em; }
+    .highlight { color: #ab1a1a; font-weight: bold; }
+    label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>WCAG-Ready: Accessible Course Design Training</h2>
+  <p>
+    Welcome! This interactive lesson will guide you through current best practices for digital accessibility and neurodiversity in university teaching. You'll analyze scenarios, receive feedback, and see automated suggestions for accessible content based on WCAG guidelines and Universal Design for Learning (UDL) principles.<br>
+    <small>(Compliant with WCAG 2.1 AA and neuroinclusive teaching approaches.)</small>
+  </p>
+
+  <div class="card animation" id="scenario1">
+    <h3>Scenario 1: Image Description</h3>
+    <p>A history professor uploads the following image to their Canvas site:</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/History_classroom_1900s.jpg" alt="History classroom from the 1900s" 
+         style="max-width:100%; margin-bottom:1em;">
+    <label for="alt-choice">What is the best alt text for this image?</label>
+    <select id="alt-choice">
+      <option value="">-- Select --</option>
+      <option value="classroom">Classroom</option>
+      <option value="students and teacher in a 1900s classroom">Students and teacher in a 1900s classroom</option>
+      <option value="History classroom from the 1900s with students and a teacher in period dress with a chalkboard and books.">History classroom from the 1900s with students and a teacher in period dress with a chalkboard and books.</option>
+      <option value="Old photo">Old photo</option>
+    </select>
+    <div class="feedback" id="feedback1"></div>
+    <div class="tip" id="tip1" style="display:none;">
+      <strong>Accessibility Tip:</strong> Alt text should be descriptive, concise, and communicate essential context for screen readers. Avoid vague descriptions like “image” or overly detailed explanations. For complex charts, provide a summary or longer caption.
+    </div>
+    <button onclick="checkScenario1()">Check Answer</button>
+  </div>
+
+  <div class="card animation" id="scenario2">
+    <h3>Scenario 2: Neuroinclusive Content</h3>
+    <p>
+      A neurodiverse student finds traditional text-heavy lectures difficult. Which content update is most inclusive?
+    </p>
+    <select id="neuro-choice">
+      <option value="">-- Select --</option>
+      <option value="add visual diagrams and summaries">Add visual diagrams and bullet summaries</option>
+      <option value="increase text content">Increase text content</option>
+      <option value="remove all videos">Remove all videos</option>
+    </select>
+    <div class="feedback" id="feedback2"></div>
+    <div class="tip" id="tip2" style="display:none;">
+      <strong>Neurodiversity Tip:</strong> Offer materials in multiple formats (visuals, audio, text summaries, infographics). This supports Universal Design for Learning and aids students with dyslexia, ADHD, autism, or other neurocognitive needs[web:12][web:15][web:18].
+    </div>
+    <button onclick="checkScenario2()">Check Answer</button>
+  </div>
+
+  <div class="card animation" id="update-content">
+    <h3>Live Accessibility Checker</h3>
+    <label for="content">Paste a short course announcement, syllabus excerpt, or assignment description below:</label><br>
+    <textarea id="content" rows="4" cols="60" placeholder="Paste your content here..."></textarea><br>
+    <button onclick="analyzeContent()">Check Accessibility</button>
+    <div class="feedback" id="fix-feedback"></div>
+    <div class="tip" id="content-tip" style="display:none;">
+      <strong>WCAG/UDL Automation:</strong>
+      <ul>
+        <li>Use headers (h1, h2) for structure[web:2][web:14].</li>
+        <li>Write in concise, bullet-pointed lists[web:8][web:11].</li>
+        <li>Add alt text to images/charts[web:4][web:17].</li>
+        <li>Ensure a minimum 4.5:1 color contrast ratio[web:10].</li>
+        <li>Offer audio/video transcripts/captions[web:2][web:7].</li>
+        <li>Link to open-access or library materials when possible[web:20].</li>
+        <li>Give students choices (summaries, visual/audio alternative)[web:12][web:15][web:18].</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function checkScenario1() {
+      const answer = document.getElementById('alt-choice').value;
+      const feedback = document.getElementById('feedback1');
+      const card = document.getElementById('scenario1');
+      document.getElementById('tip1').style.display = 'block';
+      if (answer === "History classroom from the 1900s with students and a teacher in period dress with a chalkboard and books.") {
+        feedback.textContent = "Correct! This detailed alt text offers context and describes the essential elements.";
+        card.classList.remove('incorrect');
+        card.classList.add('correct');
+      } else {
+        feedback.textContent = "Try again. Choose the answer that best describes the important details.";
+        card.classList.remove('correct');
+        card.classList.add('incorrect');
+      }
+    }
+
+    function checkScenario2() {
+      const answer = document.getElementById('neuro-choice').value;
+      const feedback = document.getElementById('feedback2');
+      const card = document.getElementById('scenario2');
+      document.getElementById('tip2').style.display = 'block';
+      if (answer === "add visual diagrams and summaries") {
+        feedback.textContent = "Good choice! Providing various content types supports neurodiverse learners.";
+        card.classList.remove('incorrect');
+        card.classList.add('correct');
+      } else {
+        feedback.textContent = "That's not the most inclusive option. Try again.";
+        card.classList.remove('correct');
+        card.classList.add('incorrect');
+      }
+    }
+
+    function analyzeContent() {
+      const content = document.getElementById('content').value.toLowerCase();
+      let issues = [];
+      if(!(content.includes("h1") || content.includes("h2") || content.includes("<ul>") || content.includes("•"))) {
+        issues.push("Consider using headings or bullet points to help all students scan content.");
+      }
+      if(content.includes("click here") || content.includes("read more")) {
+        issues.push("Avoid generic link text like 'click here'. Use descriptive links.");
+      }
+      if(content.includes("image") && !content.includes("alt=")) {
+        issues.push("Images should have descriptive alt text.");
+      }
+      let feedback = issues.length > 0 ? issues.map(i => "• " + i).join("<br>") : "No major issues detected. Remember to check color contrast and captions for multimedia!";
+      document.getElementById('fix-feedback').innerHTML = feedback;
+      document.getElementById('content-tip').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
 
