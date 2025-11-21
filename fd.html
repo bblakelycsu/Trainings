@@ -2,26 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Accessible Course Design Studio – WCAG & Neurodiversity</title>
+  <title>Center for Teaching & Research Excellence – Accessible Course Design Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <style>
     :root {
-      --bg: #0b1020;
-      --bg-alt: #151a30;
-      --card: #1f2640;
-      --accent1: #ffb703;
-      --accent2: #06d6a0;
-      --accent3: #4cc9f0;
-      --accent4: #f72585;
-      --text-main: #f5f5f5;
-      --text-muted: #c4c4d9;
+      --bg: #17375f;
+      --bg-alt: #0d5540;
+      --card: #0d5540;
+      --accent1: #0d5540;
+      --accent2: #7bba4c;
+      --accent3: #17375f;
+      --accent4: #ffffff;
+      --text-main: #ffffff;
+      --text-muted: #e0ece6;
       --danger: #ff6b6b;
-      --success: #38b000;
-      --focus: #ffb703;
+      --success: #4caf50;
+      --focus: #7bba4c;
       --radius-lg: 18px;
       --shadow-soft: 0 14px 35px rgba(0,0,0,0.35);
       --transition: 0.25s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     * {
@@ -32,23 +35,23 @@
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
-      background: radial-gradient(circle at top, #182848 0, #0b1020 50%, #05070f 100%);
+      background: radial-gradient(circle at top, #17375f 0, #0d5540 55%, #17375f 100%);
       color: var(--text-main);
       display: flex;
       min-height: 100vh;
     }
 
     a {
-      color: var(--accent3);
+      color: var(--accent2);
     }
 
     /* Layout */
 
     .sidebar {
       width: 260px;
-      background: linear-gradient(180deg, #161b33 0%, #090b16 100%);
+      background: linear-gradient(180deg, #17375f 0%, #0d5540 100%);
       padding: 1.5rem 1.25rem 1.75rem;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      border-right: 1px solid rgba(255,255,255,0.12);
       position: sticky;
       top: 0;
       height: 100vh;
@@ -59,34 +62,21 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.1rem;
     }
 
-    .logo-circle {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 180deg,
-        var(--accent1),
-        var(--accent4),
-        var(--accent3),
-        var(--accent2),
-        var(--accent1)
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #05070f;
-      font-weight: 800;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    .logo-img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
     }
 
     .logo-text-main {
       font-weight: 700;
       letter-spacing: 0.04em;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       text-transform: uppercase;
+      line-height: 1.3;
     }
 
     .logo-text-sub {
@@ -115,12 +105,12 @@
       margin-bottom: 1.25rem;
     }
 
-    .nav button {
+    .nav a {
       width: 100%;
       text-align: left;
       background: transparent;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
       padding: 0.45rem 0.9rem;
       color: var(--text-main);
       display: flex;
@@ -128,31 +118,28 @@
       gap: 0.5rem;
       font-size: 0.83rem;
       cursor: pointer;
+      text-decoration: none;
       transition: background var(--transition), transform var(--transition),
         border-color var(--transition), box-shadow var(--transition);
     }
 
-    .nav button span.icon {
-      font-size: 1.05rem;
-    }
-
-    .nav button:hover,
-    .nav button:focus-visible {
+    .nav a:hover,
+    .nav a:focus-visible {
       background: rgba(255,255,255,0.06);
-      border-color: var(--accent3);
+      border-color: var(--accent2);
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(0,0,0,0.4);
       outline: none;
     }
 
-    .nav button.active {
+    .nav a.active {
       background: linear-gradient(90deg, var(--accent2), var(--accent3));
       border-color: transparent;
-      color: #05070f;
+      color: #ffffff;
       font-weight: 600;
     }
 
-    .nav button.active .icon {
+    .nav a.active .icon {
       transform: scale(1.05);
     }
 
@@ -169,7 +156,7 @@
       margin-top: 1.5rem;
       font-size: 0.75rem;
       color: var(--text-muted);
-      border-top: 1px dashed rgba(255,255,255,0.12);
+      border-top: 1px dashed rgba(255,255,255,0.2);
       padding-top: 0.75rem;
     }
 
@@ -178,17 +165,18 @@
       align-items: center;
       gap: 0.3rem;
       font-size: 0.74rem;
-      background: rgba(255,255,255,0.04);
+      background: rgba(13,85,64,0.2);
       border-radius: 999px;
       padding: 0.15rem 0.55rem;
       margin-top: 0.25rem;
+      border: 1px solid rgba(255,255,255,0.18);
     }
 
     .pill-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--accent1);
+      background: var(--accent2);
     }
 
     main {
@@ -206,12 +194,13 @@
     }
 
     .hero-main {
-      background: radial-gradient(circle at top left, #28365d 0, #181d35 45%, #121428 100%);
+      background: radial-gradient(circle at top left, #17375f 0, #0d5540 55%, #17375f 100%);
       border-radius: var(--radius-lg);
       padding: 1.2rem 1.4rem;
       box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .hero-main::before {
@@ -219,10 +208,10 @@
       position: absolute;
       inset: -60%;
       background:
-        radial-gradient(circle at 0 0, rgba(247,37,133,0.2) 0, transparent 60%),
-        radial-gradient(circle at 100% 0, rgba(76,201,240,0.18) 0, transparent 60%),
-        radial-gradient(circle at 0 100%, rgba(6,214,160,0.18) 0, transparent 60%);
-      opacity: 0.8;
+        radial-gradient(circle at 0 0, rgba(123,186,76,0.2) 0, transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(255,255,255,0.15) 0, transparent 60%),
+        radial-gradient(circle at 0 100%, rgba(13,85,64,0.4) 0, transparent 60%);
+      opacity: 0.9;
       pointer-events: none;
     }
 
@@ -235,12 +224,12 @@
       text-transform: uppercase;
       font-size: 0.72rem;
       letter-spacing: 0.16em;
-      color: var(--accent3);
+      color: var(--accent2);
       margin-bottom: 0.4rem;
     }
 
     .hero-title {
-      font-size: clamp(1.4rem, 2.3vw, 1.8rem);
+      font-size: clamp(1.4rem, 2.2vw, 1.8rem);
       margin: 0 0 0.3rem;
     }
 
@@ -263,7 +252,7 @@
       padding: 0.15rem 0.55rem;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(5,7,16,0.4);
+      background: rgba(0,0,0,0.2);
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -298,8 +287,8 @@
     }
 
     .btn-primary {
-      background: linear-gradient(120deg, var(--accent2), var(--accent3));
-      color: #05070f;
+      background: linear-gradient(120deg, var(--accent2), var(--accent1));
+      color: #ffffff;
       font-weight: 600;
       box-shadow: 0 10px 22px rgba(0,0,0,0.55);
     }
@@ -312,15 +301,15 @@
     }
 
     .btn-ghost {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.25);
       color: var(--text-main);
       border: 1px solid rgba(255,255,255,0.25);
     }
 
     .btn-ghost:hover,
     .btn-ghost:focus-visible {
-      background: rgba(255,255,255,0.05);
-      border-color: var(--accent4);
+      background: rgba(255,255,255,0.08);
+      border-color: var(--accent2);
       transform: translateY(-1px);
       outline: none;
     }
@@ -331,14 +320,14 @@
     }
 
     .hero-note strong {
-      color: var(--accent1);
+      color: var(--accent2);
     }
 
     .hero-aside {
-      background: rgba(5,7,16,0.7);
+      background: rgba(0,0,0,0.35);
       border-radius: var(--radius-lg);
       padding: 1rem;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
       box-shadow: var(--shadow-soft);
       display: flex;
       flex-direction: column;
@@ -352,9 +341,9 @@
       position: absolute;
       inset: 0;
       background: linear-gradient(145deg,
-        rgba(255,183,3,0.06),
+        rgba(123,186,76,0.2),
         transparent 50%,
-        rgba(76,201,240,0.08)
+        rgba(255,255,255,0.12)
       );
       pointer-events: none;
     }
@@ -371,8 +360,9 @@
       font-size: 0.78rem;
       padding: 0.2rem 0.6rem;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.2);
       margin-bottom: 0.3rem;
+      background: rgba(13,85,64,0.4);
     }
 
     .score-pill {
@@ -385,7 +375,7 @@
       width: 100%;
       height: 8px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.16);
       overflow: hidden;
       margin-bottom: 0.6rem;
     }
@@ -393,7 +383,7 @@
     .score-bar-fill {
       height: 100%;
       width: 0;
-      background: linear-gradient(90deg, var(--accent4), var(--accent1), var(--accent2));
+      background: linear-gradient(90deg, var(--accent3), var(--accent2), var(--accent1));
       border-radius: inherit;
       transition: width 1.2s ease-out;
     }
@@ -414,8 +404,8 @@
     .score-tag {
       padding: 0.15rem 0.5rem;
       border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .score-cta {
@@ -433,11 +423,11 @@
     }
 
     section {
-      background: rgba(7,9,22,0.92);
+      background: rgba(0,0,0,0.35);
       border-radius: var(--radius-lg);
       padding: 1rem 1.15rem 1.1rem;
       box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
       scroll-margin-top: 80px;
       opacity: 0;
       transform: translateY(18px);
@@ -463,8 +453,8 @@
       letter-spacing: 0.14em;
       padding: 0.1rem 0.45rem;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: var(--accent3);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: var(--accent2);
     }
 
     .section-subtitle {
@@ -485,10 +475,10 @@
     }
 
     .card-inner {
-      background: linear-gradient(145deg, #14172a, #141627);
+      background: linear-gradient(145deg, rgba(23,55,95,0.96), rgba(13,85,64,0.96));
       border-radius: 14px;
       padding: 0.75rem 0.85rem;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.16);
       position: relative;
       overflow: hidden;
     }
@@ -498,7 +488,7 @@
       position: absolute;
       inset: 0;
       background: radial-gradient(circle at top right,
-        rgba(76,201,240,0.18),
+        rgba(123,186,76,0.25),
         transparent 60%);
       opacity: 0;
       transition: opacity var(--transition);
@@ -536,11 +526,11 @@
     }
 
     .example-block {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.45);
       border-radius: 10px;
       padding: 0.6rem 0.65rem;
       font-size: 0.8rem;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
       margin-bottom: 0.4rem;
     }
 
@@ -548,7 +538,7 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--accent1);
+      color: var(--accent2);
       margin-bottom: 0.3rem;
     }
 
@@ -590,7 +580,7 @@
       padding: 0.25rem 0.6rem;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.03);
+      background: rgba(0,0,0,0.25);
       color: var(--text-main);
       cursor: pointer;
       display: inline-flex;
@@ -602,8 +592,8 @@
 
     .btn-small:hover,
     .btn-small:focus-visible {
-      background: rgba(255,255,255,0.09);
-      border-color: var(--accent3);
+      background: rgba(255,255,255,0.08);
+      border-color: var(--accent2);
       transform: translateY(-1px);
       outline: none;
     }
@@ -615,36 +605,49 @@
     }
 
     .feedback.ok {
-      color: var(--success);
+      color: var(--accent2);
     }
 
     .feedback.error {
       color: var(--danger);
     }
 
+    .feedback.warn {
+      color: var(--accent1);
+    }
+
     .badge-wcag {
       font-size: 0.75rem;
       padding: 0.1rem 0.4rem;
       border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
       display: inline-flex;
       gap: 0.3rem;
       align-items: center;
       margin-bottom: 0.3rem;
     }
 
+    .badge-dot-perceivable,
+    .badge-dot-operable,
+    .badge-dot-understandable,
+    .badge-dot-robust {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
     .badge-dot-perceivable {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--accent1);
+      background: var(--accent2);
     }
     .badge-dot-operable {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--accent2);
+      background: var(--accent1);
     }
     .badge-dot-understandable {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--accent3);
+      background: var(--accent3);
     }
     .badge-dot-robust {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--accent4);
+      background: var(--accent4);
     }
 
     .wcag-grid {
@@ -659,11 +662,11 @@
     }
 
     .wcag-pill {
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.35);
       border-radius: 12px;
       padding: 0.5rem 0.55rem;
       font-size: 0.78rem;
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
     }
 
     .wcag-pill h3 {
@@ -699,8 +702,8 @@
     }
 
     .badge-level-aaa {
-      border-color: var(--accent4);
-      color: var(--accent4);
+      border-color: var(--accent3);
+      color: var(--accent3);
     }
 
     .checklist {
@@ -748,10 +751,10 @@
 
     .accordion-item {
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.22);
       margin-bottom: 0.3rem;
       overflow: hidden;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.35);
     }
 
     .accordion-header {
@@ -811,8 +814,8 @@
       font-size: 0.78rem;
       padding: 0.45rem 0.55rem;
       border-radius: 10px;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.22);
     }
 
     .neuro-chip h3 {
@@ -830,10 +833,10 @@
     }
 
     .summary-card {
-      background: linear-gradient(145deg, #14172a, #101321);
+      background: linear-gradient(145deg, rgba(23,55,95,0.9), rgba(13,85,64,0.9));
       border-radius: 12px;
       padding: 0.7rem 0.75rem;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.22);
       font-size: 0.8rem;
     }
 
@@ -849,7 +852,7 @@
     }
 
     footer strong {
-      color: var(--accent3);
+      color: var(--accent2);
     }
 
     @media (max-width: 880px) {
@@ -861,7 +864,7 @@
         height: auto;
         position: static;
         border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.12);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
       }
       main {
         padding: 1rem 1rem 1.5rem;
@@ -874,75 +877,76 @@
 </head>
 <body>
   <nav class="sidebar" aria-label="WCAG course design navigation">
-    <div class="logo" aria-hidden="true">
-      <div class="logo-circle">A</div>
+    <div class="logo">
+      <img src="NEW CTRE LOGO.png" alt="Center for Teaching and Research Excellence logo" class="logo-img" />
       <div>
-        <div class="logo-text-main">Access Studio</div>
-        <div class="logo-text-sub">WCAG & Neurodiversity</div>
+        <div class="logo-text-main">Center for Teaching &amp; Research Excellence</div>
+        <div class="logo-text-sub">Accessible Course Design Studio</div>
       </div>
     </div>
     <p class="tagline">
-      A quick-start teaching companion for building accessible, inclusive university courses.
+      A CTRE teaching companion for building accessible, inclusive university courses.
     </p>
 
     <div class="nav-label">Jump to section</div>
     <div class="nav">
-      <button data-target="overview" class="active">
+      <a href="#overview" class="active">
         <span class="icon">🏁</span>
-        <span>Overview & Quick Scan</span>
-      </button>
-      <button data-target="wcag">
+        <span>Overview &amp; Quick Scan</span>
+      </a>
+      <a href="#wcag">
         <span class="icon">🧭</span>
         <span>WCAG 2.2 Map (POUR)</span>
-      </button>
-      <button data-target="documents">
+      </a>
+      <a href="#documents">
         <span class="icon">📄</span>
-        <span>Headings, PDFs & Docs</span>
-      </button>
-      <button data-target="media">
+        <span>Headings, PDFs &amp; Docs</span>
+      </a>
+      <a href="#media">
         <span class="icon">🎧</span>
-        <span>Media, Color & Links</span>
-      </button>
-      <button data-target="lms">
+        <span>Media, Color &amp; Links</span>
+      </a>
+      <a href="#lms">
         <span class="icon">📚</span>
-        <span>Course Structure & LMS</span>
-      </button>
-      <button data-target="neuro">
+        <span>Course Structure &amp; LMS</span>
+      </a>
+      <a href="#neuro">
         <span class="icon">🧠</span>
-        <span>Neurodiversity & UDL</span>
-      </button>
-      <button data-target="quiz">
+        <span>Neurodiversity &amp; UDL</span>
+      </a>
+      <a href="#quiz">
         <span class="icon">🧪</span>
-        <span>Mini Checks & Practice</span>
-      </button>
-      <button data-target="resources">
+        <span>Mini Checks &amp; Practice</span>
+      </a>
+      <a href="#resources">
         <span class="icon">🔗</span>
-        <span>Resources & Next Steps</span>
-      </button>
+        <span>Resources &amp; Next Steps</span>
+      </a>
     </div>
 
-    <div class="nav-section-heading">Focus Today</div>
+    <div class="nav-section-heading">CTRE Focus</div>
     <div class="pill">
       <span class="pill-dot"></span>
       <span>WCAG 2.2 AA for course content</span>
     </div>
 
     <div class="sidebar-footer">
-      Built as a teaching aid. Use it to:
+      Use this in CTRE workshops to:
       <ul>
         <li>introduce WCAG to faculty</li>
         <li>co-design accessible courses</li>
-        <li>spark department-wide standards</li>
+        <li>set department-wide standards</li>
       </ul>
     </div>
   </nav>
 
   <main>
-    <header class="hero">
-      <div class="hero-main" id="top">
+    <header class="hero" id="top">
+      <div class="hero-main">
         <div class="hero-content">
-          <div class="hero-kicker">Teaching · Accessibility · Inclusion</div>
+          <div class="hero-kicker">CTRE · Teaching · Accessibility</div>
           <h1 class="hero-title">
+            Center for Teaching &amp; Research Excellence<br />
             Accessible Course Design Studio
           </h1>
           <p class="hero-subtitle">
@@ -954,14 +958,14 @@
           <div class="hero-chips" aria-hidden="true">
             <span class="chip">
               <span class="chip-dot"></span>
-              WCAG 2.2 & Level AA
+              WCAG 2.2 &amp; Level AA
             </span>
             <span class="chip">
-              <span class="chip-dot" style="background: var(--accent3);"></span>
+              <span class="chip-dot" style="background: var(--accent2);"></span>
               Universal Design for Learning
             </span>
             <span class="chip">
-              <span class="chip-dot" style="background: var(--accent4);"></span>
+              <span class="chip-dot" style="background: var(--accent3);"></span>
               Neurodiversity-inclusive practice
             </span>
           </div>
@@ -977,7 +981,7 @@
           </div>
 
           <p class="hero-note">
-            <strong>Tip:</strong> Work through one section per week with your
+            <strong>CTRE tip:</strong> Work through one section per week with your
             department. Small changes across multiple courses compound into a
             much more accessible program.
           </p>
@@ -1015,7 +1019,7 @@
       <!-- OVERVIEW -->
       <section id="overview" aria-labelledby="overview-heading">
         <h2 id="overview-heading">
-          Overview & Quick Scan
+          Overview &amp; Quick Scan
           <span class="badge">Start here</span>
         </h2>
         <p class="section-subtitle">
@@ -1026,3 +1030,773 @@
 
         <div class="section-grid columns-2">
           <div class="card-inner">
+            <div class="card-title">What is “accessible course design”?</div>
+            <p class="card-tagline">
+              Digital accessibility means all students can independently access
+              and interact with your content, regardless of disability,
+              device, or neurotype.
+            </p>
+            <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:1.1rem; margin:0 0 0.4rem;">
+              <li>Use clear structure (headings, lists, meaningful links).</li>
+              <li>Provide alternatives (alt text, captions, transcripts).</li>
+              <li>Ensure perceivable color contrast and readable typography.</li>
+              <li>Design for keyboard and assistive technologies.</li>
+              <li>Offer multiple ways to engage, process, and demonstrate learning.</li>
+            </ul>
+            <div class="summary-card" aria-label="Quick reminder">
+              <strong>Rule of thumb:</strong> If a student can’t see, hear, use a mouse,
+              process dense text quickly, or attend live sessions, they should
+              still be able to learn and demonstrate mastery in your course.
+            </div>
+          </div>
+
+          <div class="card-inner" aria-label="Quick course scan checklist">
+            <div class="card-title">Quick course scan (self-check)</div>
+            <p class="card-tagline">
+              Think about <em>one</em> course you teach. Answer honestly to approximate your current state.
+            </p>
+            <form id="quick-scan-form">
+              <div class="checklist">
+                <label>
+                  <input type="checkbox" name="scan" value="headings" />
+                  My documents and LMS pages use true headings (Heading 1, Heading 2, etc.) instead of manual bold/size changes.
+                </label>
+                <label>
+                  <input type="checkbox" name="scan" value="alt-text" />
+                  Images that convey information include alt text or nearby text equivalents.
+                </label>
+                <label>
+                  <input type="checkbox" name="scan" value="captions" />
+                  Videos have accurate captions; audio has transcripts or detailed notes.
+                </label>
+                <label>
+                  <input type="checkbox" name="scan" value="keyboard" />
+                  I can navigate key course workflows (content, assignments, quizzes) using only the keyboard.
+                </label>
+                <label>
+                  <input type="checkbox" name="scan" value="color" />
+                  I don’t rely on color alone to convey meaning (e.g., “items in green are required”).
+                </label>
+                <label>
+                  <input type="checkbox" name="scan" value="neuro" />
+                  I provide multiple ways to engage with content (e.g., readings + short video, checklists, visuals).
+                </label>
+              </div>
+              <button type="button" class="btn-small" id="scan-button">
+                <span aria-hidden="true">✨</span>
+                Calculate my course pulse
+              </button>
+              <div class="feedback" id="scan-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- WCAG MAP -->
+      <section id="wcag" aria-labelledby="wcag-heading">
+        <h2 id="wcag-heading">
+          WCAG 2.2 Map for Teaching
+          <span class="badge">POUR framework</span>
+        </h2>
+        <p class="section-subtitle">
+          WCAG 2.2 organizes accessibility into four principles: content must be
+          <strong>P</strong>erceivable, <strong>O</strong>perable,
+          <strong>U</strong>nderstandable, and <strong>R</strong>obust (POUR). Most
+          higher-ed policies target Level <strong>AA</strong> conformance.
+        </p>
+
+        <div class="badge-wcag" aria-label="WCAG principles legend">
+          <span class="badge-dot-perceivable"></span> P (Perceivable)
+          <span class="badge-dot-operable"></span> O (Operable)
+          <span class="badge-dot-understandable"></span> U (Understandable)
+          <span class="badge-dot-robust"></span> R (Robust)
+        </div>
+
+        <div class="wcag-grid" aria-label="WCAG principle cards">
+          <div class="wcag-pill">
+            <h3>
+              Perceivable
+              <span class="badge-level badge-level-aa">AA</span>
+            </h3>
+            <ul>
+              <li>Provide text alternatives for non-text content.</li>
+              <li>Offer captions and transcripts for media.</li>
+              <li>Use proper headings &amp; reading order.</li>
+              <li>Maintain sufficient color contrast and scalable text.</li>
+            </ul>
+          </div>
+          <div class="wcag-pill">
+            <h3>
+              Operable
+              <span class="badge-level badge-level-aa">AA</span>
+            </h3>
+            <ul>
+              <li>Everything works via keyboard alone.</li>
+              <li>Give users enough time &amp; avoid flashing content.</li>
+              <li>Provide clear ways to navigate, find content, and know where they are.</li>
+              <li>Make link targets large enough and easy to activate.</li>
+            </ul>
+          </div>
+          <div class="wcag-pill">
+            <h3>
+              Understandable
+              <span class="badge-level badge-level-aa">AA</span>
+            </h3>
+            <ul>
+              <li>Use clear, consistent language and layout.</li>
+              <li>Explain unusual terminology and abbreviations.</li>
+              <li>Keep navigation and controls predictable across pages.</li>
+              <li>Give helpful error messages and instructions for forms.</li>
+            </ul>
+          </div>
+          <div class="wcag-pill">
+            <h3>
+              Robust
+              <span class="badge-level badge-level-aa">AA</span>
+            </h3>
+            <ul>
+              <li>Use HTML and document features as intended.</li>
+              <li>Ensure content works with screen readers and other assistive tech.</li>
+              <li>Avoid relying on one specific browser, device, or plug-in.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-block" style="margin-top:0.6rem;">
+          <div class="example-label">Example – interpreting WCAG in a course</div>
+          <p style="margin:0 0 0.3rem; font-size:0.82rem;">
+            You upload a scanned PDF of an article. Students report they can’t search
+            the text or have it read aloud with their screen reader.
+          </p>
+          <p class="question">
+            Which WCAG principles are being violated most clearly?
+          </p>
+          <div class="options">
+            <label>
+              <input type="checkbox" name="wcag-example" value="perceivable" />
+              Perceivable – the text isn’t actually text, so assistive tech can’t access it.
+            </label>
+            <label>
+              <input type="checkbox" name="wcag-example" value="operable" />
+              Operable – the PDF can’t be opened on any device.
+            </label>
+            <label>
+              <input type="checkbox" name="wcag-example" value="understandable" />
+              Understandable – the students don’t understand the article’s content.
+            </label>
+          </div>
+          <button type="button" class="btn-small" id="wcag-example-button">
+            Check my analysis
+          </button>
+          <div class="feedback" id="wcag-example-feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- DOCUMENTS / PDF -->
+      <section id="documents" aria-labelledby="documents-heading">
+        <h2 id="documents-heading">
+          Headings, PDFs &amp; Document Accessibility
+          <span class="badge">Structure &amp; text</span>
+        </h2>
+        <p class="section-subtitle">
+          Start with accessible source documents (Word, Google Docs, HTML) and
+          then export to PDF. Use true headings, lists, and styles so assistive
+          technologies can navigate your content.
+        </p>
+
+        <div class="section-grid columns-2">
+          <div class="card-inner">
+            <div class="card-title">Good vs. bad headings</div>
+            <p class="card-tagline">
+              Screen readers rely on heading levels to provide an outline view of
+              the document. Visual formatting alone is not enough.
+            </p>
+
+            <div class="example-block">
+              <div class="example-label">Example – syllabus excerpt</div>
+              <p style="margin:0 0 0.25rem; font-size:0.8rem;">
+                The syllabus uses bold, large text to indicate topics:
+              </p>
+              <ul style="margin:0 0 0.2rem; padding-left:1.1rem; font-size:0.8rem;">
+                <li><strong>WEEK 1: INTRODUCTION</strong> (normal paragraph style)</li>
+                <li><strong>Week 2: Research Methods</strong> (normal paragraph style)</li>
+                <li><strong>Week 3: Literature Review</strong> (normal paragraph style)</li>
+              </ul>
+              <p style="margin:0; font-size:0.8rem;">
+                There are no Heading 1 / Heading 2 styles used at all.
+              </p>
+            </div>
+
+            <p class="question">
+              For a 12-week course syllabus, which heading approach best aligns with WCAG and assistive-tech navigation?
+            </p>
+            <div class="options">
+              <label>
+                <input type="radio" name="heading-example" value="a" />
+                Make each week title a Heading 1, and lesson titles Heading 2.
+              </label>
+              <label>
+                <input type="radio" name="heading-example" value="b" />
+                Use a single Heading 1 for the course title, weeks as Heading 2, and lesson items as Heading 3.
+              </label>
+              <label>
+                <input type="radio" name="heading-example" value="c" />
+                Leave everything as normal text but change the font size for emphasis.
+              </label>
+            </div>
+            <button type="button" class="btn-small" id="heading-example-button">
+              Check answer
+            </button>
+            <div class="feedback" id="heading-example-feedback" aria-live="polite"></div>
+          </div>
+
+          <div class="card-inner">
+            <div class="card-title">Remediating PDFs</div>
+            <p class="card-tagline">
+              Whenever possible, share HTML or Word instead of PDF. When PDFs are
+              necessary, ensure they are tagged and readable.
+            </p>
+
+            <ol style="font-size:0.8rem; color:var(--text-muted); margin:0 0 0.4rem; padding-left:1.1rem;">
+              <li>Start from an accessible Word/Google Doc with headings, alt text, and lists.</li>
+              <li>Use <strong>Save as PDF</strong> or <strong>Export</strong>, not “Print to PDF”.</li>
+              <li>Run an accessibility checker (Word, Acrobat, or LMS tools).</li>
+              <li>For scanned PDFs, use OCR and then add tags/headings where possible.</li>
+            </ol>
+
+            <div class="accordion" aria-label="PDF accessibility tips">
+              <div class="accordion-item">
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="label">
+                    <span>🔍</span>
+                    <span>Checklist: Is this PDF likely accessible?</span>
+                  </span>
+                  <span class="chevron">▶</span>
+                </button>
+                <div class="accordion-panel">
+                  <div class="accordion-panel-inner">
+                    <ul style="padding-left:1.1rem; margin:0;">
+                      <li>You can select and copy text (not just whole page images).</li>
+                      <li>Headings appear in the PDF’s navigation or tags panel.</li>
+                      <li>Images have alt text or are marked decorative.</li>
+                      <li>Reading order follows the visual layout.</li>
+                      <li>There’s enough color contrast for text and key elements.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <button class="accordion-header" type="button" aria-expanded="false">
+                  <span class="label">
+                    <span>💡</span>
+                    <span>Alternative strategy</span>
+                  </span>
+                  <span class="chevron">▶</span>
+                </button>
+                <div class="accordion-panel">
+                  <div class="accordion-panel-inner">
+                    Consider replacing non-essential PDFs with:
+                    <ul style="padding-left:1.1rem; margin:0.2rem 0 0;">
+                      <li>HTML pages in the LMS.</li>
+                      <li>Accessible Google Docs or Word files.</li>
+                      <li>Short accessible summaries plus the original article via the library.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chip-status warn">
+              <span aria-hidden="true">⚠️</span>
+              Scanned PDFs without OCR are almost never accessible.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEDIA / COLOR / LINKS -->
+      <section id="media" aria-labelledby="media-heading">
+        <h2 id="media-heading">
+          Media, Color &amp; Link Practices
+          <span class="badge">Perceivable &amp; understandable</span>
+        </h2>
+        <p class="section-subtitle">
+          Multimedia and visual design can support or block learning. Captions,
+          transcripts, color contrast, and descriptive links are core WCAG
+          requirements and central to inclusive pedagogy.
+        </p>
+
+        <div class="section-grid columns-2">
+          <div class="card-inner">
+            <div class="card-title">Captions &amp; transcripts</div>
+            <p class="card-tagline">
+              Captions support deaf/hard-of-hearing students, second-language learners, and anyone watching in noisy or quiet settings.
+            </p>
+
+            <div class="example-block">
+              <div class="example-label">Example – lecture recordings</div>
+              <p style="margin:0; font-size:0.8rem;">
+                You record weekly lectures in Zoom and post them as is. Auto-captions
+                are available in the platform but are turned off, and there are no
+                transcripts.
+              </p>
+            </div>
+
+            <p class="question">
+              What are better options for aligning with WCAG and inclusive practice?
+            </p>
+            <div class="options">
+              <label>
+                <input type="checkbox" name="captions-example" value="auto" />
+                Turn on auto-captions, then spot-check and correct key terminology.
+              </label>
+              <label>
+                <input type="checkbox" name="captions-example" value="transcript" />
+                Provide a lightly edited transcript or detailed notes.
+              </label>
+              <label>
+                <input type="checkbox" name="captions-example" value="none" />
+                Leave captions off and encourage students to “replay if they miss something”.
+              </label>
+            </div>
+            <button type="button" class="btn-small" id="captions-example-button">
+              Check answer
+            </button>
+            <div class="feedback" id="captions-example-feedback" aria-live="polite"></div>
+
+            <div class="chip-status good">
+              <span aria-hidden="true">✅</span>
+              WCAG prefers captions and transcripts that convey equivalent information, not just rough machine output.
+            </div>
+          </div>
+
+          <div class="card-inner">
+            <div class="card-title">Color &amp; link text</div>
+            <p class="card-tagline">
+              Students with low vision or color-vision differences depend on adequate contrast, and all students benefit from descriptive links.
+            </p>
+
+            <div class="example-block">
+              <div class="example-label">Example – assignment instructions</div>
+              <p style="margin:0 0 0.25rem; font-size:0.8rem;">
+                In your LMS, you write:
+              </p>
+              <p style="margin:0 0 0.25rem; font-size:0.8rem;">
+                <em>
+                  “Required readings are in <span style="color:#0d5540;">green</span>.
+                  Optional readings are in <span style="color:#7bba4c;">light green</span>.
+                  Click <a href="#">here</a> for the article.”
+                </em>
+              </p>
+            </div>
+
+            <p class="question">
+              What changes would make this more accessible?
+            </p>
+            <div class="options">
+              <label>
+                <input type="checkbox" name="color-example" value="text" />
+                Add text labels like “(required)” and “(optional)” instead of color alone.
+              </label>
+              <label>
+                <input type="checkbox" name="color-example" value="contrast" />
+                Check that the colors meet contrast guidelines against the background.
+              </label>
+              <label>
+                <input type="checkbox" name="color-example" value="link" />
+                Replace “click here” with descriptive link text, such as “Read: Smith (2024) article on data ethics”.
+              </label>
+              <label>
+                <input type="checkbox" name="color-example" value="keep" />
+                Keep the current approach; color alone is enough for most students.
+              </label>
+            </div>
+            <button type="button" class="btn-small" id="color-example-button">
+              Check answer
+            </button>
+            <div class="feedback" id="color-example-feedback" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LMS / COURSE STRUCTURE -->
+      <section id="lms" aria-labelledby="lms-heading">
+        <h2 id="lms-heading">
+          Course Structure &amp; LMS Navigation
+          <span class="badge">Operable &amp; predictable</span>
+        </h2>
+        <p class="section-subtitle">
+          Consistent module structures, clear labeling, and keyboard-friendly navigation support all learners and reduce cognitive load.
+        </p>
+
+        <div class="section-grid columns-2">
+          <div class="card-inner">
+            <div class="card-title">Module structure</div>
+            <p class="card-tagline">
+              Align your LMS with a predictable weekly pattern so students quickly know where to look.
+            </p>
+
+            <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:1.1rem; margin:0 0 0.4rem;">
+              <li>Use a consistent naming scheme (e.g., “Week 3 · Topic name”).</li>
+              <li>Order items logically: Overview → Materials → Activities → Assessments → Wrap-up.</li>
+              <li>Label required vs. optional materials in text, not just by placement or color.</li>
+              <li>Include brief checklists for complex weeks or projects.</li>
+            </ul>
+
+            <div class="example-block">
+              <div class="example-label">Analyze your course</div>
+              <p style="margin:0; font-size:0.8rem;">
+                Pick one module in your LMS. How many clicks does it take for a new
+                student to find:
+              </p>
+              <ul style="padding-left:1.1rem; margin:0.2rem 0 0; font-size:0.8rem;">
+                <li>What they are expected to learn this week.</li>
+                <li>What they must <strong>do</strong>.</li>
+                <li>How they will be assessed.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card-inner">
+            <div class="card-title">Keyboard &amp; focus</div>
+            <p class="card-tagline">
+              Many students navigate via keyboard or assistive technologies.
+            </p>
+
+            <ol style="font-size:0.8rem; color:var(--text-muted); padding-left:1.1rem; margin:0 0 0.4rem;">
+              <li>Try tabbing through your course home page.</li>
+              <li>Confirm that focus outlines are visible and not disabled.</li>
+              <li>Ensure important buttons/links are reachable without a mouse.</li>
+              <li>Avoid hover-only disclosures for critical information.</li>
+            </ol>
+
+            <div class="chip-status warn">
+              <span aria-hidden="true">⌨️</span>
+              If you turn off focus outlines “for aesthetics”, you may be violating both WCAG and usability.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEURODIVERSITY / UDL -->
+      <section id="neuro" aria-labelledby="neuro-heading">
+        <h2 id="neuro-heading">
+          Neurodiversity &amp; Universal Design for Learning
+          <span class="badge">Human-centered</span>
+        </h2>
+        <p class="section-subtitle">
+          Neurodivergent students (e.g., ADHD, autism, dyslexia, anxiety) often
+          encounter barriers that are invisible in traditional course design.
+          Universal Design for Learning (UDL) helps you plan from the start for
+          a wider range of brains.
+        </p>
+
+        <p style="font-size:0.82rem; margin-top:0;">
+          UDL encourages <span class="tag-neuro">multiple means of engagement,
+          representation, and action/expression</span> so students can
+          connect with material, understand it, and show what they know in
+          different ways.
+        </p>
+
+        <div class="neuro-grid" aria-label="UDL strategies for neurodivergent students">
+          <div class="neuro-chip">
+            <span class="badge-udl">Engagement</span>
+            <h3>Make expectations visible</h3>
+            <ul style="margin:0; padding-left:1.1rem; font-size:0.78rem;">
+              <li>Preview weekly tasks and due dates in an overview.</li>
+              <li>Break large projects into smaller milestones.</li>
+              <li>Offer checklists and visual timelines.</li>
+            </ul>
+          </div>
+          <div class="neuro-chip">
+            <span class="badge-udl">Representation</span>
+            <h3>Multiple ways to access content</h3>
+            <ul style="margin:0; padding-left:1.1rem; font-size:0.78rem;">
+              <li>Combine text with visuals, examples, and short videos.</li>
+              <li>Provide slides or outlines in advance, when possible.</li>
+              <li>Offer audio versions or text-to-speech-friendly formats.</li>
+            </ul>
+          </div>
+          <div class="neuro-chip">
+            <span class="badge-udl">Action &amp; Expression</span>
+            <h3>Flexible demonstrations of learning</h3>
+            <ul style="margin:0; padding-left:1.1rem; font-size:0.78rem;">
+              <li>When appropriate, let students choose between formats (e.g., short video, podcast, essay).</li>
+              <li>Give clear rubrics that focus on learning goals, not one “right” format.</li>
+              <li>Allow drafts and feedback cycles to reduce anxiety.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-block" style="margin-top:0.6rem;">
+          <div class="example-label">Scenario – neurodiversity in practice</div>
+          <p style="margin:0 0 0.25rem; font-size:0.8rem;">
+            A student with ADHD reports that long, dense reading assignments and
+            surprise deadlines make it hard for them to keep up, even though they
+            are interested in the course.
+          </p>
+          <p class="question">
+            Which adjustments align with UDL and WCAG-friendly course design?
+          </p>
+          <div class="options">
+            <label>
+              <input type="checkbox" name="neuro-example" value="chunk" />
+              Chunk readings into smaller segments with guiding questions and estimated time.
+            </label>
+            <label>
+              <input type="checkbox" name="neuro-example" value="overview" />
+              Add a weekly overview with clear due dates and a checklist.
+            </label>
+            <label>
+              <input type="checkbox" name="neuro-example" value="alt" />
+              Provide at least one alternative format (e.g., short video summary) for key concepts.
+            </label>
+            <label>
+              <input type="checkbox" name="neuro-example" value="none" />
+              Explain that “this is how college works” and keep the course design as is.
+            </label>
+          </div>
+          <button type="button" class="btn-small" id="neuro-example-button">
+            Check answer
+          </button>
+          <div class="feedback" id="neuro-example-feedback" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- QUIZ / PRACTICE -->
+      <section id="quiz" aria-labelledby="quiz-heading">
+        <h2 id="quiz-heading">
+          Mini Checks &amp; Practice
+          <span class="badge">Self-assessment</span>
+        </h2>
+        <p class="section-subtitle">
+          Use these quick checks as formative self-assessment. They’re designed
+          for you to discuss in department meetings, teaching circles, or
+          accessibility workshops.
+        </p>
+
+        <div class="section-grid columns-2">
+          <div class="card-inner">
+            <div class="card-title">Course-wide checklist</div>
+            <p class="card-tagline">
+              When you think of your entire course, how many of these are consistently true?
+            </p>
+            <form id="course-wide-form">
+              <div class="checklist">
+                <label>
+                  <input type="checkbox" name="course" value="syllabus" />
+                  The syllabus and schedule are available in an accessible, screen-reader-friendly format.
+                </label>
+                <label>
+                  <input type="checkbox" name="course" value="consistent" />
+                  Weekly modules follow a consistent structure and naming pattern.
+                </label>
+                <label>
+                  <input type="checkbox" name="course" value="media" />
+                  All required media have captions or transcripts.
+                </label>
+                <label>
+                  <input type="checkbox" name="course" value="alt" />
+                  Informational images have meaningful alt text or nearby explanations.
+                </label>
+                <label>
+                  <input type="checkbox" name="course" value="flex" />
+                  At least one major assignment allows choice in how students demonstrate learning.
+                </label>
+              </div>
+              <button type="button" class="btn-small" id="course-wide-button">
+                Get reflection prompt
+              </button>
+              <div class="feedback" id="course-wide-feedback" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <div class="card-inner">
+            <div class="card-title">“Spot the issue” lightning round</div>
+            <p class="card-tagline">
+              Mark each statement as accessible (<strong>A</strong>) or problematic (<strong>P</strong>).
+            </p>
+
+            <div class="options">
+              <label>
+                <input type="radio" name="lr1" value="A" />
+                I always write link text that describes where it goes (e.g., “Course
+                schedule (PDF)”).
+              </label>
+              <label>
+                <input type="radio" name="lr1" value="P" />
+                I usually just paste full URLs as links.
+              </label>
+            </div>
+
+            <div class="options">
+              <label>
+                <input type="radio" name="lr2" value="A" />
+                I sometimes use headings, but mostly rely on bolded text for structure.
+              </label>
+              <label>
+                <input type="radio" name="lr2" value="P" />
+                I never use headings; formatting is only visual.
+              </label>
+            </div>
+
+            <div class="options">
+              <label>
+                <input type="radio" name="lr3" value="A" />
+                I try to avoid flashing or auto-playing content that could trigger migraines or seizures.
+              </label>
+              <label>
+                <input type="radio" name="lr3" value="P" />
+                I like auto-playing videos with strong animations on every page.
+              </label>
+            </div>
+
+            <button type="button" class="btn-small" id="lightning-button">
+              Reveal guidance
+            </button>
+            <div class="feedback" id="lightning-feedback" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESOURCES -->
+      <section id="resources" aria-labelledby="resources-heading">
+        <h2 id="resources-heading">
+          Resources &amp; Next Steps
+          <span class="badge">Extend &amp; collaborate</span>
+        </h2>
+        <p class="section-subtitle">
+          Use this as a launchpad. Pair it with CSU’s policies and
+          tools (LMS, captioning, PDF remediation, accessibility services).
+        </p>
+
+        <div class="section-grid">
+          <div class="card-inner">
+            <div class="card-title">Build a local action plan</div>
+            <p class="card-tagline">
+              Try a “1–2–4” approach across your department:
+            </p>
+            <ol style="font-size:0.8rem; color:var(--text-muted); padding-left:1.1rem; margin:0 0 0.4rem;">
+              <li><strong>1 course</strong> per instructor: run the quick scan and fix low-hanging issues.</li>
+              <li><strong>2 shared patterns</strong> to standardize (e.g., weekly module structure, captioning process).</li>
+              <li><strong>4 checkpoints</strong> in your curriculum map where you revisit accessibility and UDL.</li>
+            </ol>
+            <div class="summary-card">
+              <strong>Suggestion:</strong> Create a short departmental checklist
+              based on this tool, aligned with CTRE, accessibility services, and
+              IT resources.
+            </div>
+          </div>
+
+          <div class="card-inner">
+            <div class="card-title">Reading &amp; reference ideas</div>
+            <ul style="font-size:0.8rem; color:var(--text-muted); padding-left:1.1rem; margin:0;">
+              <li>Review your university’s digital accessibility policy and LMS guides.</li>
+              <li>Explore WCAG 2.2 via the W3C Web Accessibility Initiative.</li>
+              <li>Look for campus resources on neurodiversity, UDL, and disability services.</li>
+              <li>Identify training or consultations with instructional designers or accessibility specialists.</li>
+            </ul>
+          </div>
+        </div>
+
+        <footer>
+          <strong>Remember:</strong> Accessibility and neurodiversity-inclusive
+          design are ongoing practices, not one-time fixes. Start with small,
+          visible changes and build habits into your course development cycles.
+        </footer>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // ---------- NAV / SMOOTH SCROLL / ACTIVE SECTION ----------
+    (function () {
+      var navLinks = document.querySelectorAll('.sidebar .nav a');
+      var heroButtons = document.querySelectorAll('.hero-actions [data-target]');
+      var sections = document.querySelectorAll('main section');
+
+      function scrollToSection(id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      for (var i = 0; i < heroButtons.length; i++) {
+        heroButtons[i].addEventListener('click', function () {
+          var target = this.getAttribute('data-target');
+          if (target) {
+            scrollToSection(target);
+          }
+        });
+      }
+
+      if (typeof IntersectionObserver === 'function') {
+        var observer = new IntersectionObserver(
+          function (entries) {
+            for (var j = 0; j < entries.length; j++) {
+              var entry = entries[j];
+              var id = entry.target.id;
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                for (var k = 0; k < navLinks.length; k++) {
+                  var link = navLinks[k];
+                  if (link.getAttribute('href') === '#' + id) {
+                    link.classList.add('active');
+                  } else {
+                    link.classList.remove('active');
+                  }
+                }
+              }
+            }
+          },
+          { threshold: 0.35 }
+        );
+
+        for (var s = 0; s < sections.length; s++) {
+          observer.observe(sections[s]);
+        }
+      } else {
+        for (var s2 = 0; s2 < sections.length; s2++) {
+          sections[s2].classList.add('visible');
+        }
+      }
+    })();
+
+    // ---------- QUICK COURSE SCAN ----------
+    (function () {
+      var form = document.getElementById('quick-scan-form');
+      var button = document.getElementById('scan-button');
+      var feedback = document.getElementById('scan-feedback');
+      var bar = document.getElementById('score-bar-fill');
+      var pill = document.getElementById('score-pill');
+      var label = document.getElementById('score-label');
+
+      if (!form || !button || !feedback || !bar || !pill || !label) {
+        return;
+      }
+
+      function updateScore(checked, total) {
+        var percent = total ? Math.round((checked / total) * 100) : 0;
+        bar.style.width = percent + '%';
+
+        var descriptor = 'Not yet scored';
+        var color = 'var(--accent1)';
+
+        if (percent <= 30) {
+          descriptor = 'Early in the journey';
+          color = 'var(--danger)';
+        } else if (percent <= 60) {
+          descriptor = 'Making progress';
+          color = 'var(--accent1)';
+        } else if (percent <= 85) {
+          descriptor = 'Strong foundation';
+          color = 'var(--accent2)';
+        } else {
+          descriptor = 'Exemplary (keep iterating)';
+          color = 'var(--accent2)';
+        }
+
+        pill.textContent = percent ? (percent + '%') : '—';
+        pill.style.color = color;
+        label.text
