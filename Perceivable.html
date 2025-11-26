@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU CTRE – WCAG 2.2 Quick Guide (Section 1: Perceivable)</title>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+        margin: 0;
+        padding: 0;
+        color: var(--csu-secondary);
+        line-height: 1.5;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: white;
+        padding: 24px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    header h2 {
+        margin: 0;
+        font-size: 1rem;
+        opacity: 0.9;
+        font-weight: normal;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+    }
+
+    .top-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .section-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .section-pill {
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--csu-border);
+        font-size: 0.85rem;
+        cursor: default;
+        background: #ffffff;
+        color: var(--csu-secondary);
+        opacity: 0.6;
+    }
+
+    .section-pill.active {
+        background: var(--csu-primary);
+        color: white;
+        border-color: var(--csu-primary);
+        opacity: 1;
+        font-weight: bold;
+    }
+
+    .help-chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--csu-accent);
+        font-size: 0.85rem;
+        background: #f8fff5;
+        color: var(--csu-primary);
+    }
+
+    .help-chip strong {
+        font-weight: bold;
+    }
+
+    .intro-panel {
+        background: var(--csu-light);
+        border-radius: 10px;
+        padding: 16px 18px;
+        border: 1px solid var(--csu-border);
+        margin-bottom: 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+        gap: 16px;
+    }
+
+    .intro-panel h3 {
+        margin-top: 0;
+        color: var(--csu-primary);
+    }
+
+    .intro-panel ul {
+        margin-top: 4px;
+        padding-left: 20px;
+    }
+
+    .intro-panel .callout {
+        background: #ffffff;
+        border-radius: 8px;
+        border: 1px dashed var(--csu-accent);
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .callout strong {
+        color: var(--csu-primary);
+    }
+
+    .guideline-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 12px;
+    }
+
+    .guideline-card {
+        background: #ffffff;
+        border-radius: 10px;
+        border: 1px solid var(--csu-border);
+        padding: 14px 16px 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .guideline-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .guideline-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--csu-primary);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .guideline-heading {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--csu-secondary);
+    }
+
+    .wcag-ref {
+        font-size: 0.8rem;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .tag-row {
+        margin: 4px 0 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .tag {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--csu-border);
+        background: #f9fdf9;
+        color: var(--csu-secondary);
+    }
+
+    .tag.brightspace {
+        border-color: var(--csu-primary);
+    }
+
+    .tag.pdf {
+        border-color: var(--csu-secondary);
+    }
+
+    .tag.level {
+        border-color: var(--csu-accent);
+    }
+
+    .accordion-toggle {
+        margin-top: 8px;
+        font-size: 0.85rem;
+        color: var(--csu-primary);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .accordion-toggle span {
+        font-size: 0.9rem;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease-out;
+        margin-top: 6px;
+    }
+
+    .accordion-content.open {
+        margin-top: 8px;
+    }
+
+    .guideline-subheading {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin: 8px 0 4px;
+        color: var(--csu-primary);
+    }
+
+    .example-box {
+        background: var(--csu-light);
+        border-radius: 8px;
+        border: 1px solid var(--csu-border);
+        padding: 8px 10px;
+        margin-top: 6px;
+        font-size: 0.85rem;
+    }
+
+    .example-task {
+        font-style: italic;
+        margin-top: 4px;
+    }
+
+    .analyze-btn {
+        margin-top: 6px;
+        border: none;
+        background: var(--csu-primary);
+        color: #ffffff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .analyze-btn:hover {
+        background: var(--csu-secondary);
+    }
+
+    .answer-text {
+        margin-top: 6px;
+        font-size: 0.82rem;
+        color: #333;
+        display: none;
+    }
+
+    .footer-note {
+        margin-top: 24px;
+        font-size: 0.85rem;
+        color: #555;
+        border-top: 1px solid var(--csu-border);
+        padding-top: 10px;
+    }
+
+    @media (max-width: 780px) {
+        .intro-panel {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>WCAG 2.2 Quick Guide – Section 1: Perceivable</h1>
+    <h2>Center for Teaching and Research Excellence · Chicago State University</h2>
+</header>
+
+<div class="container">
+
+    <div class="top-bar" aria-label="WCAG Section Navigation and Help">
+        <div class="section-nav">
+            <div class="section-pill active" aria-current="page">1. Perceivable</div>
+            <div class="section-pill" aria-disabled="true">2. Operable (Coming Soon)</div>
+            <div class="section-pill" aria-disabled="true">3. Understandable (Coming Soon)</div>
+            <div class="section-pill" aria-disabled="true">4. Robust (Coming Soon)</div>
+        </div>
+        <div class="help-chip">
+            Need help applying this in Brightspace or PDFs? Email <strong>elearning@csu.edu</strong>.
+        </div>
+    </div>
+
+    <section class="intro-panel">
+        <div>
+            <h3>What does “Perceivable” mean for my course?</h3>
+            <p>
+                Perceivable means that students can actually see, hear, or otherwise access the
+                information in your course. If content is only visual, only audio, or only color-based,
+                some students will miss it. WCAG 2.2 Section 1 focuses on:
+            </p>
+            <ul>
+                <li>Providing text alternatives for images, icons, and visual-only content.</li>
+                <li>Ensuring audio and video have captions and/or transcripts.</li>
+                <li>Structuring pages so assistive technologies can navigate them.</li>
+                <li>Making text and visuals distinguishable (contrast, color, spacing).</li>
+            </ul>
+            <p style="font-size:0.9rem;">
+                You do not need to be a web developer to make your course more accessible.
+                Most changes happen in how you write your syllabus, create slides, set up Brightspace
+                pages, and export PDFs. For technical adjustments (e.g., complex PDFs),
+                eLearning and CTRE can support you.
+            </p>
+        </div>
+        <div class="callout">
+            <strong>Practical starting points:</strong>
+            <ul>
+                <li>Use descriptive alt text on images in Brightspace and PowerPoint.</li>
+                <li>Turn on and edit captions for lecture recordings.</li>
+                <li>Use heading styles in Word before converting to PDF.</li>
+                <li>Avoid relying only on color to convey correctness or emphasis.</li>
+            </ul>
+            <p style="margin-top:6px;">
+                If you feel stuck or unsure, email <strong>elearning@csu.edu</strong> with a
+                sample file (syllabus, slide deck, or PDF), and we can walk through it with you.
+            </p>
+        </div>
+    </section>
+
+    <h3>Section 1 Guidelines (Perceivable)</h3>
+    <p style="font-size:0.9rem;">
+        Click each card to expand details, see WCAG references, and practice analyzing examples.
+    </p>
+
+    <div class="guideline-grid">
+
+        <!-- 1.1 Text Alternatives -->
+        <article class="guideline-card">
+            <div class="guideline-icon" aria-hidden="true">1.1</div>
+            <h4 class="guideline-heading">Text Alternatives</h4>
+            <div class="wcag-ref">WCAG 2.2: 1.1.1 Non-text Content (Level A)</div>
+            <div class="tag-row">
+                <span class="tag brightspace">Brightspace</span>
+                <span class="tag pdf">Word / PDF</span>
+                <span class="tag level">Level A</span>
+            </div>
+
+            <div class="accordion-toggle" data-target="alt-text-details">
+                <span>Show details and example</span>
+            </div>
+
+            <div id="alt-text-details" class="accordion-content" aria-hidden="true">
+                <p>
+                    Provide meaningful text alternatives for any non-text content so that assistive
+                    technologies (like screen readers) can convey the same information. This includes
+                    photos, diagrams, icons, and decorative elements.
+                </p>
+
+                <div class="guideline-subheading">In Brightspace:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>When you insert an image, use the Image Description / Alt Text field.</li>
+                    <li>Describe the purpose (what the student needs to understand), not every visual detail.</li>
+                    <li>Check “decorative image” only if the image adds no instructional meaning.</li>
+                </ul>
+
+                <div class="guideline-subheading">In Word / PDFs:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Right-click the image → Edit Alt Text → write a short, clear description.</li>
+                    <li>When exporting to PDF, use “Best for electronic distribution and accessibility.”</li>
+                    <li>Run the built-in Accessibility Checker in Word or Adobe Acrobat.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze</strong>
+                    <p>
+                        A bar chart in your syllabus shows exam averages for three sections:
+                        Section A (72%), Section B (80%), Section C (88%). The current alt text says:
+                        “Bar chart of exam scores.”
+                    </p>
+                    <p class="example-task">
+                        Question: Does this alt text clearly convey the important information to a student
+                        who cannot see the chart?
+                    </p>
+                    <button class="analyze-btn" data-answer="alt-text-answer">
+                        Show a stronger alt text example
+                    </button>
+                    <div id="alt-text-answer" class="answer-text">
+                        Better alt text might be:
+                        “Bar chart showing average exam scores by section: Section A 72%, Section B 80%, Section C 88%, with Section C scoring the highest.”
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- 1.2 Time-Based Media -->
+        <article class="guideline-card">
+            <div class="guideline-icon" aria-hidden="true">1.2</div>
+            <h4 class="guideline-heading">Time-Based Media (Audio and Video)</h4>
+            <div class="wcag-ref">WCAG 2.2: 1.2.x (Captions, Audio Descriptions, Transcripts)</div>
+            <div class="tag-row">
+                <span class="tag brightspace">Lecture Capture</span>
+                <span class="tag pdf">Linked Media</span>
+                <span class="tag level">Level A / AA</span>
+            </div>
+
+            <div class="accordion-toggle" data-target="media-details">
+                <span>Show details and example</span>
+            </div>
+
+            <div id="media-details" class="accordion-content" aria-hidden="true">
+                <p>
+                    Students who are Deaf/hard of hearing, have auditory processing needs, or are in
+                    noisy environments may not be able to follow audio-only content. WCAG requires
+                    captions for video and transcripts for audio-only content.
+                </p>
+
+                <div class="guideline-subheading">For your recorded lectures:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Turn on captions in your recording tool or platform (e.g., YuJa, Zoom, Teams).</li>
+                    <li>Review and edit auto-generated captions for accuracy in names, terminology, and numbers.</li>
+                    <li>Provide a downloadable transcript for audio-only materials when feasible.</li>
+                </ul>
+
+                <div class="guideline-subheading">In Brightspace:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Embed videos with captions enabled by default.</li>
+                    <li>Make sure any linked media mentions “captions available” in the link text.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze</strong>
+                    <p>
+                        You recorded a 25-minute lecture and uploaded it to Brightspace. Auto-captions exist
+                        but you never reviewed them. Several technical terms and student names are incorrect.
+                    </p>
+                    <p class="example-task">
+                        Question: Does this meet accessibility expectations? What should you do next?
+                    </p>
+                    <button class="analyze-btn" data-answer="media-answer">
+                        Show suggested response
+                    </button>
+                    <div id="media-answer" class="answer-text">
+                        Auto-captions alone do not fully meet best practices. You should open the caption
+                        editor, correct errors in key terminology, and save updated captions. If students
+                        report issues, offer a transcript or alternative resource as needed.
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- 1.3 Adaptable -->
+        <article class="guideline-card">
+            <div class="guideline-icon" aria-hidden="true">1.3</div>
+            <h4 class="guideline-heading">Adaptable Structure</h4>
+            <div class="wcag-ref">WCAG 2.2: 1.3.x (Info and Relationships)</div>
+            <div class="tag-row">
+                <span class="tag brightspace">Content Pages</span>
+                <span class="tag pdf">Syllabi / Handouts</span>
+                <span class="tag level">Level A / AA</span>
+            </div>
+
+            <div class="accordion-toggle" data-target="adaptable-details">
+                <span>Show details and example</span>
+            </div>
+
+            <div id="adaptable-details" class="accordion-content" aria-hidden="true">
+                <p>
+                    Adaptable means your content preserves structure when viewed in different ways
+                    (screen readers, mobile devices, high zoom). You achieve this by using true headings,
+                    lists, and table markup so assistive technologies can interpret the relationships.
+                </p>
+
+                <div class="guideline-subheading">In Word / PDFs:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Use built-in heading styles for titles and section headings (Heading 1, Heading 2, etc.).</li>
+                    <li>Use proper bullet/numbered list tools instead of typing dashes manually.</li>
+                    <li>Avoid using tables for layout; reserve them for real data relationships.</li>
+                </ul>
+
+                <div class="guideline-subheading">In Brightspace:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Use heading styles in the HTML editor to organize long content pages.</li>
+                    <li>Keep a logical order: page title → overview → sections → links/resources.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze</strong>
+                    <p>
+                        A syllabus is formatted by increasing font size and bolding lines to “look like”
+                        headings, but no heading styles are used. When a screen reader user navigates, they
+                        cannot jump between sections.
+                    </p>
+                    <p class="example-task">
+                        Question: What is one simple change you can make in Word before exporting to PDF?
+                    </p>
+                    <button class="analyze-btn" data-answer="adaptable-answer">
+                        Show suggested change
+                    </button>
+                    <div id="adaptable-answer" class="answer-text">
+                        Apply built-in heading styles (e.g., Heading 1 for course title, Heading 2 for major
+                        sections, Heading 3 for subsections). This allows screen readers and navigation tools
+                        to move between sections quickly.
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- 1.4 Distinguishable -->
+        <article class="guideline-card">
+            <div class="guideline-icon" aria-hidden="true">1.4</div>
+            <h4 class="guideline-heading">Distinguishable Content</h4>
+            <div class="wcag-ref">WCAG 2.2: 1.4.x (Contrast, Use of Color, Visual Presentation)</div>
+            <div class="tag-row">
+                <span class="tag brightspace">Visual Design</span>
+                <span class="tag pdf">Slides / Handouts</span>
+                <span class="tag level">Level AA (mostly)</span>
+            </div>
+
+            <div class="accordion-toggle" data-target="distinguish-details">
+                <span>Show details and example</span>
+            </div>
+
+            <div id="distinguish-details" class="accordion-content" aria-hidden="true">
+                <p>
+                    Distinguishable means students can clearly see and read content. This includes
+                    sufficient contrast, reasonable text size, and not using color alone to communicate meaning.
+                </p>
+
+                <div class="guideline-subheading">Your course visuals should:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>Use text colors that strongly contrast with the background (e.g., dark text on white).</li>
+                    <li>Avoid putting important text directly on busy images.</li>
+                    <li>Never rely on color alone to show correct/incorrect, required/optional, or status.</li>
+                </ul>
+
+                <div class="guideline-subheading">Quick checks:</div>
+                <ul style="font-size:0.85rem;">
+                    <li>If you print a slide in black and white, can you still tell what is important?</li>
+                    <li>At 125–150% zoom, is text still legible without horizontal scrolling?</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze</strong>
+                    <p>
+                        A quiz review slide shows correct answers in green and incorrect answers in red,
+                        with no labels or icons. Students with color blindness cannot distinguish them.
+                    </p>
+                    <p class="example-task">
+                        Question: How can you redesign this so that color is not the only cue?
+                    </p>
+                    <button class="analyze-btn" data-answer="distinguish-answer">
+                        Show redesign idea
+                    </button>
+                    <div id="distinguish-answer" class="answer-text">
+                        Add text labels such as “Correct” and “Incorrect” next to each answer and consider
+                        using icons (e.g., check mark / X) or patterns. Keep color as a helpful extra cue,
+                        not the only one.
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    </div>
+
+    <p class="footer-note">
+        This quick guide focuses on WCAG 2.2 Section 1 (Perceivable). For full guidelines,
+        visit the W3C WCAG 2.2 Quick Reference and/or contact CTRE or eLearning for a consultation.
+        If you are unsure where to start, email <strong>elearning@csu.edu</strong> with an example
+        course document, and we can help you prioritize next steps.
+    </p>
+
+</div>
+
+<script>
+    // Expand/collapse guideline details
+    document.querySelectorAll('.accordion-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function () {
+            var targetId = this.getAttribute('data-target');
+            var panel = document.getElementById(targetId);
+            var isOpen = panel.classList.contains('open');
+
+            if (isOpen) {
+                panel.classList.remove('open');
+                panel.style.maxHeight = null;
+                panel.setAttribute('aria-hidden', 'true');
+                this.querySelector('span').textContent = 'Show details and example';
+            } else {
+                panel.classList.add('open');
+                panel.style.maxHeight = panel.scrollHeight + 'px';
+                panel.setAttribute('aria-hidden', 'false');
+                this.querySelector('span').textContent = 'Hide details';
+            }
+        });
+    });
+
+    // Show/hide suggested answers
+    document.querySelectorAll('.analyze-btn').forEach(function(btn) {
+        btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-answer');
+            var answer = document.getElementById(id);
+            var isVisible = answer.style.display === 'block';
+            answer.style.display = isVisible ? 'none' : 'block';
+            this.textContent = isVisible ? 'Show suggested response' : 'Hide suggested response';
+        });
+    });
+</script>
+
+</body>
+</html>
