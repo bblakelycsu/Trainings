@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU CTRE – WCAG 2.2 Quick Guide (Section 2: Operable)</title>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: var(--csu-secondary);
+        line-height: 1.5;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: white;
+        padding: 24px 32px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    header h2 {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+        font-weight: normal;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .section-pill {
+        background: var(--csu-primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .help-chip {
+        background: #f8fff5;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--csu-accent);
+        font-size: 0.85rem;
+        color: var(--csu-primary);
+    }
+
+    .intro-panel {
+        background: var(--csu-light);
+        border-radius: 10px;
+        border: 1px solid var(--csu-border);
+        padding: 20px;
+        margin-bottom: 20px;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 2fr 1.2fr;
+    }
+
+    .intro-panel h3 {
+        margin-top: 0;
+        color: var(--csu-primary);
+    }
+
+    .callout {
+        background: white;
+        border: 1px dashed var(--csu-accent);
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+
+    .guideline-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .guideline-card {
+        border: 1px solid var(--csu-border);
+        border-radius: 10px;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .guideline-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--csu-primary);
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    .guideline-card h4 {
+        margin: 0 0 4px;
+    }
+
+    .accordion-toggle {
+        color: var(--csu-primary);
+        text-decoration: underline;
+        margin-top: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease-out;
+    }
+
+    .accordion-content.open {
+        margin-top: 10px;
+    }
+
+    .subtitle {
+        font-weight: bold;
+        margin-top: 12px;
+        color: var(--csu-secondary);
+    }
+
+    .example-box {
+        background: var(--csu-light);
+        border: 1px solid var(--csu-border);
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .example-answer {
+        margin-top: 8px;
+        background: white;
+        padding: 8px;
+        border-left: 3px solid var(--csu-primary);
+        font-size: 0.9rem;
+    }
+
+    .wcag-link {
+        margin-top: 10px;
+        font-size: 0.85rem;
+    }
+
+    .wcag-link a {
+        color: var(--csu-secondary);
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    .footer-note {
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 1px solid var(--csu-border);
+        font-size: 0.85rem;
+    }
+
+    .footer-note a {
+        color: var(--csu-primary);
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 780px) {
+        .intro-panel {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>WCAG 2.2 Quick Guide – Section 2: Operable</h1>
+    <h2>Center for Teaching and Research Excellence · Chicago State University</h2>
+</header>
+
+<div class="container">
+
+    <div class="top-bar">
+        <div class="section-pill">2. Operable</div>
+        <div class="help-chip">
+            Need help? Email <strong>elearning@csu.edu</strong>
+        </div>
+    </div>
+
+    <section class="intro-panel">
+        <div>
+            <h3>What does “Operable” mean?</h3>
+            <p>
+                In WCAG 2.2, “Operable” means that students must be able to 
+                <strong>navigate and use your course interface</strong>, regardless of how they interact with technology.
+            </p>
+            <p>For CSU faculty, this often means:</p>
+            <ul>
+                <li>Ensuring everything can be used with a keyboard (no mouse required).</li>
+                <li>Giving students enough time to complete tasks, quizzes, and activities.</li>
+                <li>Avoiding content that can trigger seizures or strong physical reactions.</li>
+                <li>Providing clear navigation, headings, and links so students don’t get lost.</li>
+                <li>Making interactive controls easy to find, select, and use on different devices.</li>
+            </ul>
+        </div>
+
+        <div class="callout">
+            <strong>Need guidance?</strong><br>
+            CTRE can review your Brightspace layout, quizzes, and interactive tools for keyboard access,
+            timing, navigation, and other “Operable” issues. Email <strong>elearning@csu.edu</strong>.
+        </div>
+    </section>
+
+    <h3>Section 2 – Operable (WCAG 2.2)</h3>
+
+    <div class="guideline-grid">
+
+        <!-- ========== 2.1 KEYBOARD ACCESSIBLE ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">2.1</div>
+            <h4>Keyboard Accessible</h4>
+            <p class="accordion-toggle" data-target="keyboard">Show details</p>
+
+            <div id="keyboard" class="accordion-content">
+                <p>
+                    WCAG 2.2 requires that all functionality be usable via a keyboard (or keyboard-like device), 
+                    without requiring a mouse or complex gestures.
+                </p>
+
+                <p class="subtitle">What this means:</p>
+                <p>
+                    Students should be able to move through your content, activate links and buttons, and complete forms 
+                    using only the keyboard (for example, with the <strong>Tab</strong> key and <strong>Enter</strong>).
+                </p>
+
+                <p class="subtitle">Key requirements for your course:</p>
+                <ul>
+                    <li>Check that students can tab through links, buttons, and form fields in a logical order.</li>
+                    <li>Make sure there is a visible focus indicator (outline or highlight) when elements are selected.</li>
+                    <li>Avoid activities that require dragging with a mouse unless there is a keyboard alternative.</li>
+                    <li>Do not trap focus inside widgets or pop-ups; students must be able to tab in and out.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze:</strong><br>
+                    You embed a drag-and-drop activity where students must drag labels onto an image with a mouse.<br>
+                    <div class="example-answer">
+                        <strong>Better approach:</strong><br>
+                        Offer a keyboard-friendly version of the activity (for example, a matching question or 
+                        multiple-choice quiz) and clearly label it as an equivalent alternative.
+                    </div>
+                </div>
+
+                <p class="wcag-link">
+                    <a href="https://www.w3.org/TR/WCAG22/#keyboard-accessible" target="_blank">
+                        View the official WCAG 2.2 spec for Keyboard Accessible
+                    </a>
+                </p>
+            </div>
+        </article>
+
+        <!-- ========== 2.2 ENOUGH TIME ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">2.2</div>
+            <h4>Enough Time</h4>
+            <p class="accordion-toggle" data-target="time">Show details</p>
+
+            <div id="time" class="accordion-content">
+                <p>
+                    WCAG 2.2 requires that users have enough time to read and use content. 
+                    Time limits should be adjustable or removable when possible.
+                </p>
+
+                <p class="subtitle">What this means:</p>
+                <p>
+                    Students who read more slowly, use assistive technology, or need breaks must still be able to complete 
+                    quizzes, forms, and activities without being rushed out unexpectedly.
+                </p>
+
+                <p class="subtitle">Key requirements for your course:</p>
+                <ul>
+                    <li>Avoid very short timers on quizzes and assignments, especially for high-stakes assessments.</li>
+                    <li>Work with DRC and department policies to provide extended time accommodations in Brightspace.</li>
+                    <li>If a session times out (like a practice quiz), provide a way for students to resume or restart.</li>
+                    <li>Warn students before time-limited activities and clearly state the time they will have.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze:</strong><br>
+                    A low-stakes review quiz in Brightspace has a 5-minute time limit and automatically submits without warning.<br>
+                    <div class="example-answer">
+                        <strong>Better approach:</strong><br>
+                        Remove the strict time limit for practice quizzes or extend it significantly, and clearly 
+                        communicate any time constraints. For exams, coordinate extended-time settings for students with accommodations.
+                    </div>
+                </div>
+
+                <p class="wcag-link">
+                    <a href="https://www.w3.org/TR/WCAG22/#enough-time" target="_blank">
+                        View the official WCAG 2.2 spec for Enough Time
+                    </a>
+                </p>
+            </div>
+        </article>
+
+        <!-- ========== 2.3 SEIZURES & PHYSICAL REACTIONS ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">2.3</div>
+            <h4>Seizures & Physical Reactions</h4>
+            <p class="accordion-toggle" data-target="seizures">Show details</p>
+
+            <div id="seizures" class="accordion-content">
+                <p>
+                    WCAG 2.2 limits content that flashes or moves in ways that can trigger seizures, dizziness,
+                    or other strong physical reactions.
+                </p>
+
+                <p class="subtitle">What this means:</p>
+                <p>
+                    Avoid flashing, strobing, or rapidly moving content in your course. 
+                    If something moves or updates automatically, students must be able to pause or stop it.
+                </p>
+
+                <p class="subtitle">Key requirements for your course:</p>
+                <ul>
+                    <li>Do not use content that flashes more than three times per second.</li>
+                    <li>Avoid animated GIFs or videos with intense flashing lights or rapidly changing colors.</li>
+                    <li>Provide controls to pause, stop, or hide moving content such as carousels or auto-scrolling banners.</li>
+                    <li>Be cautious with VR/AR or simulation content that could cause motion sickness; provide alternatives.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze:</strong><br>
+                    A “fun” banner GIF on your Brightspace homepage flashes brightly and loops endlessly.<br>
+                    <div class="example-answer">
+                        <strong>Better approach:</strong><br>
+                        Replace the flashing GIF with a static image or a subtle, slow animation, or remove it entirely.
+                        Focus on clear, stable visuals that do not distract or overwhelm students.
+                    </div>
+                </div>
+
+                <p class="wcag-link">
+                    <a href="https://www.w3.org/TR/WCAG22/#seizures-and-physical-reactions" target="_blank">
+                        View the official WCAG 2.2 spec for Seizures & Physical Reactions
+                    </a>
+                </p>
+            </div>
+        </article>
+
+        <!-- ========== 2.4 NAVIGABLE ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">2.4</div>
+            <h4>Navigable</h4>
+            <p class="accordion-toggle" data-target="navigable">Show details</p>
+
+            <div id="navigable" class="accordion-content">
+                <p>
+                    WCAG 2.2 requires that users can easily find where they are, move around, 
+                    and locate content and features within a page or site.
+                </p>
+
+                <p class="subtitle">What this means:</p>
+                <p>
+                    Your course should have clear headings, consistent menus, and descriptive links so students don’t get lost.
+                    Screen reader users should be able to jump quickly to sections and main content.
+                </p>
+
+                <p class="subtitle">Key requirements for your course:</p>
+                <ul>
+                    <li>Use consistent module structures (e.g., Overview, Readings, Lecture, Activities, Assessments).</li>
+                    <li>Write descriptive link text (e.g., “Download Week 2 Syllabus” instead of “click here”).</li>
+                    <li>Provide clear page titles and headings so students know where they are.</li>
+                    <li>Avoid overly long pages without headings; break content into scannable sections.</li>
+                    <li>Ensure there is a logical, predictable path to key items like the syllabus, grades, and assignments.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze:</strong><br>
+                    A Brightspace module contains several links labeled “Click here” and “More info” without context.<br>
+                    <div class="example-answer">
+                        <strong>Better approach:</strong><br>
+                            Rewrite links to be descriptive, such as “Watch Week 3 Lecture Video,” 
+                            “View Week 3 Discussion Instructions,” or “Download Exam 1 Study Guide,” 
+                            so students and screen readers know exactly where each link goes.
+                    </div>
+                </div>
+
+                <p class="wcag-link">
+                    <a href="https://www.w3.org/TR/WCAG22/#navigable" target="_blank">
+                        View the official WCAG 2.2 spec for Navigable
+                    </a>
+                </p>
+            </div>
+        </article>
+
+        <!-- ========== 2.5 INPUT MODALITIES ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">2.5</div>
+            <h4>Input Modalities</h4>
+            <p class="accordion-toggle" data-target="inputs">Show details</p>
+
+            <div id="inputs" class="accordion-content">
+                <p>
+                    WCAG 2.2 supports multiple ways of interacting with content, 
+                    including touch, voice, stylus, and assistive technologies—especially on smaller screens.
+                </p>
+
+                <p class="subtitle">What this means:</p>
+                <p>
+                    Controls should be easy to tap or click, not overly precise, and should not 
+                    require complex gestures (like pinch-and-twist) to complete important actions.
+                </p>
+
+                <p class="subtitle">Key requirements for your course:</p>
+                <ul>
+                    <li>Ensure buttons and links are large enough and well spaced for touch screens.</li>
+                    <li>Avoid requiring multi-finger or path-based gestures for critical tasks.</li>
+                    <li>Make sure labels are clear and located next to the corresponding form fields.</li>
+                    <li>Test interactive tools (e.g., simulations, external websites) on mobile and tablet devices.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example to analyze:</strong><br>
+                    A small “Next” arrow in a mobile-friendly module is hard to tap without zooming in.<br>
+                    <div class="example-answer">
+                        <strong>Better approach:</strong><br>
+                        Use a larger “Next” button with a clear label and sufficient padding,
+                        and avoid placing it too close to other tappable elements to reduce accidental taps.
+                    </div>
+                </div>
+
+                <p class="wcag-link">
+                    <a href="https://www.w3.org/TR/WCAG22/#input-modalities" target="_blank">
+                        View the official WCAG 2.2 spec for Input Modalities
+                    </a>
+                </p>
+            </div>
+        </article>
+
+    </div>
+
+    <p class="footer-note">
+        This guide explains Section 2 (Operable) of the
+        <a href="https://www.w3.org/TR/WCAG22/" target="_blank">
+            WCAG 2.2 Recommendation
+        </a>.
+        For help applying these principles in Brightspace, media, or interactive tools,
+        contact <strong>elearning@csu.edu</strong>.
+    </p>
+
+</div>
+
+<script>
+// Accordion functionality
+document.querySelectorAll('.accordion-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        const open = target.classList.contains('open');
+
+        if (open) {
+            target.style.maxHeight = null;
+            target.classList.remove('open');
+            btn.textContent = "Show details";
+        } else {
+            target.classList.add('open');
+            target.style.maxHeight = target.scrollHeight + "px";
+            btn.textContent = "Hide details";
+        }
+    });
+});
+</script>
+
+</body>
+</html>
