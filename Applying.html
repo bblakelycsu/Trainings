@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU CTRE – WCAG 2.2 Quick Guide (Section 5: Applying WCAG in Your Course)</title>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: var(--csu-secondary);
+        line-height: 1.5;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: white;
+        padding: 24px 32px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    header h2 {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+        font-weight: normal;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .section-pill {
+        background: var(--csu-primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .help-chip {
+        background: #f8fff5;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--csu-accent);
+        font-size: 0.85rem;
+        color: var(--csu-primary);
+    }
+
+    .intro-panel {
+        background: var(--csu-light);
+        border-radius: 10px;
+        border: 1px solid var(--csu-border);
+        padding: 20px;
+        margin-bottom: 20px;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 2fr 1.2fr;
+    }
+
+    .intro-panel h3 {
+        margin-top: 0;
+        color: var(--csu-primary);
+    }
+
+    .callout {
+        background: white;
+        border: 1px dashed var(--csu-accent);
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+
+    .guideline-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .guideline-card {
+        border: 1px solid var(--csu-border);
+        border-radius: 10px;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .guideline-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--csu-primary);
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+
+    .guideline-card h4 {
+        margin: 0 0 4px;
+    }
+
+    .accordion-toggle {
+        color: var(--csu-primary);
+        text-decoration: underline;
+        margin-top: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease-out;
+    }
+
+    .accordion-content.open {
+        margin-top: 10px;
+    }
+
+    .subtitle {
+        font-weight: bold;
+        margin-top: 12px;
+        color: var(--csu-secondary);
+    }
+
+    .example-box {
+        background: var(--csu-light);
+        border: 1px solid var(--csu-border);
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .example-answer {
+        margin-top: 8px;
+        background: white;
+        padding: 8px;
+        border-left: 3px solid var(--csu-primary);
+        font-size: 0.9rem;
+    }
+
+    .wcag-link {
+        margin-top: 10px;
+        font-size: 0.85rem;
+    }
+
+    .wcag-link a {
+        color: var(--csu-secondary);
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    .footer-note {
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 1px solid var(--csu-border);
+        font-size: 0.85rem;
+    }
+
+    .footer-note a {
+        color: var(--csu-primary);
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 780px) {
+        .intro-panel {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>WCAG 2.2 Quick Guide – Section 5: Applying WCAG in Your Course</h1>
+    <h2>Center for Teaching and Research Excellence · Chicago State University</h2>
+</header>
+
+<div class="container">
+
+    <div class="top-bar">
+        <div class="section-pill">5. Applying WCAG</div>
+        <div class="help-chip">
+            Need help? Email <strong>elearning@csu.edu</strong>
+        </div>
+    </div>
+
+    <section class="intro-panel">
+        <div>
+            <h3>How do I put all of this into practice?</h3>
+            <p>
+                Sections 1–4 of this guide summarized the four WCAG 2.2 principles:
+                <strong>Perceivable, Operable, Understandable, and Robust</strong>.
+                This section helps you <strong>apply those ideas in a real CSU course</strong> using quick checks,
+                practical steps, and sample workflows.
+            </p>
+            <p>Use this as a “starter roadmap” for making your course more accessible over time:</p>
+            <ul>
+                <li>Do a quick pass before the semester starts.</li>
+                <li>Build small accessibility habits into your weekly routine.</li>
+                <li>Fix the most common issues CTRE sees in courses.</li>
+                <li>Know when and how to ask CTRE and campus partners for support.</li>
+            </ul>
+        </div>
+
+        <div class="callout">
+            <strong>Tip:</strong><br>
+            You do <em>not</em> have to fix everything at once. Pick one small improvement per week
+            (for example, “fix images in Week 1” or “improve headings in my syllabus”) and build from there.
+        </div>
+    </section>
+
+    <h3>Section 5 – Applying WCAG 2.2 in Your Course</h3>
+
+    <div class="guideline-grid">
+
+        <!-- ========== 5.1 PRE-SEMESTER QUICK CHECK ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">5.1</div>
+            <h4>Pre-Semester Quick Check</h4>
+            <p class="accordion-toggle" data-target="precheck">Show details</p>
+
+            <div id="precheck" class="accordion-content">
+                <p>
+                    Use this quick check 2–3 weeks before the semester starts to catch major accessibility issues.
+                    Focus on high-impact items students will see right away.
+                </p>
+
+                <p class="subtitle">High-priority items to review:</p>
+                <ul>
+                    <li><strong>Syllabus:</strong> Uses real headings, lists, and readable fonts; not a scanned image-only PDF.</li>
+                    <li><strong>Start Here / Course Overview:</strong> Clearly explains how the course is organized and where to begin.</li>
+                    <li><strong>Week 1 content:</strong> Key documents and pages use headings, lists, and meaningful link text.</li>
+                    <li><strong>Videos students will watch early:</strong> Have captions (and transcripts for audio-only content).</li>
+                    <li><strong>Color & contrast:</strong> Main text and headings are easy to read; important messages don’t rely on color alone.</li>
+                    <li><strong>Navigation:</strong> Syllabus, Grades, and first assignments are easy to locate from the course homepage.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example workflow:</strong><br>
+                    <div class="example-answer">
+                        <ol>
+                            <li>Open your syllabus in Word and run the built-in Accessibility Checker.</li>
+                            <li>Fix heading structure and alt text suggestions.</li>
+                            <li>Save as a tagged PDF and upload to Brightspace.</li>
+                            <li>Update the “Start Here” module with a short “How this course works” overview.</li>
+                            <li>Check captions on any Week 1 videos and correct critical terminology.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- ========== 5.2 WEEKLY ACCESSIBILITY HABITS ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">5.2</div>
+            <h4>Weekly Accessibility Habits</h4>
+            <p class="accordion-toggle" data-target="weekly">Show details</p>
+
+            <div id="weekly" class="accordion-content">
+                <p>
+                    Building small accessibility habits into your weekly prep makes WCAG much more manageable.
+                    Think in terms of “what students see this week.”
+                </p>
+
+                <p class="subtitle">Try these weekly habits:</p>
+                <ul>
+                    <li><strong>Headings first:</strong> Add clear headings to new Brightspace pages and documents.</li>
+                    <li><strong>Alt text as you go:</strong> Whenever you add an image, ask “Does this need alt text?” and write it immediately.</li>
+                    <li><strong>Captions check:</strong> For new recordings, generate captions and quickly fix key terms and names.</li>
+                    <li><strong>Consistent structure:</strong> Keep each module in the same order (Overview → Materials → Activities → Assessments).</li>
+                    <li><strong>Clear instructions:</strong> Re-read new assignments and quizzes to ensure expectations are explicit and student-friendly.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Example weekly checklist (10 minutes):</strong><br>
+                    <div class="example-answer">
+                        <ul>
+                            <li>“Do all new pages have a Heading 1 title and subheadings where needed?”</li>
+                            <li>“Did I add or update alt text for any new images I posted?”</li>
+                            <li>“If I posted a new video, did I check captions for accuracy?”</li>
+                            <li>“Is this week’s module organized the same way as last week’s?”</li>
+                            <li>“Are instructions for new activities clear, including due dates and how to submit?”</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- ========== 5.3 COMMON ISSUES & QUICK FIXES ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">5.3</div>
+            <h4>Common Issues & Quick Fixes</h4>
+            <p class="accordion-toggle" data-target="issues">Show details</p>
+
+            <div id="issues" class="accordion-content">
+                <p>
+                    CTRE frequently sees the same accessibility barriers in courses. 
+                    Here are some high-impact issues and how to fix them quickly.
+                </p>
+
+                <p class="subtitle">Frequent issues:</p>
+                <ul>
+                    <li><strong>Image-only PDFs or slides:</strong> Students using screen readers cannot access the text.</li>
+                    <li><strong>“Click here” links:</strong> Links lack context when read out of order.</li>
+                    <li><strong>Color-only feedback:</strong> Quizzes and grade markings rely only on red/green.</li>
+                    <li><strong>Unstructured pages:</strong> Long paragraphs with no headings or lists.</li>
+                    <li><strong>Missing or inaccurate captions:</strong> Auto-captions misrepresent critical terms.</li>
+                </ul>
+
+                <p class="subtitle">Quick fixes:</p>
+                <ul>
+                    <li>Replace scanned PDFs with text-based versions or provide accessible versions alongside scans.</li>
+                    <li>Rewrite links so they describe their target (e.g., “Download Week 3 Slides” instead of “Click here”).</li>
+                    <li>Add text labels such as “Correct” / “Incorrect” and brief explanations to supplement color feedback.</li>
+                    <li>Break long pages into sections with meaningful headings and bullet points.</li>
+                    <li>Open key videos in the caption editor and correct important names, terms, and numbers.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Before and after example:</strong><br>
+                    <div class="example-answer">
+                        <p><strong>Before:</strong> “Click here for the article.”</p>
+                        <p><strong>After:</strong> “Read: <em>Smith (2023) – Social Determinants of Health</em> (PDF).”</p>
+                        <p><strong>Impact:</strong> Students and screen readers now know exactly what the link leads to, 
+                        and it’s easier to recognize the resource later.</p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- ========== 5.4 WORKING WITH SUPPORT & DOCUMENTING ACCOMMODATIONS ========== -->
+        <article class="guideline-card">
+            <div class="guideline-icon">5.4</div>
+            <h4>Working with Support & Documenting Accommodations</h4>
+            <p class="accordion-toggle" data-target="support">Show details</p>
+
+            <div id="support" class="accordion-content">
+                <p>
+                    Accessibility is a shared responsibility across CTRE, Disability Resource Center (DRC), IT, and faculty.
+                    You are not expected to solve every technical issue alone.
+                </p>
+
+                <p class="subtitle">When to contact CTRE:</p>
+                <ul>
+                    <li>You’re unsure how to fix an accessibility checker issue in Word, PowerPoint, PDF, or Brightspace.</li>
+                    <li>You want a quick review of a course, module, or key assignment for accessibility barriers.</li>
+                    <li>You’re adding a new external tool (publisher content, simulations, etc.) and want an accessibility check.</li>
+                </ul>
+
+                <p class="subtitle">When to coordinate with DRC and other partners:</p>
+                <ul>
+                    <li>Students share an accommodation letter that affects testing time, note-taking, or formats of materials.</li>
+                    <li>You need to provide alternative formats (e.g., captioned video, accessible PDF, alternative assignment).</li>
+                    <li>You have questions about how to implement “extended time” or “reduced distraction” environments.</li>
+                </ul>
+
+                <p class="subtitle">Simple documentation practices:</p>
+                <ul>
+                    <li>Keep a brief note (for yourself) of accessibility improvements you make each term.</li>
+                    <li>Save accessible templates (syllabus, slides, assignment instructions) to reuse in future semesters.</li>
+                    <li>Consider adding a short “Accessibility & Support” section in your syllabus and Brightspace “Start Here” module.</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Sample “Accessibility & Support” statement for your course page:</strong><br>
+                    <div class="example-answer">
+                        <p>
+                            “This course is designed with accessibility in mind, following the WCAG 2.2 guidelines and CSU’s
+                            accessibility practices. If you have difficulty accessing any course materials (readings, videos,
+                            activities, assessments), please contact me and/or CTRE at <strong>elearning@csu.edu</strong> so we
+                            can work together on a solution. Students with accommodation letters from the Disability Resource Center
+                            are encouraged to share them early so we can implement your accommodations in a timely way.”
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    </div>
+
+    <p class="footer-note">
+        This “Section 5” is a CTRE summary for applying the
+        <a href="https://www.w3.org/TR/WCAG22/" target="_blank">
+            WCAG 2.2 Recommendation
+        </a>
+        in real courses at Chicago State University. For individual consultation or course reviews,
+        contact <strong>elearning@csu.edu</strong>.
+    </p>
+
+</div>
+
+<script>
+// Accordion functionality
+document.querySelectorAll('.accordion-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        const open = target.classList.contains('open');
+
+        if (open) {
+            target.style.maxHeight = null;
+            target.classList.remove('open');
+            btn.textContent = "Show details";
+        } else {
+            target.classList.add('open');
+            target.style.maxHeight = target.scrollHeight + "px";
+            btn.textContent = "Hide details";
+        }
+    });
+});
+</script>
+
+</body>
+</html>
