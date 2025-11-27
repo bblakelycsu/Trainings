@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU CTRE – WCAG 2.2 Quick Guide (Introduction)</title>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #fff;
+        color: var(--csu-secondary);
+        line-height: 1.5;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: white;
+        padding: 24px 32px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    header h2 {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+        font-weight: normal;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+    }
+
+    .intro-panel {
+        background: var(--csu-light);
+        border-radius: 10px;
+        border: 1px solid var(--csu-border);
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .intro-panel h3 {
+        margin-top: 0;
+        color: var(--csu-primary);
+    }
+
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .module-card {
+        border: 1px solid var(--csu-border);
+        background: white;
+        border-radius: 10px;
+        padding: 18px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .module-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--csu-primary);
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .module-card h4 {
+        margin: 0 0 8px;
+        color: var(--csu-secondary);
+        font-size: 1.1rem;
+    }
+
+    .module-card p {
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    @media (max-width: 780px) {
+        .module-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>WCAG 2.2 Quick Guide – Introduction</h1>
+    <h2>Center for Teaching and Research Excellence · Chicago State University</h2>
+</header>
+
+<div class="container">
+
+    <section class="intro-panel">
+        <h3>Welcome to the WCAG 2.2 Faculty Quick Guide</h3>
+        <p>
+            This interactive toolkit is designed to help CSU faculty quickly understand and apply the
+            <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong> in courses, syllabi, Brightspace pages,
+            and instructional materials.
+        </p>
+        <p>
+            WCAG 2.2 is built on four principles — content must be 
+            <strong>Perceivable, Operable, Understandable, and Robust</strong>.
+            The CTRE has expanded this into five modules to help you apply accessibility to real teaching practices.
+        </p>
+        <p>
+            Explore each module description below for clear explanations and practical steps you can use immediately.
+        </p>
+    </section>
+
+    <div class="module-grid">
+
+        <!-- MODULE 1 -->
+        <div class="module-card">
+            <div class="module-icon">1</div>
+            <h4>Module 1: Perceivable</h4>
+            <p>
+                Ensuring students can see, hear, or otherwise access the information you present.
+                Includes alt text, captions, document structure, and color contrast.
+            </p>
+        </div>
+
+        <!-- MODULE 2 -->
+        <div class="module-card">
+            <div class="module-icon">2</div>
+            <h4>Module 2: Operable</h4>
+            <p>
+                Making sure students can navigate and operate your course with different tools, 
+                such as keyboard-only navigation, clear links, adequate timing, and meaningful feedback.
+            </p>
+        </div>
+
+        <!-- MODULE 3 -->
+        <div class="module-card">
+            <div class="module-icon">3</div>
+            <h4>Module 3: Understandable</h4>
+            <p>
+                Content and instructions must be written clearly, behave consistently, and support students
+                in avoiding or correcting mistakes in quizzes, forms, and assignments.
+            </p>
+        </div>
+
+        <!-- MODULE 4 -->
+        <div class="module-card">
+            <div class="module-icon">4</div>
+            <h4>Module 4: Robust</h4>
+            <p>
+                Ensuring course materials work across different devices, browsers, and assistive technologies.
+                Focuses on clean structure, meaningful labels, and clear status messages.
+            </p>
+        </div>
+
+        <!-- MODULE 5 -->
+        <div class="module-card">
+            <div class="module-icon">5</div>
+            <h4>Module 5: Applying WCAG in Your Course</h4>
+            <p>
+                A practical, teaching-focused guide that helps you apply accessibility throughout the semester — 
+                including checklists, weekly habits, and common quick fixes.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
