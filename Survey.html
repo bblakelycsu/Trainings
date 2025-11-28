@@ -105,6 +105,11 @@
         color: var(--csu-muted);
     }
 
+    #mappingInfo {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
     #summaryList {
         list-style: none;
         padding-left: 0;
@@ -157,7 +162,7 @@
 
 <header>
     <h1>CSU Semester Course Separation Tool</h1>
-    <p>Uses CRN / XLST with TERM_CODE_KEY (or TERM_CODE) to build Brightspace codes.</p>
+    <p>Uses CRN / XLST with TERM_CODE_KEY to build Brightspace codes.</p>
 </header>
 
 <main>
@@ -166,8 +171,9 @@
     <h2>1. Upload semester spreadsheet</h2>
     <p>
         <small>
-            Required term column header: <code>TERM_CODE_KEY</code> (or <code>TERM_CODE</code>), case-insensitive.<br>
-            Other expected columns (flexible names): CRN, XLST, STAT, CR, PTM, SUBJ, SEC.
+            Required term column header: <code>TERM_CODE_KEY</code> (or <code>TERM_CODE</code>), any position.<br>
+            Other expected headers (any order): <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
+            Brightspace code is stored in a separate <code>BrightspaceCode</code> column.
         </small>
     </p>
 
@@ -180,12 +186,12 @@
     </div>
 
     <div id="status" class="status muted">No file loaded yet.</div>
-    <div id="mappingInfo" class="status muted" style="font-size:0.8rem;"></div>
+    <div id="mappingInfo" class="status muted"></div>
 </section>
 
 <section class="card">
     <h2>2. Preview &amp; sheet summary</h2>
-    <p><small>Preview shows first 5 rows per sheet. Use BrightspaceCode and PTM_Group columns in Excel for filtering.</small></p>
+    <p><small>Preview shows first 5 rows per sheet. Use <code>BrightspaceCode</code> and <code>PTM_Group</code> in Excel for filtering.</small></p>
     <ul id="summaryList"></ul>
     <div id="preview"></div>
 </section>
@@ -193,7 +199,15 @@
 </main>
 
 <script>
-    const SHEET_ORDER = ["PHAR", "UNIV", "OLHY", "Zero_Credit", "Cancelled", "Other_Active"];
+    const SHEET_ORDER = [
+        "PHAR",
+        "UNIV",
+        "OLHY",
+        "Zero_Credit",
+        "Cancelled",
+        "Other_Active",
+        "Crosslisted"   // extra sheet with all rows where XLST is populated
+    ];
 
     let separatedSheets = null;
     let baseHeaders = [];
@@ -205,37 +219,31 @@
         return String(str || "").trim().toUpperCase().replace(/[\s_]+/g, "");
     }
 
+    // Map logical fields to actual headers, based on your known header names (order flexible).
     function buildColumnMap(row) {
         const keys = Object.keys(row);
+        const normMap = {};
+        keys.forEach(k => { normMap[normalize(k)] = k; });
+
         const map = {};
-
-        // 1) STRICT term: TERM_CODE_KEY or TERM_CODE only
-        keys.forEach(k => {
-            const norm = normalize(k);
-            if (!map.TERM_CODE && (norm === "TERM_CODE_KEY" || norm === "TERM_CODE")) {
-                map.TERM_CODE = k;
-            }
-        });
-
-        // 2) Flexible mapping for other columns
-        const flexDefs = {
-            CRN:  ["CRN", "COURSECRN"],
-            XLST: ["XLST", "CROSSLIST", "CROSS_LIST"],
-            STAT: ["STAT", "STATUS"],
-            CR:   ["CR", "CREDITS", "CREDIT", "CREDIT_HRS"],
-            PTM:  ["PTM", "PARTOFTERM", "SESSION"],
-            SUBJ: ["SUBJ", "SUBJECT"],
-            SEC:  ["SEC", "SECTION"]
-        };
-
-        keys.forEach(k => {
-            const norm = normalize(k);
-            for (const [logical, list] of Object.entries(flexDefs)) {
-                if (!map[logical] && list.includes(norm)) {
-                    map[logical] = k;
+        function mapField(logical, expectedNorms) {
+            for (const n of expectedNorms) {
+                if (normMap[n]) {
+                    map[logical] = normMap[n];
+                    return;
                 }
             }
-        });
+        }
+
+        // TERM_CODE from TERM_CODE_KEY or TERM_CODE
+        mapField("TERM_CODE", ["TERM_CODE_KEY", "TERM_CODE"]);
+        mapField("CRN",       ["CRN"]);
+        mapField("XLST",      ["XLST"]);
+        mapField("STAT",      ["STAT"]);
+        mapField("CR",        ["CR"]);
+        mapField("PTM",       ["PTM"]);
+        mapField("SUBJ",      ["SUBJ"]);
+        mapField("SEC",       ["SEC"]);
 
         return map;
     }
@@ -246,14 +254,14 @@
         return row[key];
     }
 
-    function toUpperString(value) {
-        if (value === undefined || value === null) return "";
-        return String(value).trim().toUpperCase();
+    function toUpperString(v) {
+        if (v === undefined || v === null) return "";
+        return String(v).trim().toUpperCase();
     }
 
-    function toNumber(value) {
-        if (value === undefined || value === null || value === "") return NaN;
-        const n = parseFloat(value);
+    function toNumber(v) {
+        if (v === undefined || v === null || v === "") return NaN;
+        const n = parseFloat(v);
         return isNaN(n) ? NaN : n;
     }
 
@@ -266,7 +274,7 @@
     function isUnivSection(secRaw) {
         const n = getSectionNumber(secRaw);
         if (isNaN(n)) return false;
-        return (n >= 61 && n <= 69) || (n >= 1 && n <= 19);
+        return (n >= 1 && n <= 19) || (n >= 61 && n <= 69);
     }
 
     function isOlhySection(secRaw) {
@@ -313,7 +321,8 @@
             OLHY: [],
             Zero_Credit: [],
             Cancelled: [],
-            Other_Active: []
+            Other_Active: [],
+            Crosslisted: []
         };
 
         let firstTerm = "";
@@ -330,12 +339,20 @@
             const term = termVal === undefined || termVal === null ? "" : String(termVal).trim();
             const ptmVal = toUpperString(getVal(row, map, "PTM"));
 
+            const xlstRaw = getVal(row, map, "XLST");
+            const xlst = xlstRaw === undefined || xlstRaw === null ? "" : String(xlstRaw).trim();
+
             if (!firstTerm && term) firstTerm = term;
 
             const code = computeBrightspaceCode(row, map);
             if (code) codeCount++;
             outRow.BrightspaceCode = code;
             outRow.PTM_Group = getPtmGroupLabel(ptmVal);
+
+            // Crosslisted sheet: every row with a non-empty XLST
+            if (xlst && xlst !== "") {
+                buckets.Crosslisted.push(outRow);
+            }
 
             let sheetName = "Other_Active";
 
@@ -393,7 +410,6 @@
             el.textContent = "";
             return;
         }
-
         const parts = ["TERM_CODE", "CRN", "XLST", "STAT", "CR", "PTM", "SUBJ", "SEC"]
             .map(k => `${k}: ${map[k] || "NOT FOUND"}`);
         el.textContent = "Mapped columns → " + parts.join(" | ");
@@ -535,8 +551,11 @@
                 columnMap = buildColumnMap(rows[0]);
                 showMappingInfo(columnMap);
 
-                if (!columnMap.TERM_CODE) {
-                    setStatus("TERM_CODE_KEY / TERM_CODE column not found. Please ensure your header is TERM_CODE_KEY or TERM_CODE.", "warn");
+                const required = ["TERM_CODE", "CRN"];
+                const missingRequired = required.filter(r => !columnMap[r]);
+                if (missingRequired.length) {
+                    setStatus("Missing required columns: " + missingRequired.join(", ") +
+                              ". Check that TERM_CODE_KEY and CRN exist.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
