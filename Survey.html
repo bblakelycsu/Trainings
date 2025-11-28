@@ -128,8 +128,11 @@
     }
 
     .badge {
-        display: inline-block;
+        display: inline-block,
         padding: 0.15rem 0.35rem;
+    }
+
+    .badge {
         border-radius: 3px;
         border: 1px solid var(--csu-border);
         background: #ffffff;
@@ -202,12 +205,17 @@
     const SHEET_ORDER = [
         "PHAR",
         "UNIV",
+        "UNIV_BrightspaceCodes",
         "OLHY",
+        "OLHY_BrightspaceCodes",
         "Zero_Credit",
         "Cancelled",
         "Other_Active",
         "UNIV_Crosslisted",
-        "OLHY_Crosslisted"
+        "OLHY_Crosslisted",
+        "Overlap_Crosslisted",
+        "UNIV_NoXLST",
+        "OLHY_NoXLST"
     ];
 
     let separatedSheets = null;
@@ -310,8 +318,16 @@
             Cancelled: [],
             Other_Active: [],
             UNIV_Crosslisted: [],
-            OLHY_Crosslisted: []
+            OLHY_Crosslisted: [],
+            Overlap_Crosslisted: [],
+            UNIV_NoXLST: [],
+            OLHY_NoXLST: [],
+            UNIV_BrightspaceCodes: [],
+            OLHY_BrightspaceCodes: []
         };
+
+        // For finding overlap XLST codes between UNIV and OLHY
+        const xlstGroups = {}; // { xlst: { univ: [], olhy: [] } }
 
         let firstTerm = "";
         let codeCount = 0;
@@ -335,25 +351,70 @@
             out.BrightspaceCode = bcode;
             out.PTM_Group = getPtmGroupLabel(ptm);
 
-            // Crosslisted sheets: only rows with XLST, split by UNIV/OLHY SEC
+            const isUniv = isUnivSection(sec);
+            const isOlhy = isOlhySection(sec);
+            const isZeroCredit = !isNaN(cr) && cr === 0;
+            const isCancelled = (stat === "C");
+
+            // Track XLST groupings for overlap detection
             if (xlst) {
-                if (isUnivSection(sec)) {
-                    buckets.UNIV_Crosslisted.push(out);
-                } else if (isOlhySection(sec)) {
-                    buckets.OLHY_Crosslisted.push(out);
+                if (!xlstGroups[xlst]) {
+                    xlstGroups[xlst] = { univ: [], olhy: [] };
+                }
+                if (isUniv) {
+                    xlstGroups[xlst].univ.push(out);
+                } else if (isOlhy) {
+                    xlstGroups[xlst].olhy.push(out);
                 }
             }
 
+            // Crosslisted sheets by group
+            if (xlst && isUniv) {
+                buckets.UNIV_Crosslisted.push(out);
+            } else if (xlst && isOlhy) {
+                buckets.OLHY_Crosslisted.push(out);
+            }
+
+            // NON-CROSSLISTED UNIV / OLHY but remove cancelled & 0-credit
+            if (!xlst && !isCancelled && !isZeroCredit) {
+                if (isUniv) {
+                    buckets.UNIV_NoXLST.push(out);
+                } else if (isOlhy) {
+                    buckets.OLHY_NoXLST.push(out);
+                }
+            }
+
+            // Main sheet membership
             let sheet = "Other_Active";
 
-            if (stat === "C") sheet = "Cancelled";
-            else if (!isNaN(cr) && cr === 0) sheet = "Zero_Credit";
+            if (isCancelled) sheet = "Cancelled";
+            else if (isZeroCredit) sheet = "Zero_Credit";
             else if (subj === "PHAR") sheet = "PHAR";
-            else if (isUnivSection(sec)) sheet = "UNIV";
-            else if (isOlhySection(sec)) sheet = "OLHY";
+            else if (isUniv) sheet = "UNIV";
+            else if (isOlhy) sheet = "OLHY";
 
             buckets[sheet].push(out);
         });
+
+        // Overlap_Crosslisted: XLST codes that have both UNIV and OLHY
+        Object.values(xlstGroups).forEach(group => {
+            if (group.univ.length && group.olhy.length) {
+                buckets.Overlap_Crosslisted.push(...group.univ, ...group.olhy);
+            }
+        });
+
+        // Build UNIQUE Brightspace code lists for UNIV and OLHY
+        const univCodeSet = new Set();
+        buckets.UNIV.forEach(r => {
+            if (r.BrightspaceCode) univCodeSet.add(r.BrightspaceCode);
+        });
+        buckets.UNIV_BrightspaceCodes = Array.from(univCodeSet).map(code => ({ BrightspaceCode: code }));
+
+        const olhyCodeSet = new Set();
+        buckets.OLHY.forEach(r => {
+            if (r.BrightspaceCode) olhyCodeSet.add(r.BrightspaceCode);
+        });
+        buckets.OLHY_BrightspaceCodes = Array.from(olhyCodeSet).map(code => ({ BrightspaceCode: code }));
 
         return { buckets, firstTerm, codeCount };
     }
@@ -362,7 +423,9 @@
         let headers = baseHeaders.slice();
         const allKeys = new Set(headers);
 
-        Object.values(buckets).forEach(rows => {
+        Object.entries(buckets).forEach(([name, rows]) => {
+            // Don't let code-only sheets pollute main header set
+            if (name === "UNIV_BrightspaceCodes" || name === "OLHY_BrightspaceCodes") return;
             rows.forEach(r => {
                 Object.keys(r).forEach(k => allKeys.add(k));
             });
@@ -465,15 +528,30 @@
         }
 
         const wb = XLSX.utils.book_new();
-        const headers = computeHeadersFromSheets(separatedSheets);
+        const fullHeaders = computeHeadersFromSheets(separatedSheets);
 
+        // Data & code sheets
         SHEET_ORDER.forEach(n => {
             const rows = separatedSheets[n];
-            if (rows && rows.length) {
-                const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
-                XLSX.utils.book_append_sheet(wb, ws, n.substring(0,31));
+            if (!rows || !rows.length) return;
+
+            let ws;
+            if (n === "UNIV_BrightspaceCodes" || n === "OLHY_BrightspaceCodes") {
+                // Single-column sheets with just BrightspaceCode
+                ws = XLSX.utils.json_to_sheet(rows, { header: ["BrightspaceCode"] });
+            } else {
+                ws = XLSX.utils.json_to_sheet(rows, { header: fullHeaders });
             }
+            XLSX.utils.book_append_sheet(wb, ws, n.substring(0,31));
         });
+
+        // Summary sheet
+        const summaryRows = SHEET_ORDER.map(name => ({
+            Bucket: name,
+            Count: (separatedSheets[name] || []).length
+        }));
+        const summaryWs = XLSX.utils.json_to_sheet(summaryRows, { header: ["Bucket", "Count"] });
+        XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
 
         const term = lastTermCode || "TERM";
         const safe = (lastFileName || "courses").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
