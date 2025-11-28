@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSU – PTM Course Evaluation Date Calculator</title>
+    <style>
+        :root {
+            --csu-primary: #0d5540;
+            --csu-secondary: #17375f;
+            --csu-accent: #7bba4c;
+            --csu-light: #f4f7f6;
+            --csu-border: #d0d7d3;
+            --csu-danger: #b3261e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: var(--csu-secondary);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+            color: #fff;
+            padding: 1.5rem 2rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        header p {
+            margin: 0.35rem 0 0;
+            font-size: 0.95rem;
+            max-width: 900px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem 2rem;
+        }
+
+        .tool-card {
+            background: var(--csu-light);
+            border: 1px solid var(--csu-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--csu-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .helper-text {
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid var(--csu-border);
+            padding: 0.4rem 0.5rem;
+            text-align: left;
+        }
+
+        thead th {
+            background: #e6ece9;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fbfa;
+        }
+
+        .ptm-input-table th:nth-child(1),
+        .ptm-input-table td:nth-child(1) {
+            width: 25%;
+        }
+
+        .ptm-input-table th:nth-child(2),
+        .ptm-input-table td:nth-child(2) {
+            width: 45%;
+        }
+
+        .ptm-input-table th:nth-child(3),
+        .ptm-input-table td:nth-child(3) {
+            width: 30%;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            background: var(--csu-primary);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 0.8rem;
+        }
+
+        button:hover {
+            background: var(--csu-secondary);
+        }
+
+        .error {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--csu-danger);
+            font-weight: bold;
+            display: none;
+        }
+
+        .results-section {
+            margin-top: 1.75rem;
+        }
+
+        .muted {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .results-table-wrapper {
+            margin-top: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .copy-section {
+            margin-top: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            padding: 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            resize: vertical;
+            background: #fff;
+            white-space: pre-wrap;
+        }
+
+        .copy-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .copy-row button {
+            margin-top: 0;
+            white-space: nowrap;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 999px;
+            background: var(--csu-accent);
+            color: #fff;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-left: 0.25rem;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 1.25rem 1rem;
+            }
+            main {
+                padding: 0 0.75rem 1.5rem;
+            }
+            .copy-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>PTM Course Evaluation Date Calculator</h1>
+    <p>
+        Enter the <strong>course end date for each PTM (or PTM group)</strong> below to generate survey windows,
+        instructor email reminders, and report access dates. Survey and report dates assume <strong>11:59 PM</strong>;
+        instructor emails are sent at <strong>8:00 AM</strong>.
+    </p>
+</header>
+
+<main>
+    <div class="tool-card">
+        <div class="section-heading">1. Enter Course End Dates</div>
+        <div class="helper-text">
+            Rules used for each PTM:<br>
+            • Survey Start: <strong>20 days before</strong> course end (system 11:59 PM; effective first full day = next day)<br>
+            • Survey End: <strong>8 days before</strong> course end (11:59 PM)<br>
+            • Instructor Emails: <strong>28, 14, and 7 days before the Survey Start Date</strong> (sent at 8:00 AM)<br>
+            • Admin Report Access: <strong>8 days after</strong> course end (system 11:59 PM; effective first full day = next day)<br>
+            • Instructor Report Access: <strong>15 days after</strong> course end (11:59 PM)<br>
+            • Instructor Report Access Effective: <strong>1 day after</strong> the Instructor Report Access Start Date<br>
+            • <strong>DDC:</strong> Dynamic Date Course – dates are <strong>course-specific</strong>.<br><br>
+            Evaluations should run for approximately <strong>two weeks</strong>, beginning on the
+            <strong>Monday morning</strong> of the evaluation period (represented in the system as
+            <strong>Sunday 11:59 PM</strong>) and ending on <strong>Friday at 11:59 PM</strong> before the
+            last week of the course or finals week. Always <strong>double check the output</strong> against
+            the academic calendar. You should always have <strong>one full week at the end of the class
+            (last week/finals week) without active evaluations</strong>.
+        </div>
+
+        <table class="ptm-input-table">
+            <thead>
+                <tr>
+                    <th>PTM Input Group</th>
+                    <th>PTMs & Descriptors</th>
+                    <th>Course End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Main PTM Group</td>
+                    <td>
+                        PTM 1 – Full Term<br>
+                        PTM 5 – 12-Weeks<br>
+                        PTM 82T – 2nd 8-Weeks<br>
+                        PTM H – Hybrid<br>
+                        PTM W – Distance Learning (WEB)<br>
+                        PTM ZDC – Dual Enrollment
+                    </td>
+                    <td><input type="date" id="ptm-main-group"></td>
+                </tr>
+                <tr>
+                    <td>81T Group</td>
+                    <td>PTM 81T – 1st 8-Weeks</td>
+                    <td><input type="date" id="ptm-81T"></td>
+                </tr>
+                <tr>
+                    <td>Intersession Group</td>
+                    <td>PTM I – Intersession</td>
+                    <td><input type="date" id="ptm-I"></td>
+                </tr>
+                <tr>
+                    <td>DDC Group</td>
+                    <td>PTM DDC – Dynamic Date Course</td>
+                    <td><input type="date" id="ptm-DDC"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button id="calcAllBtn">Calculate Dates for All</button>
+        <div id="error" class="error">Please enter at least one valid course end date.</div>
+
+        <div class="results-section" id="resultsSection" style="display:none;">
+            <div class="section-heading">2. Results by PTM</div>
+            <p class="muted">
+                Survey opens at <strong>11:59 PM</strong> on the Survey Start date (students effectively see it the
+                following day). Administrator report access also begins at <strong>11:59 PM</strong> on the system date
+                shown; the effective first full day is the next calendar day. For <strong>DDC</strong>, dates are
+                course-specific and may vary by section.
+            </p>
+
+            <div class="results-table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PTM</th>
+                            <th>Descriptor</th>
+                            <th>Course End</th>
+                            <th>Survey Start<br><span class="pill">11:59 PM</span></th>
+                            <th>Survey Start<br>Effective Day</th>
+                            <th>Survey End<br><span class="pill">11:59 PM</span></th>
+                            <th>Email 28d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 14d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 7d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Admin Report<br>Start (System)<br><span class="pill">11:59 PM</span></th>
+                            <th>Admin Report<br>Effective Day</th>
+                            <th>Instructor Report<br>Start<br><span class="pill">11:59 PM</span></th>
+                            <th>Instructor Report Access<br>Effective (first full day)</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="copy-section">
+                <div class="copy-row">
+                    <div class="section-heading" style="margin-bottom:0;">3. Easy Copy (Word Bullet Format)</div>
+                    <button id="copyBtn">Copy Bullet List to Clipboard</button>
+                </div>
+                <p class="muted">
+                    Copy this block and paste into a Word document. It is structured as nested bullets for each PTM.
+                    Staff should still verify dates against the academic calendar and confirm that one full final week
+                    of class is evaluation-free.
+                </p>
+                <textarea id="copyField" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Each PTM entry: individual code + descriptor, sharing input IDs where needed
+    const ptmEntries = [
+        { code: "1",   desc: "Full Term",               inputId: "ptm-main-group", courseSpecific: false },
+        { code: "5",   desc: "12-Weeks",                inputId: "ptm-main-group", courseSpecific: false },
+        { code: "82T", desc: "2nd 8-Weeks",             inputId: "ptm-main-group", courseSpecific: false },
+        { code: "H",   desc: "Hybrid",                  inputId: "ptm-main-group", courseSpecific: false },
+        { code: "W",   desc: "Distance Learning (WEB)", inputId: "ptm-main-group", courseSpecific: false },
+        { code: "ZDC", desc: "Dual Enrollment",         inputId: "ptm-main-group", courseSpecific: false },
+        { code: "81T", desc: "1st 8-Weeks",             inputId: "ptm-81T",        courseSpecific: false },
+        { code: "I",   desc: "Intersession",            inputId: "ptm-I",          courseSpecific: false },
+        { code: "DDC", desc: "Dynamic Date Course",     inputId: "ptm-DDC",        courseSpecific: true  }
+    ];
+
+    function addDays(date, days) {
+        const result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatDatePlain(date) {
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        return month + '/' + day + '/' + year;
+    }
+
+    function formatDate1159(date) {
+        return formatDatePlain(date) + ' 11:59 PM';
+    }
+
+    function formatDate800(date) {
+        return formatDatePlain(date) + ' 8:00 AM';
+    }
+
+    document.getElementById('calcAllBtn').addEventListener('click', function () {
+        const errorEl = document.getElementById('error');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsBody = document.getElementById('resultsBody');
+        const copyField = document.getElementById('copyField');
+
+        let anyValid = false;
+        let tbodyHtml = '';
+        let bulletLines = [];
+
+        ptmEntries.forEach(entry => {
+            const input = document.getElementById(entry.inputId);
+            const val = input.value;
+
+            if (!val) return;
+
+            const endDate = new Date(val + 'T00:00:00');
+            if (isNaN(endDate.getTime())) return;
+
+            anyValid = true;
+
+            // Survey dates (Survey Start = 20 days before course end)
+            const surveyStart = addDays(endDate, -20);
+            const surveyStartEffective = addDays(surveyStart, 1);
+            const surveyEnd = addDays(endDate, -8);
+
+            // Instructor emails: 28, 14, 7 days before survey start
+            const email28 = addDays(surveyStart, -28);
+            const email14 = addDays(surveyStart, -14);
+            const email7  = addDays(surveyStart, -7);
+
+            // Report access
+            const adminAccess = addDays(endDate, 8);
+            const adminAccessEffective = addDays(adminAccess, 1);
+            const instructorAccess = addDays(endDate, 15);
+            const instructorAccessEffective = addDays(instructorAccess, 1);
+
+            const notesText = entry.courseSpecific
+                ? "Course-specific; confirm dates per section (DDC)."
+                : "";
+
+            // Table row
+            tbodyHtml += '<tr>' +
+                '<td>' + entry.code + '</td>' +
+                '<td>' + entry.desc + '</td>' +
+                '<td>' + formatDatePlain(endDate) + '</td>' +
+                '<td>' + formatDate1159(surveyStart) + '</td>' +
+                '<td>' + formatDatePlain(surveyStartEffective) + '</td>' +
+                '<td>' + formatDate1159(surveyEnd) + '</td>' +
+                '<td>' + formatDate800(email28) + '</td>' +
+                '<td>' + formatDate800(email14) + '</td>' +
+                '<td>' + formatDate800(email7) + '</td>' +
+                '<td>' + formatDate1159(adminAccess) + '</td>' +
+                '<td>' + formatDatePlain(adminAccessEffective) + '</td>' +
+                '<td>' + formatDate1159(instructorAccess) + '</td>' +
+                '<td>' + formatDatePlain(instructorAccessEffective) + '</td>' +
+                '<td>' + notesText + '</td>' +
+                '</tr>';
+
+            // Bullet block for Word
+            const bulletBlock =
+`• PTM ${entry.code} – ${entry.desc}
+   • Course End: ${formatDatePlain(endDate)}
+   • Survey Start (System – 11:59 PM): ${formatDate1159(surveyStart)}
+   • Survey Start (Effective First Full Day): ${formatDatePlain(surveyStartEffective)}
+   • Survey End (11:59 PM): ${formatDate1159(surveyEnd)}
+   • Instructor Emails (before Survey Start):
+      • 28 Days Before Survey Start (8:00 AM): ${formatDate800(email28)}
+      • 14 Days Before Survey Start (8:00 AM): ${formatDate800(email14)}
+      • 7 Days Before Survey Start (8:00 AM): ${formatDate800(email7)}
+   • Admin Report Access (System – 11:59 PM): ${formatDate1159(adminAccess)}
+   • Admin Report Access (Effective First Full Day): ${formatDatePlain(adminAccessEffective)}
+   • Instructor Report Access (System – 11:59 PM): ${formatDate1159(instructorAccess)}
+   • Instructor Report Access Effective (first full day): ${formatDatePlain(instructorAccessEffective)}
+   • Notes: ${notesText || "N/A"}`;
+
+            bulletLines.push(bulletBlock);
+        });
+
+        if (!anyValid) {
+            errorEl.style.display = 'block';
+            resultsSection.style.display = 'none';
+            return;
+        }
+
+        errorEl.style.display = 'none';
+        resultsBody.innerHTML = tbodyHtml;
+        copyField.value = bulletLines.join("\n\n");
+        resultsSection.style.display = 'block';
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+        const copyField = document.getElementById('copyField');
+        copyField.select();
+        copyField.setSelectionRange(0, 99999);
+
+        try {
+            const successful = document.execCommand('copy');
+            if (!successful && navigator.clipboard) {
+                navigator.clipboard.writeText(copyField.value);
+            }
+        } catch (e) {
+            console.warn("Copy command failed:", e);
+        }
+    });
+</script>
+</body>
+</html>
