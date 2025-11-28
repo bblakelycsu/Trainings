@@ -206,7 +206,8 @@
         "Zero_Credit",
         "Cancelled",
         "Other_Active",
-        "Crosslisted"
+        "UNIV_Crosslisted",
+        "OLHY_Crosslisted"
     ];
 
     let separatedSheets = null;
@@ -215,7 +216,7 @@
     let lastTermCode = "";
     let lastFileName = "";
 
-    // FIX: keep underscores; just trim + uppercase
+    // Keep underscores; just trim + uppercase
     function normalize(str) {
         return String(str || "").trim().toUpperCase();
     }
@@ -308,7 +309,8 @@
             Zero_Credit: [],
             Cancelled: [],
             Other_Active: [],
-            Crosslisted: []
+            UNIV_Crosslisted: [],
+            OLHY_Crosslisted: []
         };
 
         let firstTerm = "";
@@ -333,7 +335,14 @@
             out.BrightspaceCode = bcode;
             out.PTM_Group = getPtmGroupLabel(ptm);
 
-            if (xlst) buckets.Crosslisted.push(out);
+            // Crosslisted sheets: only rows with XLST, split by UNIV/OLHY SEC
+            if (xlst) {
+                if (isUnivSection(sec)) {
+                    buckets.UNIV_Crosslisted.push(out);
+                } else if (isOlhySection(sec)) {
+                    buckets.OLHY_Crosslisted.push(out);
+                }
+            }
 
             let sheet = "Other_Active";
 
