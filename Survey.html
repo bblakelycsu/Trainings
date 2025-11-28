@@ -279,9 +279,10 @@
         <p>
             <small>
                 Accepted formats: <strong>.xlsx</strong>, <strong>.xls</strong>, <strong>.csv</strong>, <strong>.ods</strong><br>
-                Expected columns (case-insensitive): <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
+                Expected columns (case-insensitive / flexible): <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
                 <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
-                The computed Brightspace code will be stored in a separate <code>BrightspaceCode</code> column only.
+                The computed Brightspace code will be stored in a separate <code>BrightspaceCode</code> column only
+                (original columns and order are preserved).
             </small>
         </p>
 
@@ -304,7 +305,7 @@
     <!-- PTM legend -->
     <section class="card">
         <h2>PTM color legend (preview only)</h2>
-        <p><small>Each PTM session type is highlighted with a different color in the preview for quick visual grouping.</small></p>
+        <p><small>Each PTM session type is highlighted with a different color in the on-screen preview. In the downloaded file, use the <code>PTM_Group</code> column for filtering.</small></p>
         <div class="ptm-legend" id="ptmLegend"></div>
     </section>
 
@@ -346,19 +347,37 @@
     let columnMap = null;
     let lastTermCode = "";
     let lastFileName = "";
+    let baseHeaders = [];
 
     // ---- Helpers for column mapping ----
+    function normalizeHeader(str) {
+        return String(str || "")
+            .trim()
+            .toUpperCase()
+            .replace(/[\s_]+/g, "");
+    }
+
     function buildColumnMap(exampleRow) {
         if (!exampleRow) return {};
         const map = {};
-        const targets = ["CRN", "TERM_CODE", "XLST", "STAT", "CR", "PTM", "SUBJ", "SEC"];
         const keys = Object.keys(exampleRow);
 
+        const targetDefs = {
+            CRN:       ["CRN", "COURSECRN"],
+            TERM_CODE: ["TERM_CODE", "TERMCODE", "TERM"],
+            XLST:      ["XLST", "CROSSLIST", "CROSS_LIST", "XLSTCODE"],
+            STAT:      ["STAT", "STATUS"],
+            CR:        ["CR", "CREDITS", "CREDIT", "CREDIT_HRS", "CREDITHOURS"],
+            PTM:       ["PTM", "PARTOFTERM", "SESSION"],
+            SUBJ:      ["SUBJ", "SUBJECT"],
+            SEC:       ["SEC", "SECTION"]
+        };
+
         keys.forEach(key => {
-            const upper = String(key).trim().toUpperCase();
-            targets.forEach(t => {
-                if (upper === t && !map[t]) {
-                    map[t] = key;
+            const norm = normalizeHeader(key);
+            Object.entries(targetDefs).forEach(([logical, candidates]) => {
+                if (!map[logical] && candidates.some(c => c === norm)) {
+                    map[logical] = key;
                 }
             });
         });
@@ -394,7 +413,7 @@
     function isUnivSection(secRaw) {
         const n = getSectionNumber(secRaw);
         if (isNaN(n)) return false;
-        // SEC 61–69 and 1 / 01–19 (may have letters)
+        // SEC 61–69 and 1 / 01–19
         if (n >= 61 && n <= 69) return true;
         if (n >= 1 && n <= 19) return true;
         return false;
@@ -403,10 +422,26 @@
     function isOlhySection(secRaw) {
         const n = getSectionNumber(secRaw);
         if (isNaN(n)) return false;
-        // SEC 21–29 and 51–59 (may have letters)
+        // SEC 21–29 and 51–59
         if (n >= 21 && n <= 29) return true;
         if (n >= 51 && n <= 59) return true;
         return false;
+    }
+
+    // PTM group label for Excel column
+    function getPtmGroupLabel(ptm) {
+        switch (ptm) {
+            case "1":   return "16-week";
+            case "5":   return "12-week";
+            case "81T": return "1st 8-weeks";
+            case "82T": return "2nd 8-weeks";
+            case "DDS": return "Dynamic";
+            case "H":   return "Hybrid";
+            case "R5":  return "Rise Cohort 5";
+            case "W":   return "Distance / Web";
+            case "ZDC": return "Dual Credit";
+            default:    return ptm || "";
+        }
     }
 
     // ---- Brightspace code logic ----
@@ -444,13 +479,13 @@
         let firstTerm = "";
 
         rows.forEach((row) => {
-            // Copy original row so we can append BrightspaceCode without changing source
-            const outRow = Object.assign({}, row);
+            const outRow = Object.assign({}, row); // preserve original columns
             const stat = toUpperString(getVal(row, map, "STAT"));
             const cr = toNumber(getVal(row, map, "CR"));
             const subj = toUpperString(getVal(row, map, "SUBJ"));
             const sec = toUpperString(getVal(row, map, "SEC"));
             const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+            const ptmVal = toUpperString(getVal(row, map, "PTM"));
 
             if (!firstTerm && term) {
                 firstTerm = term;
@@ -458,6 +493,7 @@
 
             const brightspaceCode = computeBrightspaceCode(row, map);
             outRow["BrightspaceCode"] = brightspaceCode; // always separate column only
+            outRow["PTM_Group"] = getPtmGroupLabel(ptmVal);
 
             let sheetName = "Other_Active";
 
@@ -466,11 +502,13 @@
             } else if (!isNaN(cr) && cr === 0) {
                 sheetName = "Zero_Credit";
             } else {
+                // PHAR by subject
                 if (subj === "PHAR") {
                     sheetName = "PHAR";
-                } else if (subj === "UNIV" && isUnivSection(sec)) {
+                // UNIV & OLHY by section number ranges ONLY (per your description)
+                } else if (isUnivSection(sec)) {
                     sheetName = "UNIV";
-                } else if (subj === "OLHY" && isOlhySection(sec)) {
+                } else if (isOlhySection(sec)) {
                     sheetName = "OLHY";
                 } else {
                     sheetName = "Other_Active";
@@ -485,22 +523,29 @@
 
     // ---- Workbook writer ----
     function computeHeadersFromSheets(buckets) {
-        const allKeys = new Set();
+        // Preserve original order, then append any new columns
+        let headers = baseHeaders && baseHeaders.length ? baseHeaders.slice() : [];
+
+        const allKeys = new Set(headers);
         Object.values(buckets).forEach(rows => {
             rows.forEach(row => {
                 Object.keys(row).forEach(k => allKeys.add(k));
             });
         });
-        // Put BrightspaceCode near front if present
-        const keys = Array.from(allKeys);
-        keys.sort((a, b) => {
-            if (a === "BrightspaceCode") return -1;
-            if (b === "BrightspaceCode") return 1;
-            if (a === "CRN") return -1;
-            if (b === "CRN") return 1;
-            return a.localeCompare(b);
-        });
-        return keys;
+
+        if (!headers.length) {
+            headers = Array.from(allKeys);
+        } else {
+            allKeys.forEach(k => {
+                if (!headers.includes(k)) headers.push(k);
+            });
+        }
+
+        // Ensure BrightspaceCode and PTM_Group appear at the end if not already present
+        if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
+        if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
+
+        return headers;
     }
 
     function downloadWorkbook() {
@@ -592,7 +637,7 @@
                     const td = document.createElement("td");
                     const value = row[h];
 
-                    // Highlight PTM cell
+                    // Highlight PTM cell in preview
                     const logicalPTMHeader = columnMap["PTM"];
                     if (logicalPTMHeader && h === logicalPTMHeader) {
                         const ptmVal = toUpperString(value);
@@ -641,6 +686,7 @@
         separatedSheets = null;
         originalRows = [];
         columnMap = null;
+        baseHeaders = [];
         lastTermCode = "";
         lastFileName = file ? file.name : "";
         document.getElementById("summaryList").innerHTML = "";
@@ -685,6 +731,7 @@
                 }
 
                 originalRows = rows;
+                baseHeaders = Object.keys(rows[0]); // preserve original column order
                 columnMap = buildColumnMap(rows[0]);
 
                 // Basic validation
@@ -692,8 +739,8 @@
                 const missing = requiredCols.filter(c => !columnMap[c]);
                 if (missing.length) {
                     setStatus(
-                        "Warning: Missing expected columns: " + missing.join(", ") +
-                        ". Check header names and try again.",
+                        "Warning: Missing some expected columns: " + missing.join(", ") +
+                        ". Codes may be incomplete; check header names.",
                         "warn"
                     );
                 } else {
