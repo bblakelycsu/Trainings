@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU – Semester Course Separation Tool</title>
+<!-- SheetJS for reading/writing Excel/ODS/CSV -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+        --csu-warn: #d9534f;
+        --csu-muted: #6c757d;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+        color: var(--csu-secondary);
+        line-height: 1.5;
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: #ffffff;
+        padding: 1.5rem 1rem;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.6rem;
+        letter-spacing: 0.03em;
+    }
+
+    header p {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.95;
+    }
+
+    main {
+        max-width: 1100px;
+        margin: 1.5rem auto 2.5rem;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: var(--csu-light);
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        border: 1px solid var(--csu-border);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        margin-bottom: 1.25rem;
+    }
+
+    .card h2 {
+        margin-top: 0;
+        font-size: 1.25rem;
+        color: var(--csu-primary);
+    }
+
+    .card small {
+        color: var(--csu-muted);
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    input[type="file"] {
+        display: block;
+        margin-bottom: 0.75rem;
+    }
+
+    .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    button {
+        border: none;
+        border-radius: 4px;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+    }
+
+    button span.icon {
+        font-weight: bold;
+    }
+
+    button.primary {
+        background: var(--csu-primary);
+        color: #ffffff;
+    }
+
+    button.primary:hover {
+        background: #0b4634;
+        transform: translateY(-1px);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    button.secondary {
+        background: #ffffff;
+        color: var(--csu-secondary);
+        border: 1px solid var(--csu-border);
+    }
+
+    button.secondary:hover {
+        background: #f1f4f3;
+    }
+
+    button:disabled {
+        opacity: 0.5;
+        cursor: default;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .status {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .status.ok {
+        color: var(--csu-primary);
+    }
+
+    .status.warn {
+        color: var(--csu-warn);
+    }
+
+    .status.muted {
+        color: var(--csu-muted);
+    }
+
+    .summary-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 0.25rem 0 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .summary-list li strong {
+        color: var(--csu-secondary);
+    }
+
+    .preview-section {
+        margin-top: 0.75rem;
+        max-height: 500px;
+        overflow: auto;
+        border-top: 1px solid var(--csu-border);
+        padding-top: 0.75rem;
+    }
+
+    .sheet-preview {
+        margin-bottom: 1.25rem;
+    }
+
+    .sheet-preview h3 {
+        margin: 0 0 0.35rem 0;
+        font-size: 1rem;
+        color: var(--csu-secondary);
+    }
+
+    .sheet-preview small {
+        color: var(--csu-muted);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.35rem;
+        font-size: 0.85rem;
+        background: #ffffff;
+    }
+
+    th, td {
+        padding: 0.25rem 0.4rem;
+        border: 1px solid var(--csu-border);
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    th {
+        background: #e7eeeb;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) td {
+        background: #fafafa;
+    }
+
+    .ptm-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 0.9rem;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .ptm-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .ptm-swatch {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        border: 1px solid var(--csu-border);
+    }
+
+    .ptm-cell {
+        font-weight: bold;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.15rem 0.35rem;
+        border-radius: 3px;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        background: #ffffff;
+        border: 1px solid var(--csu-border);
+        color: var(--csu-muted);
+    }
+
+    @media (max-width: 700px) {
+        header h1 {
+            font-size: 1.3rem;
+        }
+        .card {
+            padding: 1rem;
+        }
+        th, td {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>CSU Semester Course Separation Tool</h1>
+    <p>Upload a semester spreadsheet, generate Brightspace codes in a separate column, and separate courses into evaluation groups.</p>
+</header>
+
+<main>
+    <!-- Upload / controls -->
+    <section class="card">
+        <h2>1. Upload semester spreadsheet</h2>
+        <p>
+            <small>
+                Accepted formats: <strong>.xlsx</strong>, <strong>.xls</strong>, <strong>.csv</strong>, <strong>.ods</strong><br>
+                Expected columns (case-insensitive): <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
+                <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
+                The computed Brightspace code will be stored in a separate <code>BrightspaceCode</code> column only.
+            </small>
+        </p>
+
+        <label for="fileInput">Semester file</label>
+        <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.ods" />
+
+        <div class="btn-row">
+            <button id="processBtn" class="primary" disabled>
+                <span class="icon">▶</span>
+                Process &amp; Separate Courses
+            </button>
+            <button id="downloadBtn" class="secondary" disabled>
+                <span class="icon">⬇</span>
+                Download New Workbook
+            </button>
+        </div>
+        <div id="status" class="status muted">No file loaded yet.</div>
+    </section>
+
+    <!-- PTM legend -->
+    <section class="card">
+        <h2>PTM color legend (preview only)</h2>
+        <p><small>Each PTM session type is highlighted with a different color in the preview for quick visual grouping.</small></p>
+        <div class="ptm-legend" id="ptmLegend"></div>
+    </section>
+
+    <!-- Preview -->
+    <section class="card">
+        <h2>Preview &amp; sheet summary</h2>
+        <p><small>The preview shows counts per sheet and the first few rows from each sheet. Download to get the full workbook.</small></p>
+        <ul id="summaryList" class="summary-list"></ul>
+        <div id="preview" class="preview-section"></div>
+    </section>
+</main>
+
+<script>
+    // ---- Configuration ----
+    const PTM_COLORS = {
+        "1":   "#e6f4ea",  // 16-week
+        "5":   "#e8edf7",  // 12-week
+        "81T": "#fef3d9",  // 1st 8-weeks
+        "82T": "#fde6e0",  // 2nd 8-weeks
+        "DDS": "#f1e6f9",  // dynamic date session
+        "H":   "#fff4e5",  // hybrid
+        "R5":  "#e3f2fd",  // Rise cohort 5
+        "W":   "#e9fdf7",  // Distance learning (Web)
+        "ZDC": "#f9e6f1"   // dual credit
+    };
+
+    const SHEET_ORDER = [
+        "PHAR",
+        "UNIV",
+        "OLHY",
+        "Zero_Credit",
+        "Cancelled",
+        "Other_Active"
+    ];
+
+    // ---- State ----
+    let originalRows = [];
+    let separatedSheets = null;
+    let columnMap = null;
+    let lastTermCode = "";
+    let lastFileName = "";
+
+    // ---- Helpers for column mapping ----
+    function buildColumnMap(exampleRow) {
+        if (!exampleRow) return {};
+        const map = {};
+        const targets = ["CRN", "TERM_CODE", "XLST", "STAT", "CR", "PTM", "SUBJ", "SEC"];
+        const keys = Object.keys(exampleRow);
+
+        keys.forEach(key => {
+            const upper = String(key).trim().toUpperCase();
+            targets.forEach(t => {
+                if (upper === t && !map[t]) {
+                    map[t] = key;
+                }
+            });
+        });
+
+        return map;
+    }
+
+    function getVal(row, map, logical) {
+        const key = map[logical];
+        if (!key) return "";
+        return row[key];
+    }
+
+    function toUpperString(value) {
+        if (value === undefined || value === null) return "";
+        return String(value).trim().toUpperCase();
+    }
+
+    function toNumber(value) {
+        if (value === undefined || value === null || value === "") return NaN;
+        const n = parseFloat(value);
+        return isNaN(n) ? NaN : n;
+    }
+
+    // ---- UNIV / OLHY section helpers ----
+    function getSectionNumber(secRaw) {
+        const s = String(secRaw || "").trim();
+        const match = s.match(/^(\d{1,3})/);
+        if (!match) return NaN;
+        return parseInt(match[1], 10);
+    }
+
+    function isUnivSection(secRaw) {
+        const n = getSectionNumber(secRaw);
+        if (isNaN(n)) return false;
+        // SEC 61–69 and 1 / 01–19 (may have letters)
+        if (n >= 61 && n <= 69) return true;
+        if (n >= 1 && n <= 19) return true;
+        return false;
+    }
+
+    function isOlhySection(secRaw) {
+        const n = getSectionNumber(secRaw);
+        if (isNaN(n)) return false;
+        // SEC 21–29 and 51–59 (may have letters)
+        if (n >= 21 && n <= 29) return true;
+        if (n >= 51 && n <= 59) return true;
+        return false;
+    }
+
+    // ---- Brightspace code logic ----
+    function computeBrightspaceCode(row, map) {
+        const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+        const crnRaw = getVal(row, map, "CRN");
+        const xlstRaw = getVal(row, map, "XLST");
+
+        const crn = crnRaw === undefined || crnRaw === null ? "" : String(crnRaw).trim();
+        const xlst = xlstRaw === undefined || xlstRaw === null ? "" : String(xlstRaw).trim();
+
+        if (!term) return "";
+
+        if (xlst) {
+            // XLST present: XLST + term_code (no dot)
+            return xlst + term;
+        } else if (crn) {
+            // No XLST: CRN + "." + term_code
+            return crn + "." + term;
+        }
+        return "";
+    }
+
+    // ---- Separation logic ----
+    function separateRows(rows, map) {
+        const buckets = {
+            "PHAR": [],
+            "UNIV": [],
+            "OLHY": [],
+            "Zero_Credit": [],
+            "Cancelled": [],
+            "Other_Active": []
+        };
+
+        let firstTerm = "";
+
+        rows.forEach((row) => {
+            // Copy original row so we can append BrightspaceCode without changing source
+            const outRow = Object.assign({}, row);
+            const stat = toUpperString(getVal(row, map, "STAT"));
+            const cr = toNumber(getVal(row, map, "CR"));
+            const subj = toUpperString(getVal(row, map, "SUBJ"));
+            const sec = toUpperString(getVal(row, map, "SEC"));
+            const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+
+            if (!firstTerm && term) {
+                firstTerm = term;
+            }
+
+            const brightspaceCode = computeBrightspaceCode(row, map);
+            outRow["BrightspaceCode"] = brightspaceCode; // always separate column only
+
+            let sheetName = "Other_Active";
+
+            if (stat === "C") {
+                sheetName = "Cancelled";
+            } else if (!isNaN(cr) && cr === 0) {
+                sheetName = "Zero_Credit";
+            } else {
+                if (subj === "PHAR") {
+                    sheetName = "PHAR";
+                } else if (subj === "UNIV" && isUnivSection(sec)) {
+                    sheetName = "UNIV";
+                } else if (subj === "OLHY" && isOlhySection(sec)) {
+                    sheetName = "OLHY";
+                } else {
+                    sheetName = "Other_Active";
+                }
+            }
+
+            buckets[sheetName].push(outRow);
+        });
+
+        return { buckets, firstTerm };
+    }
+
+    // ---- Workbook writer ----
+    function computeHeadersFromSheets(buckets) {
+        const allKeys = new Set();
+        Object.values(buckets).forEach(rows => {
+            rows.forEach(row => {
+                Object.keys(row).forEach(k => allKeys.add(k));
+            });
+        });
+        // Put BrightspaceCode near front if present
+        const keys = Array.from(allKeys);
+        keys.sort((a, b) => {
+            if (a === "BrightspaceCode") return -1;
+            if (b === "BrightspaceCode") return 1;
+            if (a === "CRN") return -1;
+            if (b === "CRN") return 1;
+            return a.localeCompare(b);
+        });
+        return keys;
+    }
+
+    function downloadWorkbook() {
+        if (!separatedSheets) {
+            alert("Please process a file first.");
+            return;
+        }
+
+        const wb = XLSX.utils.book_new();
+        const headers = computeHeadersFromSheets(separatedSheets);
+
+        SHEET_ORDER.forEach(name => {
+            const rows = separatedSheets[name] || [];
+            if (!rows.length) return;
+            const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
+            XLSX.utils.book_append_sheet(wb, ws, name.substring(0, 31));
+        });
+
+        const term = lastTermCode || "term";
+        const safeName = (lastFileName || "courses")
+            .replace(/\.[^.]+$/, "")
+            .replace(/[^\w\-]+/g, "_")
+            || "courses";
+
+        const outName = `${safeName}_Separated_${term}.xlsx`;
+        XLSX.writeFile(wb, outName);
+    }
+
+    // ---- UI helpers ----
+    function setStatus(text, cls) {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = text;
+        statusEl.className = "status " + (cls || "muted");
+    }
+
+    function renderSummary(buckets) {
+        const summaryEl = document.getElementById("summaryList");
+        summaryEl.innerHTML = "";
+        const frag = document.createDocumentFragment();
+
+        SHEET_ORDER.forEach(name => {
+            const li = document.createElement("li");
+            const count = (buckets[name] || []).length;
+            li.innerHTML = `<strong>${name}</strong>: ${count} rows`;
+            frag.appendChild(li);
+        });
+
+        summaryEl.appendChild(frag);
+    }
+
+    function renderPreviewTables(buckets) {
+        const previewEl = document.getElementById("preview");
+        previewEl.innerHTML = "";
+
+        SHEET_ORDER.forEach(name => {
+            const rows = buckets[name] || [];
+            if (!rows.length) return;
+
+            const section = document.createElement("div");
+            section.className = "sheet-preview";
+
+            const count = rows.length;
+            section.innerHTML = `<h3>${name} <span class="badge">${count} rows</span></h3>
+                <small>Showing first 5 rows.</small>`;
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const sampleRow = rows[0];
+            const headers = Object.keys(sampleRow);
+
+            // header row
+            const trHead = document.createElement("tr");
+            headers.forEach(h => {
+                const th = document.createElement("th");
+                th.textContent = h;
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+
+            // first 5 rows
+            const maxRows = Math.min(5, rows.length);
+            for (let i = 0; i < maxRows; i++) {
+                const row = rows[i];
+                const tr = document.createElement("tr");
+
+                headers.forEach(h => {
+                    const td = document.createElement("td");
+                    const value = row[h];
+
+                    // Highlight PTM cell
+                    const logicalPTMHeader = columnMap["PTM"];
+                    if (logicalPTMHeader && h === logicalPTMHeader) {
+                        const ptmVal = toUpperString(value);
+                        const color = PTM_COLORS[ptmVal] || "";
+                        if (color) {
+                            td.style.backgroundColor = color;
+                        }
+                        td.classList.add("ptm-cell");
+                    }
+
+                    td.textContent = value === undefined ? "" : value;
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(table);
+            previewEl.appendChild(section);
+        });
+    }
+
+    function renderPTMLegend() {
+        const legendEl = document.getElementById("ptmLegend");
+        legendEl.innerHTML = "";
+
+        Object.entries(PTM_COLORS).forEach(([code, color]) => {
+            const item = document.createElement("div");
+            item.className = "ptm-legend-item";
+            const swatch = document.createElement("div");
+            swatch.className = "ptm-swatch";
+            swatch.style.backgroundColor = color;
+            const label = document.createElement("span");
+            label.textContent = `PTM ${code}`;
+            item.appendChild(swatch);
+            item.appendChild(label);
+            legendEl.appendChild(item);
+        });
+    }
+
+    // ---- File handling ----
+    function handleFileSelected(evt) {
+        const file = evt.target.files[0];
+        separatedSheets = null;
+        originalRows = [];
+        columnMap = null;
+        lastTermCode = "";
+        lastFileName = file ? file.name : "";
+        document.getElementById("summaryList").innerHTML = "";
+        document.getElementById("preview").innerHTML = "";
+        document.getElementById("downloadBtn").disabled = true;
+
+        if (!file) {
+            setStatus("No file selected.", "muted");
+            document.getElementById("processBtn").disabled = true;
+            return;
+        }
+
+        setStatus(`Loaded file: ${file.name}. Click "Process & Separate Courses" when ready.`, "ok");
+        document.getElementById("processBtn").disabled = false;
+    }
+
+    function processFile() {
+        const input = document.getElementById("fileInput");
+        const file = input.files[0];
+        if (!file) {
+            alert("Please choose a file first.");
+            return;
+        }
+
+        setStatus("Reading file and processing rows...", "muted");
+        document.getElementById("processBtn").disabled = true;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = e.target.result;
+                const wb = XLSX.read(data, { type: "array" });
+
+                const firstSheetName = wb.SheetNames[0];
+                const ws = wb.Sheets[firstSheetName];
+
+                const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+                if (!rows.length) {
+                    setStatus("The sheet is empty or could not be read.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
+
+                originalRows = rows;
+                columnMap = buildColumnMap(rows[0]);
+
+                // Basic validation
+                const requiredCols = ["CRN", "TERM_CODE", "STAT", "CR", "PTM", "SUBJ", "SEC"];
+                const missing = requiredCols.filter(c => !columnMap[c]);
+                if (missing.length) {
+                    setStatus(
+                        "Warning: Missing expected columns: " + missing.join(", ") +
+                        ". Check header names and try again.",
+                        "warn"
+                    );
+                } else {
+                    setStatus("File processed. Separating rows into sheets…", "ok");
+                }
+
+                const { buckets, firstTerm } = separateRows(rows, columnMap);
+                separatedSheets = buckets;
+                lastTermCode = firstTerm || "";
+
+                renderSummary(buckets);
+                renderPreviewTables(buckets);
+                document.getElementById("downloadBtn").disabled = false;
+                document.getElementById("processBtn").disabled = false;
+                setStatus("Separation complete. Review preview below or download the new workbook.", "ok");
+            } catch (err) {
+                console.error(err);
+                setStatus("Error processing file. Check the format and try again.", "warn");
+                document.getElementById("processBtn").disabled = false;
+            }
+        };
+        reader.onerror = function() {
+            setStatus("Error reading file. Please try again.", "warn");
+            document.getElementById("processBtn").disabled = false;
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    // ---- Init ----
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("fileInput").addEventListener("change", handleFileSelected);
+        document.getElementById("processBtn").addEventListener("click", processFile);
+        document.getElementById("downloadBtn").addEventListener("click", downloadWorkbook);
+        renderPTMLegend();
+    });
+</script>
+
+</body>
+</html>
