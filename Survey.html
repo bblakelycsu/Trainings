@@ -206,7 +206,7 @@
         "Zero_Credit",
         "Cancelled",
         "Other_Active",
-        "Crosslisted"   // extra sheet with all rows where XLST is populated
+        "Crosslisted"   // all rows where XLST is populated
     ];
 
     let separatedSheets = null;
@@ -219,31 +219,22 @@
         return String(str || "").trim().toUpperCase().replace(/[\s_]+/g, "");
     }
 
-    // Map logical fields to actual headers, based on your known header names (order flexible).
+    // Map logical fields to actual headers (order flexible, names fixed to your export).
     function buildColumnMap(row) {
         const keys = Object.keys(row);
-        const normMap = {};
-        keys.forEach(k => { normMap[normalize(k)] = k; });
-
         const map = {};
-        function mapField(logical, expectedNorms) {
-            for (const n of expectedNorms) {
-                if (normMap[n]) {
-                    map[logical] = normMap[n];
-                    return;
-                }
-            }
-        }
 
-        // TERM_CODE from TERM_CODE_KEY or TERM_CODE
-        mapField("TERM_CODE", ["TERM_CODE_KEY", "TERM_CODE"]);
-        mapField("CRN",       ["CRN"]);
-        mapField("XLST",      ["XLST"]);
-        mapField("STAT",      ["STAT"]);
-        mapField("CR",        ["CR"]);
-        mapField("PTM",       ["PTM"]);
-        mapField("SUBJ",      ["SUBJ"]);
-        mapField("SEC",       ["SEC"]);
+        keys.forEach(k => {
+            const n = normalize(k);
+            if (!map.TERM_CODE && (n === "TERM_CODE_KEY" || n === "TERM_CODE")) map.TERM_CODE = k;
+            if (!map.CRN && n === "CRN") map.CRN = k;
+            if (!map.XLST && n === "XLST") map.XLST = k;
+            if (!map.STAT && n === "STAT") map.STAT = k;
+            if (!map.CR && n === "CR") map.CR = k;
+            if (!map.PTM && n === "PTM") map.PTM = k;
+            if (!map.SUBJ && n === "SUBJ") map.SUBJ = k;
+            if (!map.SEC && n === "SEC") map.SEC = k;
+        });
 
         return map;
     }
@@ -551,11 +542,13 @@
                 columnMap = buildColumnMap(rows[0]);
                 showMappingInfo(columnMap);
 
-                const required = ["TERM_CODE", "CRN"];
-                const missingRequired = required.filter(r => !columnMap[r]);
-                if (missingRequired.length) {
-                    setStatus("Missing required columns: " + missingRequired.join(", ") +
-                              ". Check that TERM_CODE_KEY and CRN exist.", "warn");
+                if (!columnMap.TERM_CODE) {
+                    setStatus("TERM_CODE_KEY / TERM_CODE column not found. Please ensure that header exists.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
+                if (!columnMap.CRN) {
+                    setStatus("CRN column not found. Please ensure CRN header exists.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
