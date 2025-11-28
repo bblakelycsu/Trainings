@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU Brightspace Question Converter</title>
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+        --csu-danger: #b3261e;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+        color: var(--csu-secondary);
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: #ffffff;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 1.6rem;
+    }
+
+    header p {
+        margin: 0.25rem 0 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    main {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .card {
+        background: var(--csu-light);
+        border: 1px solid var(--csu-border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+    }
+
+    .card h2 {
+        margin-top: 0;
+        font-size: 1.1rem;
+        color: var(--csu-primary);
+    }
+
+    .card h3 {
+        margin-top: 0.75rem;
+        font-size: 1rem;
+        color: var(--csu-secondary);
+    }
+
+    label {
+        display: block;
+        font-size: 0.9rem;
+        margin-top: 0.75rem;
+        font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.45rem 0.5rem;
+        margin-top: 0.25rem;
+        border-radius: 4px;
+        border: 1px solid var(--csu-border);
+        font-family: inherit;
+        font-size: 0.9rem;
+    }
+
+    textarea {
+        min-height: 220px;
+        resize: vertical;
+        white-space: pre;
+    }
+
+    .small-textarea {
+        min-height: 150px;
+    }
+
+    .btn-bar {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    button {
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-primary {
+        background: var(--csu-primary);
+        color: #ffffff;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: var(--csu-secondary);
+        border: 1px solid var(--csu-border);
+    }
+
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .hint {
+        font-size: 0.8rem;
+        color: #555;
+        margin-top: 0.35rem;
+    }
+
+    .example-block {
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.6rem;
+        background: #ffffff;
+        border-radius: 4px;
+        border: 1px dashed var(--csu-border);
+        font-size: 0.8rem;
+        white-space: pre-line;
+    }
+
+    .pill {
+        display: inline-block;
+        padding: 0.1rem 0.4rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        background: var(--csu-secondary);
+        color: #ffffff;
+        margin-right: 0.25rem;
+    }
+
+    .pill.alt {
+        background: var(--csu-accent);
+        color: #000;
+    }
+
+    .pill.sa {
+        background: #0d5540;
+    }
+
+    .error {
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--csu-danger);
+    }
+
+    footer {
+        margin: 1rem auto 2rem;
+        max-width: 1200px;
+        padding: 0 1.5rem;
+        font-size: 0.75rem;
+        color: #777;
+    }
+
+    code {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.8rem;
+        background: rgba(255,255,255,0.7);
+        padding: 0 0.2rem;
+        border-radius: 3px;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>CSU Brightspace Question Converter</h1>
+    <p>Paste exam questions → generate a Brightspace Question Library CSV (UTF-8) for import.</p>
+</header>
+
+<main>
+    <div class="grid">
+        <!-- LEFT: INPUT & INSTRUCTIONS -->
+        <section class="card">
+            <h2>Step 1 – Paste your questions</h2>
+            <p class="hint">
+                One question per block, separated by a blank line. Question numbers like <code>1.</code> or <code>2)</code> at the start are ignored.
+                The converter auto-detects Multiple Choice, Multi-Select, True/False, Short Answer, and Written Response.
+            </p>
+            <label for="courseCode">Course code for IDs (optional but recommended)</label>
+            <input type="text" id="courseCode" placeholder="e.g., CHEM110">
+
+            <label for="questionInput">Question text</label>
+            <textarea id="questionInput" placeholder="Examples:
+
+1. Multiple Choice (single correct):
+1. Q: What is the boiling point of water at sea level?
+A) 50°C
+B) 75°C
+C) 100°C
+D) 125°C
+ANSWER: C
+
+2. Multi-Select (multiple correct):
+2) Q: Which of the following are prime numbers?
+A) 2
+B) 3
+C) 4
+D) 5
+ANSWER: A,C,D
+
+3. True/False:
+3. Q: The sky is blue.
+A) True
+B) False
+ANSWER: A
+
+4. Short Answer:
+4) Q: What organelle is the &quot;powerhouse of the cell&quot;?
+ANSWER: mitochondria
+
+5. Written Response:
+5. Q: Briefly explain the concept of diffusion."></textarea>
+
+            <div class="example-block">
+                <strong>Supported patterns</strong><br>
+                <span class="pill">MC</span> Question line (may start with <code>1.</code>, <code>2)</code>, etc., and optional <code>Q:</code>) + options <code>A)</code>, <code>B)</code>, etc., plus a single-letter <code>ANSWER: C</code>.<br><br>
+                <span class="pill alt">MS</span> Same as MC, but <code>ANSWER:</code> lists more than one letter (e.g., <code>ANSWER: A,C,D</code>) → Multi-Select.<br><br>
+                <span class="pill alt">TF</span> Exactly two options whose text is “True” and “False” (any order), plus <code>ANSWER:</code> indicating which is correct.<br><br>
+                <span class="pill sa">SA</span> No options, but an <code>ANSWER:</code> line with the correct text → Short Answer.<br><br>
+                <span class="pill">WR</span> Question text only, no options and no <code>ANSWER:</code> → Written Response.
+            </div>
+        </section>
+
+        <!-- RIGHT: SETTINGS, OUTPUT, DOWNLOAD -->
+        <section class="card">
+            <h2>Step 2 – Settings & Convert</h2>
+
+            <label for="defaultPoints">Default points per question</label>
+            <input type="number" id="defaultPoints" value="1" min="0" step="0.5">
+
+            <label for="defaultDifficulty">Default difficulty (1–5)</label>
+            <input type="number" id="defaultDifficulty" value="1" min="1" max="5" step="1">
+
+            <label for="mode">Question type mode</label>
+            <select id="mode">
+                <option value="auto">Auto-detect type (recommended)</option>
+                <option value="mc">Force Multiple Choice (MC)</option>
+                <option value="ms">Force Multi-Select (MS)</option>
+                <option value="tf">Force True/False (TF)</option>
+                <option value="sa">Force Short Answer (SA)</option>
+                <option value="wr">Force Written Response (WR)</option>
+            </select>
+            <p class="hint">
+                Auto-detect uses options and the <code>ANSWER:</code> line. You can override detection for all questions with this menu.
+            </p>
+
+            <div class="btn-bar">
+                <button class="btn-primary" id="convertBtn">Convert to CSV Preview</button>
+                <button class="btn-secondary" id="clearBtn">Clear</button>
+            </div>
+            <div id="errorBox" class="error" aria-live="polite"></div>
+
+            <h3 style="margin-top:1.2rem;">Step 3 – Review & download</h3>
+            <p class="hint">
+                Review the CSV output below. When it looks good, click <strong>Download CSV</strong> and upload to
+                Brightspace’s Question Library using the CSV import option.
+            </p>
+
+            <div class="btn-bar">
+                <button class="btn-primary" id="downloadBtn" disabled>Download CSV (UTF-8)</button>
+                <button class="btn-secondary" id="copyBtn" disabled>Copy CSV to Clipboard</button>
+            </div>
+
+            <label for="csvOutput" style="margin-top:0.75rem;">CSV output</label>
+            <textarea id="csvOutput" class="small-textarea" readonly placeholder="Converted CSV will appear here after you click &quot;Convert to CSV Preview&quot;."></textarea>
+        </section>
+    </div>
+</main>
+
+<footer>
+    Notes:
+    This tool generates a CSV that follows the Brightspace Question Library import structure for MC, MS, TF, SA, and WR questions.
+    You can always open the downloaded CSV in Excel to spot-check before importing.
+</footer>
+
+<script>
+(function () {
+    const questionInput = document.getElementById('questionInput');
+    const courseCodeInput = document.getElementById('courseCode');
+    const pointsInput = document.getElementById('defaultPoints');
+    const difficultyInput = document.getElementById('defaultDifficulty');
+    const modeSelect = document.getElementById('mode');
+    const errorBox = document.getElementById('errorBox');
+    const csvOutput = document.getElementById('csvOutput');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let lastCsvText = '';
+
+    function escapeCsv(value) {
+        if (value == null) return '';
+        const str = String(value);
+        if (/[",\r\n]/.test(str)) {
+            return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
+    }
+
+    function buildHeaderLines() {
+        return [
+            '"//(Note: The \'images\' folder is assumed to be in the ""/content/<course path>/"" directory)",,,,',
+            '//Question Text is always a required field,,,,',
+            '// An ID will be generated using the (Course code)-(Question number) if an ID is not specified for a question,,,,',
+            ',,,,',
+            '"// Please ensure that the CSV file is saved as ""CSV UTF-8"" so that characters like à, ø, é and other are able to be correctly imported",,,,',
+            ',,,,'
+        ];
+    }
+
+    function parseBlocks(rawText) {
+        const blocks = rawText
+            .split(/\n\s*\n+/)   // split on blank lines
+            .map(b => b.trim())
+            .filter(b => b.length > 0);
+        return blocks;
+    }
+
+    function parseQuestionBlock(block, index) {
+        const lines = block
+            .split(/\r?\n/)
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+
+        if (lines.length === 0) return null;
+
+        let answerLineIndex = -1;
+        let answerKey = null;
+
+        // Find ANSWER line
+        for (let i = 0; i < lines.length; i++) {
+            const m = /^(\s*(answer|ans)\s*[:.=]\s*)(.+)$/i.exec(lines[i]);
+            if (m) {
+                answerLineIndex = i;
+                answerKey = m[3].trim();
+                break;
+            }
+        }
+
+        // Collect options
+        let optionLines = [];
+        const options = [];
+        let questionTextLineIndex = 0;
+
+        for (let i = 0; i < lines.length; i++) {
+            if (i === answerLineIndex) continue;
+            const line = lines[i];
+            const optMatch = /^([A-Z])[\)\.]\s*(.+)$/.exec(line);
+            if (optMatch) {
+                optionLines.push({ label: optMatch[1].toUpperCase(), text: optMatch[2].trim() });
+            }
+        }
+
+        // Determine question text (first non-option, non-ANSWER line)
+        let questionText = '';
+        for (let i = 0; i < lines.length; i++) {
+            if (i === answerLineIndex) continue;
+            const line = lines[i];
+            const isOption = /^([A-Z])[\)\.]\s+/.test(line);
+            if (!isOption) {
+                questionTextLineIndex = i;
+                questionText = line;
+                break;
+            }
+        }
+
+        if (!questionText) {
+            questionText = lines[0] || '';
+        }
+
+        // Remove leading numeric question numbers, e.g., "1. ", "12) ", "3 - "
+        questionText = questionText.replace(/^\d+\s*[\.\)\-:]*\s*/, '');
+
+        // Strip leading "Q:" or "Question:"
+        const qMatch = /^(q(uestion)?\s*[:\.]\s*)(.+)$/i.exec(questionText);
+        if (qMatch) {
+            questionText = qMatch[3].trim();
+        }
+
+        // Build options array
+        optionLines.forEach(o => {
+            options.push({
+                label: o.label,
+                text: o.text
+            });
+        });
+
+        // Extract correct labels (one or many) from ANSWER
+        let correctLabels = [];
+        let correctLabel = null;
+
+        if (answerKey) {
+            const letters = answerKey.match(/[A-Z]/g);
+            if (letters && letters.length) {
+                correctLabels = letters.map(l => l.toUpperCase());
+                correctLabel = correctLabels[0];
+            } else {
+                // For TF or SA textual answers, we will use the text directly later
+            }
+        }
+
+        return {
+            index,
+            questionText,
+            answerKey,
+            options,
+            correctLabel,
+            correctLabels
+        };
+    }
+
+    function detectTypeFromQuestion(q) {
+        const options = q.options || [];
+        const hasOptions = options.length > 0;
+
+        if (!hasOptions) {
+            if (q.answerKey) {
+                // No options + answer key → Short Answer (SA)
+                return 'SA';
+            }
+            return 'WR';
+        }
+
+        // True/False: 2 options that are exactly "True"/"False"
+        if (options.length === 2) {
+            const t1 = options[0].text.toLowerCase();
+            const t2 = options[1].text.toLowerCase();
+            const isTF =
+                ((t1 === 'true' && t2 === 'false') ||
+                 (t1 === 'false' && t2 === 'true'));
+            if (isTF) return 'TF';
+        }
+
+        // Multi-Select: multiple correct labels indicated
+        if (q.correctLabels && q.correctLabels.length > 1) {
+            return 'MS';
+        }
+
+        // Default: Multiple Choice (single correct)
+        return 'MC';
+    }
+
+    function buildBrightspaceCsv(questions, courseCode, defaultPoints, defaultDifficulty, mode) {
+        const lines = [];
+        lines.push(...buildHeaderLines());
+
+        let counter = 1;
+
+        for (const q of questions) {
+            const idPart = courseCode
+                ? courseCode + '-' + (counter + '').padStart(3, '0')
+                : '';
+
+            let type;
+            if (mode === 'auto') {
+                type = detectTypeFromQuestion(q);
+            } else if (mode === 'mc') {
+                type = 'MC';
+            } else if (mode === 'ms') {
+                type = 'MS';
+            } else if (mode === 'tf') {
+                type = 'TF';
+            } else if (mode === 'sa') {
+                type = 'SA';
+            } else if (mode === 'wr') {
+                type = 'WR';
+            } else {
+                type = detectTypeFromQuestion(q);
+            }
+
+            // Blank spacer before each question
+            if (lines.length > 0) {
+                lines.push(',,,,');
+            }
+
+            lines.push(['NewQuestion', type, '', '', ''].map(escapeCsv).join(','));
+
+            if (idPart) {
+                lines.push(['ID', idPart, '', '', ''].map(escapeCsv).join(','));
+            }
+
+            const title = 'Question ' + counter;
+            lines.push(['Title', title, '', '', ''].map(escapeCsv).join(','));
+            lines.push(['QuestionText', q.questionText || ('Question ' + counter), '', '', ''].map(escapeCsv).join(','));
+            lines.push(['Points', defaultPoints, '', '', ''].map(escapeCsv).join(','));
+            lines.push(['Difficulty', defaultDifficulty, '', '', ''].map(escapeCsv).join(','));
+            lines.push(['Image', '', '', '', ''].map(escapeCsv).join(','));
+
+            if (type === 'WR') {
+                // Written Response: Text only; manually graded
+            } else if (type === 'TF') {
+                // True/False
+                let trueScore = 0;
+                let falseScore = 0;
+                if (q.answerKey) {
+                    const lower = q.answerKey.toLowerCase();
+                    if (lower.startsWith('t')) {
+                        trueScore = 100;
+                        falseScore = 0;
+                    } else if (lower.startsWith('f')) {
+                        trueScore = 0;
+                        falseScore = 100;
+                    }
+                }
+                lines.push(['TRUE', trueScore, "This is feedback for 'TRUE'", '', ''].map(escapeCsv).join(','));
+                lines.push(['FALSE', falseScore, "This is feedback for 'FALSE'", '', ''].map(escapeCsv).join(','));
+            } else if (type === 'MC') {
+                // Multiple Choice (single answer)
+                const options = q.options.length ? q.options : [];
+                if (options.length === 0) {
+                    lines.push(['// Note: this question was treated as WR because no options were parsed', '', '', '', ''].map(escapeCsv).join(','));
+                } else {
+                    options.forEach(opt => {
+                        const isCorrect = q.correctLabel && opt.label === q.correctLabel;
+                        const score = isCorrect ? 100 : 0;
+                        lines.push(['Option', score, opt.text, '', ''].map(escapeCsv).join(','));
+                    });
+                }
+            } else if (type === 'MS') {
+                // Multi-Select: Scoring + Option rows with 1/0
+                const options = q.options.length ? q.options : [];
+                if (options.length === 0) {
+                    lines.push(['// Note: this question was treated as WR because no options were parsed', '', '', '', ''].map(escapeCsv).join(','));
+                } else {
+                    lines.push(['Scoring', 'RightAnswers', '', '', ''].map(escapeCsv).join(','));
+                    options.forEach(opt => {
+                        const isCorrect = q.correctLabels && q.correctLabels.includes(opt.label);
+                        const val = isCorrect ? 1 : 0;
+                        lines.push(['Option', val, opt.text, '', ''].map(escapeCsv).join(','));
+                    });
+                }
+            } else if (type === 'SA') {
+                // Short Answer: InputBox + Answer
+                lines.push(['InputBox', 1, 40, '', ''].map(escapeCsv).join(','));
+                if (q.answerKey) {
+                    lines.push(['Answer', '', q.answerKey, '', ''].map(escapeCsv).join(','));
+                }
+            }
+
+            // Optional placeholder hint/feedback lines (can be edited in CSV)
+            lines.push(['Hint', '', '', '', ''].map(escapeCsv).join(','));
+            lines.push(['Feedback', '', '', '', ''].map(escapeCsv).join(','));
+
+            counter++;
+        }
+
+        return lines.join('\r\n');
+    }
+
+    function convert() {
+        errorBox.textContent = '';
+        errorBox.style.color = 'var(--csu-danger)';
+        csvOutput.value = '';
+        lastCsvText = '';
+        downloadBtn.disabled = true;
+        copyBtn.disabled = true;
+
+        const raw = questionInput.value.trim();
+        if (!raw) {
+            errorBox.textContent = 'Please paste at least one question block into the text area.';
+            return;
+        }
+
+        const blocks = parseBlocks(raw);
+        if (!blocks.length) {
+            errorBox.textContent = 'No question blocks found. Make sure questions are separated by a blank line.';
+            return;
+        }
+
+        const parsedQuestions = [];
+        blocks.forEach((block, idx) => {
+            const parsed = parseQuestionBlock(block, idx + 1);
+            if (parsed && parsed.questionText) {
+                parsedQuestions.push(parsed);
+            }
+        });
+
+        if (!parsedQuestions.length) {
+            errorBox.textContent = 'Unable to parse questions. Check that your questions follow the patterns in the example.';
+            return;
+        }
+
+        const courseCode = courseCodeInput.value.trim();
+        const defaultPoints = Number(pointsInput.value) || 1;
+        const defaultDifficulty = Number(difficultyInput.value) || 1;
+        const mode = modeSelect.value;
+
+        const csvText = buildBrightspaceCsv(parsedQuestions, courseCode, defaultPoints, defaultDifficulty, mode);
+        csvOutput.value = csvText;
+        lastCsvText = csvText;
+        downloadBtn.disabled = false;
+        copyBtn.disabled = false;
+    }
+
+    function downloadCsv() {
+        if (!lastCsvText) return;
+        const blob = new Blob([lastCsvText], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'brightspace_questions.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function copyCsv() {
+        if (!lastCsvText || !navigator.clipboard) return;
+        navigator.clipboard.writeText(lastCsvText).then(() => {
+            errorBox.style.color = '#0d5540';
+            errorBox.textContent = 'CSV copied to clipboard.';
+            setTimeout(() => {
+                errorBox.textContent = '';
+                errorBox.style.color = 'var(--csu-danger)';
+            }, 2000);
+        }).catch(() => {
+            errorBox.textContent = 'Unable to copy to clipboard in this browser.';
+        });
+    }
+
+    function clearAll() {
+        questionInput.value = '';
+        csvOutput.value = '';
+        courseCodeInput.value = '';
+        lastCsvText = '';
+        errorBox.textContent = '';
+        errorBox.style.color = 'var(--csu-danger)';
+        downloadBtn.disabled = true;
+        copyBtn.disabled = true;
+    }
+
+    convertBtn.addEventListener('click', convert);
+    downloadBtn.addEventListener('click', downloadCsv);
+    copyBtn.addEventListener('click', copyCsv);
+    clearBtn.addEventListener('click', clearAll);
+})();
+</script>
+</body>
+</html>
