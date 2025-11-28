@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>CSU – Semester Course Separation Tool</title>
-<!-- SheetJS for reading/writing Excel/ODS/CSV -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -17,16 +16,11 @@
         --csu-muted: #6c757d;
     }
 
-    * {
-        box-sizing: border-box;
-    }
-
     body {
         margin: 0;
         font-family: Arial, sans-serif;
         background: #ffffff;
         color: var(--csu-secondary);
-        line-height: 1.5;
     }
 
     header {
@@ -37,15 +31,7 @@
     }
 
     header h1 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.6rem;
-        letter-spacing: 0.03em;
-    }
-
-    header p {
-        margin: 0;
-        font-size: 0.95rem;
-        opacity: 0.95;
+        margin: 0 0 0.3rem 0;
     }
 
     main {
@@ -56,21 +42,15 @@
 
     .card {
         background: var(--csu-light);
-        border-radius: 8px;
         padding: 1.25rem 1.5rem;
+        border-radius: 8px;
         border: 1px solid var(--csu-border);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         margin-bottom: 1.25rem;
     }
 
     .card h2 {
         margin-top: 0;
-        font-size: 1.25rem;
         color: var(--csu-primary);
-    }
-
-    .card small {
-        color: var(--csu-muted);
     }
 
     label {
@@ -80,42 +60,21 @@
     }
 
     input[type="file"] {
-        display: block;
         margin-bottom: 0.75rem;
     }
 
-    .btn-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-
     button {
-        border: none;
+        padding: 0.6rem 0.95rem;
         border-radius: 4px;
-        padding: 0.55rem 0.9rem;
-        font-size: 0.95rem;
+        border: none;
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
-    }
-
-    button span.icon {
-        font-weight: bold;
+        font-size: 0.95rem;
+        margin-right: 0.5rem;
     }
 
     button.primary {
         background: var(--csu-primary);
         color: #ffffff;
-    }
-
-    button.primary:hover {
-        background: #0b4634;
-        transform: translateY(-1px);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     button.secondary {
@@ -124,15 +83,9 @@
         border: 1px solid var(--csu-border);
     }
 
-    button.secondary:hover {
-        background: #f1f4f3;
-    }
-
     button:disabled {
         opacity: 0.5;
         cursor: default;
-        box-shadow: none;
-        transform: none;
     }
 
     .status {
@@ -152,26 +105,13 @@
         color: var(--csu-muted);
     }
 
-    .summary-list {
+    #summaryList {
         list-style: none;
         padding-left: 0;
-        margin: 0.25rem 0 0.5rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem 1.5rem;
-        font-size: 0.95rem;
     }
 
-    .summary-list li strong {
-        color: var(--csu-secondary);
-    }
-
-    .preview-section {
-        margin-top: 0.75rem;
-        max-height: 500px;
-        overflow: auto;
-        border-top: 1px solid var(--csu-border);
-        padding-top: 0.75rem;
+    #summaryList li {
+        margin-bottom: 0.2rem;
     }
 
     .sheet-preview {
@@ -179,27 +119,29 @@
     }
 
     .sheet-preview h3 {
-        margin: 0 0 0.35rem 0;
-        font-size: 1rem;
-        color: var(--csu-secondary);
+        margin: 0 0 0.3rem 0;
     }
 
-    .sheet-preview small {
-        color: var(--csu-muted);
+    .badge {
+        display: inline-block;
+        padding: 0.15rem 0.35rem;
+        border-radius: 3px;
+        border: 1px solid var(--csu-border);
+        background: #ffffff;
+        font-size: 0.7rem;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 0.35rem;
+        margin-top: 0.4rem;
         font-size: 0.85rem;
         background: #ffffff;
     }
 
     th, td {
-        padding: 0.25rem 0.4rem;
         border: 1px solid var(--csu-border);
-        text-align: left;
+        padding: 0.25rem 0.4rem;
         white-space: nowrap;
     }
 
@@ -207,165 +149,95 @@
         background: #e7eeeb;
         position: sticky;
         top: 0;
-        z-index: 1;
-        font-weight: bold;
-    }
-
-    tr:nth-child(even) td {
-        background: #fafafa;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 0.15rem 0.35rem;
-        border-radius: 3px;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        background: #ffffff;
-        border: 1px solid var(--csu-border);
-        color: var(--csu-muted);
-    }
-
-    @media (max-width: 700px) {
-        header h1 {
-            font-size: 1.3rem;
-        }
-        .card {
-            padding: 1rem;
-        }
-        th, td {
-            font-size: 0.8rem;
-        }
     }
 </style>
 </head>
+
 <body>
 
 <header>
     <h1>CSU Semester Course Separation Tool</h1>
-    <p>Upload a semester spreadsheet, generate Brightspace codes in a separate column, and separate courses into evaluation groups.</p>
+    <p>Uses CRN / XLST with TERM_CODE_KEY (or TERM_CODE) to build Brightspace codes.</p>
 </header>
 
 <main>
-    <!-- Upload / controls -->
-    <section class="card">
-        <h2>1. Upload semester spreadsheet</h2>
-        <p>
-            <small>
-                Accepted formats: <strong>.xlsx</strong>, <strong>.xls</strong>, <strong>.csv</strong>, <strong>.ods</strong><br>
-                Expected columns (flexible / case-insensitive): some form of <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
-                <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
-                The computed Brightspace code is stored in a separate <code>BrightspaceCode</code> column only
-                (original columns and order are preserved).
-            </small>
-        </p>
 
-        <label for="fileInput">Semester file</label>
-        <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.ods" />
+<section class="card">
+    <h2>1. Upload semester spreadsheet</h2>
+    <p>
+        <small>
+            Required term column header: <code>TERM_CODE_KEY</code> (or <code>TERM_CODE</code>), case-insensitive.<br>
+            Other expected columns (flexible names): CRN, XLST, STAT, CR, PTM, SUBJ, SEC.
+        </small>
+    </p>
 
-        <div class="btn-row">
-            <button id="processBtn" class="primary" disabled>
-                <span class="icon">▶</span>
-                Process &amp; Separate Courses
-            </button>
-            <button id="downloadBtn" class="secondary" disabled>
-                <span class="icon">⬇</span>
-                Download New Workbook
-            </button>
-        </div>
-        <div id="status" class="status muted">No file loaded yet.</div>
-        <div id="mappingInfo" class="status muted" style="margin-top:0.25rem;font-size:0.8rem;"></div>
-    </section>
+    <label for="fileInput">Semester file</label>
+    <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.ods">
 
-    <!-- Preview -->
-    <section class="card">
-        <h2>Preview &amp; sheet summary</h2>
-        <p><small>The preview shows counts per sheet and the first few rows from each sheet. Download to get the full workbook. PTM is not color-coded here; use <code>PTM</code> or <code>PTM_Group</code> in Excel for filtering.</small></p>
-        <ul id="summaryList" class="summary-list"></ul>
-        <div id="preview" class="preview-section"></div>
-    </section>
+    <div>
+        <button id="processBtn" class="primary" disabled>Process &amp; Separate</button>
+        <button id="downloadBtn" class="secondary" disabled>Download Workbook</button>
+    </div>
+
+    <div id="status" class="status muted">No file loaded yet.</div>
+    <div id="mappingInfo" class="status muted" style="font-size:0.8rem;"></div>
+</section>
+
+<section class="card">
+    <h2>2. Preview &amp; sheet summary</h2>
+    <p><small>Preview shows first 5 rows per sheet. Use BrightspaceCode and PTM_Group columns in Excel for filtering.</small></p>
+    <ul id="summaryList"></ul>
+    <div id="preview"></div>
+</section>
+
 </main>
 
 <script>
-    const SHEET_ORDER = [
-        "PHAR",
-        "UNIV",
-        "OLHY",
-        "Zero_Credit",
-        "Cancelled",
-        "Other_Active"
-    ];
+    const SHEET_ORDER = ["PHAR", "UNIV", "OLHY", "Zero_Credit", "Cancelled", "Other_Active"];
 
-    // ---- State ----
-    let originalRows = [];
     let separatedSheets = null;
+    let baseHeaders = [];
     let columnMap = null;
     let lastTermCode = "";
     let lastFileName = "";
-    let baseHeaders = [];
 
-    // ---- Helpers for column mapping ----
-    function normalizeHeader(str) {
-        return String(str || "")
-            .trim()
-            .toUpperCase()
-            .replace(/[\s_]+/g, "");
+    function normalize(str) {
+        return String(str || "").trim().toUpperCase().replace(/[\s_]+/g, "");
     }
 
-    function buildColumnMap(exampleRow) {
-        if (!exampleRow) return {};
+    function buildColumnMap(row) {
+        const keys = Object.keys(row);
         const map = {};
-        const keys = Object.keys(exampleRow);
 
-        // First pass: exactish mapping via normalized names
-        const targetDefs = {
-            CRN:       ["CRN", "COURSECRN"],
-            TERM_CODE: ["TERM_CODE", "TERMCODE", "TERM"],
-            XLST:      ["XLST", "CROSSLIST", "CROSS_LIST", "XLSTCODE"],
-            STAT:      ["STAT", "STATUS"],
-            CR:        ["CR", "CREDITS", "CREDIT", "CREDITHOURS", "CREDIT_HRS"],
-            PTM:       ["PTM", "PARTOFTERM", "SESSION"],
-            SUBJ:      ["SUBJ", "SUBJECT"],
-            SEC:       ["SEC", "SECTION"]
-        };
-
-        keys.forEach(key => {
-            const norm = normalizeHeader(key);
-            Object.entries(targetDefs).forEach(([logical, candidates]) => {
-                if (!map[logical] && candidates.some(c => c === norm)) {
-                    map[logical] = key;
-                }
-            });
+        // 1) STRICT term: TERM_CODE_KEY or TERM_CODE only
+        keys.forEach(k => {
+            const norm = normalize(k);
+            if (!map.TERM_CODE && (norm === "TERM_CODE_KEY" || norm === "TERM_CODE")) {
+                map.TERM_CODE = k;
+            }
         });
 
-        // Second pass: fallback – substring searches
-        keys.forEach(key => {
-            const up = String(key).toUpperCase();
-            if (!map.CRN && up.includes("CRN")) map.CRN = key;
-            if (!map.TERM_CODE && up.includes("TERM")) map.TERM_CODE = key;
-            if (!map.XLST && (up.includes("XLST") || up.includes("CROSS"))) map.XLST = key;
-            if (!map.STAT && (up.includes("STAT") || up.includes("STATUS"))) map.STAT = key;
-            if (!map.CR && (up.includes("CREDIT") || up === "CR")) map.CR = key;
-            if (!map.PTM && (up.includes("PTM") || up.includes("PART") || up.includes("SESSION"))) map.PTM = key;
-            if (!map.SUBJ && (up.includes("SUBJ") || up.includes("SUBJECT"))) map.SUBJ = key;
-            if (!map.SEC && (up.includes("SEC") || up.includes("SECTION"))) map.SEC = key;
+        // 2) Flexible mapping for other columns
+        const flexDefs = {
+            CRN:  ["CRN", "COURSECRN"],
+            XLST: ["XLST", "CROSSLIST", "CROSS_LIST"],
+            STAT: ["STAT", "STATUS"],
+            CR:   ["CR", "CREDITS", "CREDIT", "CREDIT_HRS"],
+            PTM:  ["PTM", "PARTOFTERM", "SESSION"],
+            SUBJ: ["SUBJ", "SUBJECT"],
+            SEC:  ["SEC", "SECTION"]
+        };
+
+        keys.forEach(k => {
+            const norm = normalize(k);
+            for (const [logical, list] of Object.entries(flexDefs)) {
+                if (!map[logical] && list.includes(norm)) {
+                    map[logical] = k;
+                }
+            }
         });
 
         return map;
-    }
-
-    function showMappingInfo(map) {
-        const el = document.getElementById("mappingInfo");
-        if (!map) {
-            el.textContent = "";
-            return;
-        }
-        el.textContent =
-            "Mapped columns → " +
-            ["CRN","TERM_CODE","XLST","STAT","CR","PTM","SUBJ","SEC"]
-                .map(k => `${k}: ${map[k] || "NOT FOUND"}`)
-                .join(" | ");
     }
 
     function getVal(row, map, logical) {
@@ -385,33 +257,24 @@
         return isNaN(n) ? NaN : n;
     }
 
-    // ---- UNIV / OLHY section helpers ----
     function getSectionNumber(secRaw) {
         const s = String(secRaw || "").trim();
-        const match = s.match(/^(\d{1,3})/);
-        if (!match) return NaN;
-        return parseInt(match[1], 10);
+        const m = s.match(/^(\d{1,3})/);
+        return m ? parseInt(m[1], 10) : NaN;
     }
 
     function isUnivSection(secRaw) {
         const n = getSectionNumber(secRaw);
         if (isNaN(n)) return false;
-        // SEC 61–69 and 1 / 01–19
-        if (n >= 61 && n <= 69) return true;
-        if (n >= 1 && n <= 19) return true;
-        return false;
+        return (n >= 61 && n <= 69) || (n >= 1 && n <= 19);
     }
 
     function isOlhySection(secRaw) {
         const n = getSectionNumber(secRaw);
         if (isNaN(n)) return false;
-        // SEC 21–29 and 51–59
-        if (n >= 21 && n <= 29) return true;
-        if (n >= 51 && n <= 59) return true;
-        return false;
+        return (n >= 21 && n <= 29) || (n >= 51 && n <= 59);
     }
 
-    // PTM group label for Excel column
     function getPtmGroupLabel(ptm) {
         switch (ptm) {
             case "1":   return "16-week";
@@ -427,46 +290,38 @@
         }
     }
 
-    // ---- Brightspace code logic ----
     function computeBrightspaceCode(row, map) {
-        if (!map || (!map.TERM_CODE) || (!map.CRN && !map.XLST)) return "";
-
+        if (!map.TERM_CODE) return "";
         const termRaw = getVal(row, map, "TERM_CODE");
         const term = termRaw === undefined || termRaw === null ? "" : String(termRaw).trim();
+        if (!term) return "";
+
         const crnRaw = getVal(row, map, "CRN");
         const xlstRaw = getVal(row, map, "XLST");
-
         const crn = crnRaw === undefined || crnRaw === null ? "" : String(crnRaw).trim();
         const xlst = xlstRaw === undefined || xlstRaw === null ? "" : String(xlstRaw).trim();
 
-        if (!term) return "";
-
-        if (xlst) {
-            // XLST present: XLST + term_code (no dot)
-            return xlst + term;
-        } else if (crn) {
-            // No XLST: CRN + "." + term_code
-            return crn + "." + term;
-        }
+        if (xlst) return xlst + term;
+        if (crn)  return crn + "." + term;
         return "";
     }
 
-    // ---- Separation logic ----
     function separateRows(rows, map) {
         const buckets = {
-            "PHAR": [],
-            "UNIV": [],
-            "OLHY": [],
-            "Zero_Credit": [],
-            "Cancelled": [],
-            "Other_Active": []
+            PHAR: [],
+            UNIV: [],
+            OLHY: [],
+            Zero_Credit: [],
+            Cancelled: [],
+            Other_Active: []
         };
 
         let firstTerm = "";
         let codeCount = 0;
 
-        rows.forEach((row) => {
-            const outRow = Object.assign({}, row); // preserve original
+        rows.forEach(row => {
+            const outRow = { ...row };
+
             const stat = toUpperString(getVal(row, map, "STAT"));
             const cr = toNumber(getVal(row, map, "CR"));
             const subj = toUpperString(getVal(row, map, "SUBJ"));
@@ -475,14 +330,12 @@
             const term = termVal === undefined || termVal === null ? "" : String(termVal).trim();
             const ptmVal = toUpperString(getVal(row, map, "PTM"));
 
-            if (!firstTerm && term) {
-                firstTerm = term;
-            }
+            if (!firstTerm && term) firstTerm = term;
 
-            const brightspaceCode = computeBrightspaceCode(row, map);
-            if (brightspaceCode) codeCount++;
-            outRow["BrightspaceCode"] = brightspaceCode;
-            outRow["PTM_Group"] = getPtmGroupLabel(ptmVal);
+            const code = computeBrightspaceCode(row, map);
+            if (code) codeCount++;
+            outRow.BrightspaceCode = code;
+            outRow.PTM_Group = getPtmGroupLabel(ptmVal);
 
             let sheetName = "Other_Active";
 
@@ -490,16 +343,12 @@
                 sheetName = "Cancelled";
             } else if (!isNaN(cr) && cr === 0) {
                 sheetName = "Zero_Credit";
-            } else {
-                if (subj === "PHAR") {
-                    sheetName = "PHAR";
-                } else if (isUnivSection(sec)) {
-                    sheetName = "UNIV";
-                } else if (isOlhySection(sec)) {
-                    sheetName = "OLHY";
-                } else {
-                    sheetName = "Other_Active";
-                }
+            } else if (subj === "PHAR") {
+                sheetName = "PHAR";
+            } else if (isUnivSection(sec)) {
+                sheetName = "UNIV";
+            } else if (isOlhySection(sec)) {
+                sheetName = "OLHY";
             }
 
             buckets[sheetName].push(outRow);
@@ -508,9 +357,7 @@
         return { buckets, firstTerm, codeCount };
     }
 
-    // ---- Workbook writer ----
     function computeHeadersFromSheets(buckets) {
-        // Preserve original order, then append any new columns
         let headers = baseHeaders && baseHeaders.length ? baseHeaders.slice() : [];
 
         const allKeys = new Set(headers);
@@ -528,11 +375,88 @@
             });
         }
 
-        // Ensure BrightspaceCode and PTM_Group at end
         if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
         if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
 
         return headers;
+    }
+
+    function setStatus(text, cls) {
+        const el = document.getElementById("status");
+        el.textContent = text;
+        el.className = "status " + (cls || "muted");
+    }
+
+    function showMappingInfo(map) {
+        const el = document.getElementById("mappingInfo");
+        if (!map) {
+            el.textContent = "";
+            return;
+        }
+
+        const parts = ["TERM_CODE", "CRN", "XLST", "STAT", "CR", "PTM", "SUBJ", "SEC"]
+            .map(k => `${k}: ${map[k] || "NOT FOUND"}`);
+        el.textContent = "Mapped columns → " + parts.join(" | ");
+    }
+
+    function renderSummary(buckets) {
+        const ul = document.getElementById("summaryList");
+        ul.innerHTML = "";
+        SHEET_ORDER.forEach(name => {
+            const count = (buckets[name] || []).length;
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${name}</strong>: ${count} rows`;
+            ul.appendChild(li);
+        });
+    }
+
+    function renderPreview(buckets) {
+        const container = document.getElementById("preview");
+        container.innerHTML = "";
+
+        SHEET_ORDER.forEach(name => {
+            const rows = buckets[name] || [];
+            if (!rows.length) return;
+
+            const section = document.createElement("div");
+            section.className = "sheet-preview";
+
+            const count = rows.length;
+            section.innerHTML = `<h3>${name} <span class="badge">${count} rows</span></h3>
+                                 <small>First 5 rows</small>`;
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const sampleRow = rows[0];
+            const headers = Object.keys(sampleRow);
+
+            const trHead = document.createElement("tr");
+            headers.forEach(h => {
+                const th = document.createElement("th");
+                th.textContent = h;
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+
+            const maxRows = Math.min(5, rows.length);
+            for (let i = 0; i < maxRows; i++) {
+                const row = rows[i];
+                const tr = document.createElement("tr");
+                headers.forEach(h => {
+                    const td = document.createElement("td");
+                    td.textContent = row[h] === undefined ? "" : row[h];
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            section.appendChild(table);
+            container.appendChild(section);
+        });
     }
 
     function downloadWorkbook() {
@@ -554,96 +478,17 @@
         const term = lastTermCode || "term";
         const safeName = (lastFileName || "courses")
             .replace(/\.[^.]+$/, "")
-            .replace(/[^\w\-]+/g, "_")
-            || "courses";
+            .replace(/[^\w\-]+/g, "_") || "courses";
 
         const outName = `${safeName}_Separated_${term}.xlsx`;
         XLSX.writeFile(wb, outName);
     }
 
-    // ---- UI helpers ----
-    function setStatus(text, cls) {
-        const statusEl = document.getElementById("status");
-        statusEl.textContent = text;
-        statusEl.className = "status " + (cls || "muted");
-    }
-
-    function renderSummary(buckets) {
-        const summaryEl = document.getElementById("summaryList");
-        summaryEl.innerHTML = "";
-        const frag = document.createDocumentFragment();
-
-        SHEET_ORDER.forEach(name => {
-            const li = document.createElement("li");
-            const count = (buckets[name] || []).length;
-            li.innerHTML = `<strong>${name}</strong>: ${count} rows`;
-            frag.appendChild(li);
-        });
-
-        summaryEl.appendChild(frag);
-    }
-
-    function renderPreviewTables(buckets) {
-        const previewEl = document.getElementById("preview");
-        previewEl.innerHTML = "";
-
-        SHEET_ORDER.forEach(name => {
-            const rows = buckets[name] || [];
-            if (!rows.length) return;
-
-            const section = document.createElement("div");
-            section.className = "sheet-preview";
-
-            const count = rows.length;
-            section.innerHTML = `<h3>${name} <span class="badge">${count} rows</span></h3>
-                <small>Showing first 5 rows.</small>`;
-
-            const table = document.createElement("table");
-            const thead = document.createElement("thead");
-            const tbody = document.createElement("tbody");
-
-            const sampleRow = rows[0];
-            const headers = Object.keys(sampleRow);
-
-            // header row
-            const trHead = document.createElement("tr");
-            headers.forEach(h => {
-                const th = document.createElement("th");
-                th.textContent = h;
-                trHead.appendChild(th);
-            });
-            thead.appendChild(trHead);
-
-            // first 5 rows
-            const maxRows = Math.min(5, rows.length);
-            for (let i = 0; i < maxRows; i++) {
-                const row = rows[i];
-                const tr = document.createElement("tr");
-
-                headers.forEach(h => {
-                    const td = document.createElement("td");
-                    const value = row[h];
-                    td.textContent = value === undefined ? "" : value;
-                    tr.appendChild(td);
-                });
-
-                tbody.appendChild(tr);
-            }
-
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            section.appendChild(table);
-            previewEl.appendChild(section);
-        });
-    }
-
-    // ---- File handling ----
     function handleFileSelected(evt) {
         const file = evt.target.files[0];
         separatedSheets = null;
-        originalRows = [];
-        columnMap = null;
         baseHeaders = [];
+        columnMap = null;
         lastTermCode = "";
         lastFileName = file ? file.name : "";
         document.getElementById("summaryList").innerHTML = "";
@@ -657,7 +502,7 @@
             return;
         }
 
-        setStatus(`Loaded file: ${file.name}. Click "Process & Separate Courses" when ready.`, "ok");
+        setStatus(`Loaded file: ${file.name}. Click "Process & Separate" when ready.`, "ok");
         document.getElementById("processBtn").disabled = false;
     }
 
@@ -675,37 +520,40 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const data = e.target.result;
-                const wb = XLSX.read(data, { type: "array" });
-
+                const wb = XLSX.read(e.target.result, { type: "array" });
                 const firstSheetName = wb.SheetNames[0];
                 const ws = wb.Sheets[firstSheetName];
-
                 const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+
                 if (!rows.length) {
-                    setStatus("The sheet is empty or could not be read.", "warn");
+                    setStatus("Sheet is empty or could not be read.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
 
-                originalRows = rows;
-                baseHeaders = Object.keys(rows[0]); // preserve original column order
+                baseHeaders = Object.keys(rows[0]);
                 columnMap = buildColumnMap(rows[0]);
                 showMappingInfo(columnMap);
+
+                if (!columnMap.TERM_CODE) {
+                    setStatus("TERM_CODE_KEY / TERM_CODE column not found. Please ensure your header is TERM_CODE_KEY or TERM_CODE.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
 
                 const { buckets, firstTerm, codeCount } = separateRows(rows, columnMap);
                 separatedSheets = buckets;
                 lastTermCode = firstTerm || "";
 
                 renderSummary(buckets);
-                renderPreviewTables(buckets);
+                renderPreview(buckets);
                 document.getElementById("downloadBtn").disabled = false;
                 document.getElementById("processBtn").disabled = false;
 
                 if (codeCount === 0) {
-                    setStatus("Processed, but no Brightspace codes were generated. Check that CRN / Term columns were detected in the mapping above.", "warn");
+                    setStatus("Processed, but no Brightspace codes were generated. Check CRN/XLST and TERM_CODE_KEY values.", "warn");
                 } else {
-                    setStatus(`Separation complete. Brightspace codes generated for ${codeCount} row(s). Review preview below or download the new workbook.`, "ok");
+                    setStatus(`Separation complete. Brightspace codes generated for ${codeCount} row(s).`, "ok");
                 }
             } catch (err) {
                 console.error(err);
@@ -713,6 +561,7 @@
                 document.getElementById("processBtn").disabled = false;
             }
         };
+
         reader.onerror = function() {
             setStatus("Error reading file. Please try again.", "warn");
             document.getElementById("processBtn").disabled = false;
@@ -721,8 +570,7 @@
         reader.readAsArrayBuffer(file);
     }
 
-    // ---- Init ----
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("fileInput").addEventListener("change", handleFileSelected);
         document.getElementById("processBtn").addEventListener("click", processFile);
         document.getElementById("downloadBtn").addEventListener("click", downloadWorkbook);
