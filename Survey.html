@@ -162,7 +162,7 @@
 
 <header>
     <h1>CSU Semester Course Separation Tool</h1>
-    <p>Uses CRN / XLST with TERM_CODE_KEY to build Brightspace codes.</p>
+    <p>Brightspace Code = XLST + TERM_CODE_KEY OR CRN + "." + TERM_CODE_KEY</p>
 </header>
 
 <main>
@@ -171,9 +171,9 @@
     <h2>1. Upload semester spreadsheet</h2>
     <p>
         <small>
-            Required term column header: <code>TERM_CODE_KEY</code> (or <code>TERM_CODE</code>), any position.<br>
-            Other expected headers (any order): <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
-            Brightspace code is stored in a separate <code>BrightspaceCode</code> column.
+            Required header (any position): <code>TERM_CODE_KEY</code><br>
+            Expected additional headers: <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
+            Brightspace code stored in <code>BrightspaceCode</code>.
         </small>
     </p>
 
@@ -191,7 +191,7 @@
 
 <section class="card">
     <h2>2. Preview &amp; sheet summary</h2>
-    <p><small>Preview shows first 5 rows per sheet. Use <code>BrightspaceCode</code> and <code>PTM_Group</code> in Excel for filtering.</small></p>
+    <p><small>Preview shows first 5 rows per sheet.</small></p>
     <ul id="summaryList"></ul>
     <div id="preview"></div>
 </section>
@@ -206,7 +206,7 @@
         "Zero_Credit",
         "Cancelled",
         "Other_Active",
-        "Crosslisted"   // all rows where XLST is populated
+        "Crosslisted"
     ];
 
     let separatedSheets = null;
@@ -215,39 +215,39 @@
     let lastTermCode = "";
     let lastFileName = "";
 
+    // FIX: keep underscores; just trim + uppercase
     function normalize(str) {
-        return String(str || "").trim().toUpperCase().replace(/[\s_]+/g, "");
+        return String(str || "").trim().toUpperCase();
     }
 
-    // Map logical fields to actual headers (order flexible, names fixed to your export).
+    // Map logical → actual header names
     function buildColumnMap(row) {
         const keys = Object.keys(row);
         const map = {};
 
         keys.forEach(k => {
             const n = normalize(k);
-            if (!map.TERM_CODE && (n === "TERM_CODE_KEY" || n === "TERM_CODE")) map.TERM_CODE = k;
-            if (!map.CRN && n === "CRN") map.CRN = k;
-            if (!map.XLST && n === "XLST") map.XLST = k;
-            if (!map.STAT && n === "STAT") map.STAT = k;
-            if (!map.CR && n === "CR") map.CR = k;
-            if (!map.PTM && n === "PTM") map.PTM = k;
-            if (!map.SUBJ && n === "SUBJ") map.SUBJ = k;
-            if (!map.SEC && n === "SEC") map.SEC = k;
+
+            if (!map.TERM_CODE && n === "TERM_CODE_KEY") map.TERM_CODE = k;
+            if (!map.CRN && n === "CRN")                map.CRN = k;
+            if (!map.XLST && n === "XLST")              map.XLST = k;
+            if (!map.STAT && n === "STAT")              map.STAT = k;
+            if (!map.CR && n === "CR")                  map.CR = k;
+            if (!map.PTM && n === "PTM")                map.PTM = k;
+            if (!map.SUBJ && n === "SUBJ")              map.SUBJ = k;
+            if (!map.SEC && n === "SEC")                map.SEC = k;
         });
 
         return map;
     }
 
     function getVal(row, map, logical) {
-        const key = map[logical];
-        if (!key) return "";
-        return row[key];
+        const k = map[logical];
+        return k ? row[k] : "";
     }
 
     function toUpperString(v) {
-        if (v === undefined || v === null) return "";
-        return String(v).trim().toUpperCase();
+        return v === undefined || v === null ? "" : String(v).trim().toUpperCase();
     }
 
     function toNumber(v) {
@@ -264,14 +264,12 @@
 
     function isUnivSection(secRaw) {
         const n = getSectionNumber(secRaw);
-        if (isNaN(n)) return false;
-        return (n >= 1 && n <= 19) || (n >= 61 && n <= 69);
+        return !isNaN(n) && ((n >= 1 && n <= 19) || (n >= 61 && n <= 69));
     }
 
     function isOlhySection(secRaw) {
         const n = getSectionNumber(secRaw);
-        if (isNaN(n)) return false;
-        return (n >= 21 && n <= 29) || (n >= 51 && n <= 59);
+        return !isNaN(n) && ((n >= 21 && n <= 29) || (n >= 51 && n <= 59));
     }
 
     function getPtmGroupLabel(ptm) {
@@ -283,7 +281,7 @@
             case "DDS": return "Dynamic";
             case "H":   return "Hybrid";
             case "R5":  return "Rise Cohort 5";
-            case "W":   return "Distance / Web";
+            case "W":   return "Distance/Web";
             case "ZDC": return "Dual Credit";
             default:    return ptm || "";
         }
@@ -291,14 +289,11 @@
 
     function computeBrightspaceCode(row, map) {
         if (!map.TERM_CODE) return "";
-        const termRaw = getVal(row, map, "TERM_CODE");
-        const term = termRaw === undefined || termRaw === null ? "" : String(termRaw).trim();
+        const term = String(getVal(row, map, "TERM_CODE") || "").trim();
         if (!term) return "";
 
-        const crnRaw = getVal(row, map, "CRN");
-        const xlstRaw = getVal(row, map, "XLST");
-        const crn = crnRaw === undefined || crnRaw === null ? "" : String(crnRaw).trim();
-        const xlst = xlstRaw === undefined || xlstRaw === null ? "" : String(xlstRaw).trim();
+        const crn  = String(getVal(row, map, "CRN")  || "").trim();
+        const xlst = String(getVal(row, map, "XLST") || "").trim();
 
         if (xlst) return xlst + term;
         if (crn)  return crn + "." + term;
@@ -320,68 +315,54 @@
         let codeCount = 0;
 
         rows.forEach(row => {
-            const outRow = { ...row };
+            const out = { ...row };
 
             const stat = toUpperString(getVal(row, map, "STAT"));
             const cr = toNumber(getVal(row, map, "CR"));
             const subj = toUpperString(getVal(row, map, "SUBJ"));
             const sec = toUpperString(getVal(row, map, "SEC"));
+            const ptm = toUpperString(getVal(row, map, "PTM"));
+            const xlst = String(getVal(row, map, "XLST") || "").trim();
+
             const termVal = getVal(row, map, "TERM_CODE");
-            const term = termVal === undefined || termVal === null ? "" : String(termVal).trim();
-            const ptmVal = toUpperString(getVal(row, map, "PTM"));
-
-            const xlstRaw = getVal(row, map, "XLST");
-            const xlst = xlstRaw === undefined || xlstRaw === null ? "" : String(xlstRaw).trim();
-
+            const term = termVal ? String(termVal).trim() : "";
             if (!firstTerm && term) firstTerm = term;
 
-            const code = computeBrightspaceCode(row, map);
-            if (code) codeCount++;
-            outRow.BrightspaceCode = code;
-            outRow.PTM_Group = getPtmGroupLabel(ptmVal);
+            const bcode = computeBrightspaceCode(row, map);
+            if (bcode) codeCount++;
+            out.BrightspaceCode = bcode;
+            out.PTM_Group = getPtmGroupLabel(ptm);
 
-            // Crosslisted sheet: every row with a non-empty XLST
-            if (xlst && xlst !== "") {
-                buckets.Crosslisted.push(outRow);
-            }
+            if (xlst) buckets.Crosslisted.push(out);
 
-            let sheetName = "Other_Active";
+            let sheet = "Other_Active";
 
-            if (stat === "C") {
-                sheetName = "Cancelled";
-            } else if (!isNaN(cr) && cr === 0) {
-                sheetName = "Zero_Credit";
-            } else if (subj === "PHAR") {
-                sheetName = "PHAR";
-            } else if (isUnivSection(sec)) {
-                sheetName = "UNIV";
-            } else if (isOlhySection(sec)) {
-                sheetName = "OLHY";
-            }
+            if (stat === "C") sheet = "Cancelled";
+            else if (!isNaN(cr) && cr === 0) sheet = "Zero_Credit";
+            else if (subj === "PHAR") sheet = "PHAR";
+            else if (isUnivSection(sec)) sheet = "UNIV";
+            else if (isOlhySection(sec)) sheet = "OLHY";
 
-            buckets[sheetName].push(outRow);
+            buckets[sheet].push(out);
         });
 
         return { buckets, firstTerm, codeCount };
     }
 
     function computeHeadersFromSheets(buckets) {
-        let headers = baseHeaders && baseHeaders.length ? baseHeaders.slice() : [];
-
+        let headers = baseHeaders.slice();
         const allKeys = new Set(headers);
+
         Object.values(buckets).forEach(rows => {
-            rows.forEach(row => {
-                Object.keys(row).forEach(k => allKeys.add(k));
+            rows.forEach(r => {
+                Object.keys(r).forEach(k => allKeys.add(k));
             });
         });
 
-        if (!headers.length) {
-            headers = Array.from(allKeys);
-        } else {
-            allKeys.forEach(k => {
-                if (!headers.includes(k)) headers.push(k);
-            });
-        }
+        headers = headers.filter(h => allKeys.has(h));
+        allKeys.forEach(k => {
+            if (!headers.includes(k)) headers.push(k);
+        });
 
         if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
         if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
@@ -389,71 +370,73 @@
         return headers;
     }
 
-    function setStatus(text, cls) {
-        const el = document.getElementById("status");
-        el.textContent = text;
-        el.className = "status " + (cls || "muted");
+    function setStatus(msg, cls) {
+        const e = document.getElementById("status");
+        e.textContent = msg;
+        e.className = "status " + cls;
     }
 
     function showMappingInfo(map) {
-        const el = document.getElementById("mappingInfo");
-        if (!map) {
-            el.textContent = "";
+        const e = document.getElementById("mappingInfo");
+        if (!map || Object.keys(map).length === 0) {
+            e.textContent = "Mapped columns → (none yet)";
             return;
         }
-        const parts = ["TERM_CODE", "CRN", "XLST", "STAT", "CR", "PTM", "SUBJ", "SEC"]
-            .map(k => `${k}: ${map[k] || "NOT FOUND"}`);
-        el.textContent = "Mapped columns → " + parts.join(" | ");
+        e.textContent =
+            `TERM_CODE_KEY → ${map.TERM_CODE || "NOT FOUND"} | ` +
+            `CRN → ${map.CRN || "NOT FOUND"} | ` +
+            `XLST → ${map.XLST || "NOT FOUND"} | ` +
+            `STAT → ${map.STAT || "NOT FOUND"} | ` +
+            `CR → ${map.CR || "NOT FOUND"} | ` +
+            `PTM → ${map.PTM || "NOT FOUND"} | ` +
+            `SUBJ → ${map.SUBJ || "NOT FOUND"} | ` +
+            `SEC → ${map.SEC || "NOT FOUND"}`;
     }
 
     function renderSummary(buckets) {
         const ul = document.getElementById("summaryList");
         ul.innerHTML = "";
         SHEET_ORDER.forEach(name => {
-            const count = (buckets[name] || []).length;
             const li = document.createElement("li");
-            li.innerHTML = `<strong>${name}</strong>: ${count} rows`;
+            li.innerHTML = `<strong>${name}</strong>: ${(buckets[name] || []).length}`;
             ul.appendChild(li);
         });
     }
 
     function renderPreview(buckets) {
-        const container = document.getElementById("preview");
-        container.innerHTML = "";
+        const c = document.getElementById("preview");
+        c.innerHTML = "";
 
         SHEET_ORDER.forEach(name => {
-            const rows = buckets[name] || [];
-            if (!rows.length) return;
+            const rows = buckets[name];
+            if (!rows || rows.length === 0) return;
 
-            const section = document.createElement("div");
-            section.className = "sheet-preview";
+            const div = document.createElement("div");
+            div.className = "sheet-preview";
 
-            const count = rows.length;
-            section.innerHTML = `<h3>${name} <span class="badge">${count} rows</span></h3>
-                                 <small>First 5 rows</small>`;
+            div.innerHTML = `<h3>${name} <span class="badge">${rows.length}</span></h3>
+                             <small>First 5 rows</small>`;
 
             const table = document.createElement("table");
             const thead = document.createElement("thead");
             const tbody = document.createElement("tbody");
 
-            const sampleRow = rows[0];
-            const headers = Object.keys(sampleRow);
-
-            const trHead = document.createElement("tr");
+            const headers = Object.keys(rows[0]);
+            const trh = document.createElement("tr");
             headers.forEach(h => {
                 const th = document.createElement("th");
                 th.textContent = h;
-                trHead.appendChild(th);
+                trh.appendChild(th);
             });
-            thead.appendChild(trHead);
+            thead.appendChild(trh);
 
-            const maxRows = Math.min(5, rows.length);
-            for (let i = 0; i < maxRows; i++) {
-                const row = rows[i];
+            const max = Math.min(5, rows.length);
+            for (let i = 0; i < max; i++) {
+                const r = rows[i];
                 const tr = document.createElement("tr");
                 headers.forEach(h => {
                     const td = document.createElement("td");
-                    td.textContent = row[h] === undefined ? "" : row[h];
+                    td.textContent = r[h] ?? "";
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -461,125 +444,118 @@
 
             table.appendChild(thead);
             table.appendChild(tbody);
-            section.appendChild(table);
-            container.appendChild(section);
+            div.appendChild(table);
+            c.appendChild(div);
         });
     }
 
     function downloadWorkbook() {
         if (!separatedSheets) {
-            alert("Please process a file first.");
+            alert("You must process a file first.");
             return;
         }
 
         const wb = XLSX.utils.book_new();
         const headers = computeHeadersFromSheets(separatedSheets);
 
-        SHEET_ORDER.forEach(name => {
-            const rows = separatedSheets[name] || [];
-            if (!rows.length) return;
-            const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
-            XLSX.utils.book_append_sheet(wb, ws, name.substring(0, 31));
+        SHEET_ORDER.forEach(n => {
+            const rows = separatedSheets[n];
+            if (rows && rows.length) {
+                const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
+                XLSX.utils.book_append_sheet(wb, ws, n.substring(0,31));
+            }
         });
 
-        const term = lastTermCode || "term";
-        const safeName = (lastFileName || "courses")
-            .replace(/\.[^.]+$/, "")
-            .replace(/[^\w\-]+/g, "_") || "courses";
-
-        const outName = `${safeName}_Separated_${term}.xlsx`;
-        XLSX.writeFile(wb, outName);
+        const term = lastTermCode || "TERM";
+        const safe = (lastFileName || "courses").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
+        XLSX.writeFile(wb, `${safe}_Separated_${term}.xlsx`);
     }
 
     function handleFileSelected(evt) {
-        const file = evt.target.files[0];
+        const f = evt.target.files[0];
         separatedSheets = null;
         baseHeaders = [];
         columnMap = null;
         lastTermCode = "";
-        lastFileName = file ? file.name : "";
+        lastFileName = f ? f.name : "";
         document.getElementById("summaryList").innerHTML = "";
         document.getElementById("preview").innerHTML = "";
         document.getElementById("downloadBtn").disabled = true;
         showMappingInfo(null);
 
-        if (!file) {
+        if (!f) {
             setStatus("No file selected.", "muted");
             document.getElementById("processBtn").disabled = true;
             return;
         }
 
-        setStatus(`Loaded file: ${file.name}. Click "Process & Separate" when ready.`, "ok");
+        setStatus(`File loaded: ${f.name}. Click Process.`, "ok");
         document.getElementById("processBtn").disabled = false;
     }
 
     function processFile() {
-        const input = document.getElementById("fileInput");
-        const file = input.files[0];
-        if (!file) {
-            alert("Please choose a file first.");
-            return;
-        }
+        const f = document.getElementById("fileInput").files[0];
+        if (!f) return;
 
-        setStatus("Reading file and processing rows...", "muted");
+        setStatus("Processing...", "muted");
         document.getElementById("processBtn").disabled = true;
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = e => {
             try {
-                const wb = XLSX.read(e.target.result, { type: "array" });
-                const firstSheetName = wb.SheetNames[0];
-                const ws = wb.Sheets[firstSheetName];
-                const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+                const wb = XLSX.read(e.target.result, { type:"array" });
+                const sheet = wb.SheetNames[0];
+                const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval:"" });
 
-                if (!rows.length) {
-                    setStatus("Sheet is empty or could not be read.", "warn");
+                if (!data.length) {
+                    setStatus("Sheet is empty.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
 
-                baseHeaders = Object.keys(rows[0]);
-                columnMap = buildColumnMap(rows[0]);
+                baseHeaders = Object.keys(data[0]);
+                columnMap = buildColumnMap(data[0]);
                 showMappingInfo(columnMap);
 
                 if (!columnMap.TERM_CODE) {
-                    setStatus("TERM_CODE_KEY / TERM_CODE column not found. Please ensure that header exists.", "warn");
+                    setStatus("TERM_CODE_KEY column missing.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
                 if (!columnMap.CRN) {
-                    setStatus("CRN column not found. Please ensure CRN header exists.", "warn");
+                    setStatus("CRN column missing.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
                 }
 
-                const { buckets, firstTerm, codeCount } = separateRows(rows, columnMap);
+                const { buckets, firstTerm, codeCount } = separateRows(data, columnMap);
                 separatedSheets = buckets;
-                lastTermCode = firstTerm || "";
+                lastTermCode = firstTerm;
 
                 renderSummary(buckets);
                 renderPreview(buckets);
+
                 document.getElementById("downloadBtn").disabled = false;
                 document.getElementById("processBtn").disabled = false;
 
-                if (codeCount === 0) {
-                    setStatus("Processed, but no Brightspace codes were generated. Check CRN/XLST and TERM_CODE_KEY values.", "warn");
-                } else {
-                    setStatus(`Separation complete. Brightspace codes generated for ${codeCount} row(s).`, "ok");
-                }
+                if (codeCount === 0)
+                    setStatus("Processed, but no Brightspace codes were created.", "warn");
+                else
+                    setStatus(`Completed. Generated ${codeCount} Brightspace codes.`, "ok");
+
             } catch (err) {
                 console.error(err);
-                setStatus("Error processing file. Check the format and try again.", "warn");
+                setStatus("Error reading file.", "warn");
                 document.getElementById("processBtn").disabled = false;
             }
         };
 
-        reader.onerror = function() {
-            setStatus("Error reading file. Please try again.", "warn");
+        reader.onerror = () => {
+            setStatus("Error reading file.", "warn");
             document.getElementById("processBtn").disabled = false;
         };
 
-        reader.readAsArrayBuffer(file);
+        reader.readAsArrayBuffer(f);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
