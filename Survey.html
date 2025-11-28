@@ -215,31 +215,6 @@
         background: #fafafa;
     }
 
-    .ptm-legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem 0.9rem;
-        margin-top: 0.5rem;
-        font-size: 0.8rem;
-    }
-
-    .ptm-legend-item {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .ptm-swatch {
-        width: 16px;
-        height: 16px;
-        border-radius: 3px;
-        border: 1px solid var(--csu-border);
-    }
-
-    .ptm-cell {
-        font-weight: bold;
-    }
-
     .badge {
         display: inline-block;
         padding: 0.15rem 0.35rem;
@@ -279,9 +254,9 @@
         <p>
             <small>
                 Accepted formats: <strong>.xlsx</strong>, <strong>.xls</strong>, <strong>.csv</strong>, <strong>.ods</strong><br>
-                Expected columns (case-insensitive / flexible): <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
+                Expected columns (flexible / case-insensitive): some form of <code>CRN</code>, <code>TERM_CODE</code>, <code>XLST</code>, 
                 <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
-                The computed Brightspace code will be stored in a separate <code>BrightspaceCode</code> column only
+                The computed Brightspace code is stored in a separate <code>BrightspaceCode</code> column only
                 (original columns and order are preserved).
             </small>
         </p>
@@ -300,38 +275,19 @@
             </button>
         </div>
         <div id="status" class="status muted">No file loaded yet.</div>
-    </section>
-
-    <!-- PTM legend -->
-    <section class="card">
-        <h2>PTM color legend (preview only)</h2>
-        <p><small>Each PTM session type is highlighted with a different color in the on-screen preview. In the downloaded file, use the <code>PTM_Group</code> column for filtering.</small></p>
-        <div class="ptm-legend" id="ptmLegend"></div>
+        <div id="mappingInfo" class="status muted" style="margin-top:0.25rem;font-size:0.8rem;"></div>
     </section>
 
     <!-- Preview -->
     <section class="card">
         <h2>Preview &amp; sheet summary</h2>
-        <p><small>The preview shows counts per sheet and the first few rows from each sheet. Download to get the full workbook.</small></p>
+        <p><small>The preview shows counts per sheet and the first few rows from each sheet. Download to get the full workbook. PTM is not color-coded here; use <code>PTM</code> or <code>PTM_Group</code> in Excel for filtering.</small></p>
         <ul id="summaryList" class="summary-list"></ul>
         <div id="preview" class="preview-section"></div>
     </section>
 </main>
 
 <script>
-    // ---- Configuration ----
-    const PTM_COLORS = {
-        "1":   "#e6f4ea",  // 16-week
-        "5":   "#e8edf7",  // 12-week
-        "81T": "#fef3d9",  // 1st 8-weeks
-        "82T": "#fde6e0",  // 2nd 8-weeks
-        "DDS": "#f1e6f9",  // dynamic date session
-        "H":   "#fff4e5",  // hybrid
-        "R5":  "#e3f2fd",  // Rise cohort 5
-        "W":   "#e9fdf7",  // Distance learning (Web)
-        "ZDC": "#f9e6f1"   // dual credit
-    };
-
     const SHEET_ORDER = [
         "PHAR",
         "UNIV",
@@ -362,12 +318,13 @@
         const map = {};
         const keys = Object.keys(exampleRow);
 
+        // First pass: exactish mapping via normalized names
         const targetDefs = {
             CRN:       ["CRN", "COURSECRN"],
             TERM_CODE: ["TERM_CODE", "TERMCODE", "TERM"],
             XLST:      ["XLST", "CROSSLIST", "CROSS_LIST", "XLSTCODE"],
             STAT:      ["STAT", "STATUS"],
-            CR:        ["CR", "CREDITS", "CREDIT", "CREDIT_HRS", "CREDITHOURS"],
+            CR:        ["CR", "CREDITS", "CREDIT", "CREDITHOURS", "CREDIT_HRS"],
             PTM:       ["PTM", "PARTOFTERM", "SESSION"],
             SUBJ:      ["SUBJ", "SUBJECT"],
             SEC:       ["SEC", "SECTION"]
@@ -382,7 +339,33 @@
             });
         });
 
+        // Second pass: fallback – substring searches
+        keys.forEach(key => {
+            const up = String(key).toUpperCase();
+            if (!map.CRN && up.includes("CRN")) map.CRN = key;
+            if (!map.TERM_CODE && up.includes("TERM")) map.TERM_CODE = key;
+            if (!map.XLST && (up.includes("XLST") || up.includes("CROSS"))) map.XLST = key;
+            if (!map.STAT && (up.includes("STAT") || up.includes("STATUS"))) map.STAT = key;
+            if (!map.CR && (up.includes("CREDIT") || up === "CR")) map.CR = key;
+            if (!map.PTM && (up.includes("PTM") || up.includes("PART") || up.includes("SESSION"))) map.PTM = key;
+            if (!map.SUBJ && (up.includes("SUBJ") || up.includes("SUBJECT"))) map.SUBJ = key;
+            if (!map.SEC && (up.includes("SEC") || up.includes("SECTION"))) map.SEC = key;
+        });
+
         return map;
+    }
+
+    function showMappingInfo(map) {
+        const el = document.getElementById("mappingInfo");
+        if (!map) {
+            el.textContent = "";
+            return;
+        }
+        el.textContent =
+            "Mapped columns → " +
+            ["CRN","TERM_CODE","XLST","STAT","CR","PTM","SUBJ","SEC"]
+                .map(k => `${k}: ${map[k] || "NOT FOUND"}`)
+                .join(" | ");
     }
 
     function getVal(row, map, logical) {
@@ -446,7 +429,10 @@
 
     // ---- Brightspace code logic ----
     function computeBrightspaceCode(row, map) {
-        const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+        if (!map || (!map.TERM_CODE) || (!map.CRN && !map.XLST)) return "";
+
+        const termRaw = getVal(row, map, "TERM_CODE");
+        const term = termRaw === undefined || termRaw === null ? "" : String(termRaw).trim();
         const crnRaw = getVal(row, map, "CRN");
         const xlstRaw = getVal(row, map, "XLST");
 
@@ -477,14 +463,16 @@
         };
 
         let firstTerm = "";
+        let codeCount = 0;
 
         rows.forEach((row) => {
-            const outRow = Object.assign({}, row); // preserve original columns
+            const outRow = Object.assign({}, row); // preserve original
             const stat = toUpperString(getVal(row, map, "STAT"));
             const cr = toNumber(getVal(row, map, "CR"));
             const subj = toUpperString(getVal(row, map, "SUBJ"));
             const sec = toUpperString(getVal(row, map, "SEC"));
-            const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+            const termVal = getVal(row, map, "TERM_CODE");
+            const term = termVal === undefined || termVal === null ? "" : String(termVal).trim();
             const ptmVal = toUpperString(getVal(row, map, "PTM"));
 
             if (!firstTerm && term) {
@@ -492,7 +480,8 @@
             }
 
             const brightspaceCode = computeBrightspaceCode(row, map);
-            outRow["BrightspaceCode"] = brightspaceCode; // always separate column only
+            if (brightspaceCode) codeCount++;
+            outRow["BrightspaceCode"] = brightspaceCode;
             outRow["PTM_Group"] = getPtmGroupLabel(ptmVal);
 
             let sheetName = "Other_Active";
@@ -502,10 +491,8 @@
             } else if (!isNaN(cr) && cr === 0) {
                 sheetName = "Zero_Credit";
             } else {
-                // PHAR by subject
                 if (subj === "PHAR") {
                     sheetName = "PHAR";
-                // UNIV & OLHY by section number ranges ONLY (per your description)
                 } else if (isUnivSection(sec)) {
                     sheetName = "UNIV";
                 } else if (isOlhySection(sec)) {
@@ -518,7 +505,7 @@
             buckets[sheetName].push(outRow);
         });
 
-        return { buckets, firstTerm };
+        return { buckets, firstTerm, codeCount };
     }
 
     // ---- Workbook writer ----
@@ -541,7 +528,7 @@
             });
         }
 
-        // Ensure BrightspaceCode and PTM_Group appear at the end if not already present
+        // Ensure BrightspaceCode and PTM_Group at end
         if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
         if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
 
@@ -636,18 +623,6 @@
                 headers.forEach(h => {
                     const td = document.createElement("td");
                     const value = row[h];
-
-                    // Highlight PTM cell in preview
-                    const logicalPTMHeader = columnMap["PTM"];
-                    if (logicalPTMHeader && h === logicalPTMHeader) {
-                        const ptmVal = toUpperString(value);
-                        const color = PTM_COLORS[ptmVal] || "";
-                        if (color) {
-                            td.style.backgroundColor = color;
-                        }
-                        td.classList.add("ptm-cell");
-                    }
-
                     td.textContent = value === undefined ? "" : value;
                     tr.appendChild(td);
                 });
@@ -659,24 +634,6 @@
             table.appendChild(tbody);
             section.appendChild(table);
             previewEl.appendChild(section);
-        });
-    }
-
-    function renderPTMLegend() {
-        const legendEl = document.getElementById("ptmLegend");
-        legendEl.innerHTML = "";
-
-        Object.entries(PTM_COLORS).forEach(([code, color]) => {
-            const item = document.createElement("div");
-            item.className = "ptm-legend-item";
-            const swatch = document.createElement("div");
-            swatch.className = "ptm-swatch";
-            swatch.style.backgroundColor = color;
-            const label = document.createElement("span");
-            label.textContent = `PTM ${code}`;
-            item.appendChild(swatch);
-            item.appendChild(label);
-            legendEl.appendChild(item);
         });
     }
 
@@ -692,6 +649,7 @@
         document.getElementById("summaryList").innerHTML = "";
         document.getElementById("preview").innerHTML = "";
         document.getElementById("downloadBtn").disabled = true;
+        showMappingInfo(null);
 
         if (!file) {
             setStatus("No file selected.", "muted");
@@ -733,21 +691,9 @@
                 originalRows = rows;
                 baseHeaders = Object.keys(rows[0]); // preserve original column order
                 columnMap = buildColumnMap(rows[0]);
+                showMappingInfo(columnMap);
 
-                // Basic validation
-                const requiredCols = ["CRN", "TERM_CODE", "STAT", "CR", "PTM", "SUBJ", "SEC"];
-                const missing = requiredCols.filter(c => !columnMap[c]);
-                if (missing.length) {
-                    setStatus(
-                        "Warning: Missing some expected columns: " + missing.join(", ") +
-                        ". Codes may be incomplete; check header names.",
-                        "warn"
-                    );
-                } else {
-                    setStatus("File processed. Separating rows into sheets…", "ok");
-                }
-
-                const { buckets, firstTerm } = separateRows(rows, columnMap);
+                const { buckets, firstTerm, codeCount } = separateRows(rows, columnMap);
                 separatedSheets = buckets;
                 lastTermCode = firstTerm || "";
 
@@ -755,7 +701,12 @@
                 renderPreviewTables(buckets);
                 document.getElementById("downloadBtn").disabled = false;
                 document.getElementById("processBtn").disabled = false;
-                setStatus("Separation complete. Review preview below or download the new workbook.", "ok");
+
+                if (codeCount === 0) {
+                    setStatus("Processed, but no Brightspace codes were generated. Check that CRN / Term columns were detected in the mapping above.", "warn");
+                } else {
+                    setStatus(`Separation complete. Brightspace codes generated for ${codeCount} row(s). Review preview below or download the new workbook.`, "ok");
+                }
             } catch (err) {
                 console.error(err);
                 setStatus("Error processing file. Check the format and try again.", "warn");
@@ -775,7 +726,6 @@
         document.getElementById("fileInput").addEventListener("change", handleFileSelected);
         document.getElementById("processBtn").addEventListener("click", processFile);
         document.getElementById("downloadBtn").addEventListener("click", downloadWorkbook);
-        renderPTMLegend();
     });
 </script>
 
