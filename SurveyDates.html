@@ -225,7 +225,7 @@
             Rules used for each PTM:<br>
             • Survey Start: <strong>20 days before</strong> course end (system 11:59 PM; effective first full day = next day)<br>
             • Survey End: <strong>8 days before</strong> course end (11:59 PM)<br>
-            • Instructor Emails: <strong>28, 14, and 7 days before the Survey Start Date</strong> (sent at 8:00 AM)<br>
+            • Instructor Emails: <strong>27, 13, and 6 days before the Survey Start Date</strong> (sent at 8:00 AM)<br>
             • Admin Report Access: <strong>8 days after</strong> course end (system 11:59 PM; effective first full day = next day)<br>
             • Instructor Report Access: <strong>15 days after</strong> course end (11:59 PM)<br>
             • Instructor Report Access Effective: <strong>1 day after</strong> the Instructor Report Access Start Date<br>
@@ -299,9 +299,9 @@
                             <th>Survey Start<br><span class="pill">11:59 PM</span></th>
                             <th>Survey Start<br>Effective Day</th>
                             <th>Survey End<br><span class="pill">11:59 PM</span></th>
-                            <th>Email 28d<br>Before Start<br><span class="pill">8:00 AM</span></th>
-                            <th>Email 14d<br>Before Start<br><span class="pill">8:00 AM</span></th>
-                            <th>Email 7d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 27d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 13d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 6d<br>Before Start<br><span class="pill">8:00 AM</span></th>
                             <th>Admin Report<br>Start (System)<br><span class="pill">11:59 PM</span></th>
                             <th>Admin Report<br>Effective Day</th>
                             <th>Instructor Report<br>Start<br><span class="pill">11:59 PM</span></th>
@@ -392,10 +392,10 @@
             const surveyStartEffective = addDays(surveyStart, 1);
             const surveyEnd = addDays(endDate, -8);
 
-            // Instructor emails: 28, 14, 7 days before survey start
-            const email28 = addDays(surveyStart, -28);
-            const email14 = addDays(surveyStart, -14);
-            const email7  = addDays(surveyStart, -7);
+            // Instructor emails: 27, 13, 6 days before survey start
+            const email27 = addDays(surveyStart, -27);
+            const email13 = addDays(surveyStart, -13);
+            const email6  = addDays(surveyStart, -6);
 
             // Report access
             const adminAccess = addDays(endDate, 8);
@@ -415,9 +415,9 @@
                 '<td>' + formatDate1159(surveyStart) + '</td>' +
                 '<td>' + formatDatePlain(surveyStartEffective) + '</td>' +
                 '<td>' + formatDate1159(surveyEnd) + '</td>' +
-                '<td>' + formatDate800(email28) + '</td>' +
-                '<td>' + formatDate800(email14) + '</td>' +
-                '<td>' + formatDate800(email7) + '</td>' +
+                '<td>' + formatDate800(email27) + '</td>' +
+                '<td>' + formatDate800(email13) + '</td>' +
+                '<td>' + formatDate800(email6) + '</td>' +
                 '<td>' + formatDate1159(adminAccess) + '</td>' +
                 '<td>' + formatDatePlain(adminAccessEffective) + '</td>' +
                 '<td>' + formatDate1159(instructorAccess) + '</td>' +
@@ -433,9 +433,9 @@
    • Survey Start (Effective First Full Day): ${formatDatePlain(surveyStartEffective)}
    • Survey End (11:59 PM): ${formatDate1159(surveyEnd)}
    • Instructor Emails (before Survey Start):
-      • 28 Days Before Survey Start (8:00 AM): ${formatDate800(email28)}
-      • 14 Days Before Survey Start (8:00 AM): ${formatDate800(email14)}
-      • 7 Days Before Survey Start (8:00 AM): ${formatDate800(email7)}
+      • 27 Days Before Survey Start (8:00 AM): ${formatDate800(email27)}
+      • 13 Days Before Survey Start (8:00 AM): ${formatDate800(email13)}
+      • 6 Days Before Survey Start  (8:00 AM): ${formatDate800(email6)}
    • Admin Report Access (System – 11:59 PM): ${formatDate1159(adminAccess)}
    • Admin Report Access (Effective First Full Day): ${formatDatePlain(adminAccessEffective)}
    • Instructor Report Access (System – 11:59 PM): ${formatDate1159(instructorAccess)}
