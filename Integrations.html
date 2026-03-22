@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSU Brightspace Approved Integrations</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #7bba4c;
+    --csu-light-green: #e8f5e0;
+    --csu-light-navy: #e6eaf0;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, Calibri, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%);
+    color: #fff;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  /* SEARCH & FILTERS */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .search-box {
+    flex: 1 1 280px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 0.7rem 0.7rem 0.7rem 2.6rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box input:focus { border-color: var(--csu-accent); }
+  .search-box svg {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .pill {
+    padding: 0.45rem 0.9rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: var(--gray-700);
+  }
+  .pill:hover { border-color: var(--csu-accent); color: var(--csu-green); }
+  .pill.active {
+    background: var(--csu-green);
+    color: #fff;
+    border-color: var(--csu-green);
+  }
+
+  .results-count {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+  }
+
+  /* CARDS — 2 per row */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--gray-200);
+    padding: 1.4rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border-color: var(--csu-accent);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--csu-navy);
+  }
+  .card-category {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+  .cat-publisher { background: var(--csu-light-navy); color: var(--csu-navy); }
+  .cat-assessment { background: #fef3c7; color: #92400e; }
+  .cat-video { background: #ede9fe; color: #5b21b6; }
+  .cat-field { background: var(--csu-light-green); color: var(--csu-green); }
+  .cat-simulation { background: #e0f2fe; color: #0369a1; }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin-bottom: 0.9rem;
+    flex: 1;
+  }
+  .card-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--csu-green);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .card-link:hover { color: var(--csu-accent); text-decoration: underline; }
+  .card-link svg { flex-shrink: 0; }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--gray-400);
+    font-size: 1rem;
+    grid-column: 1 / -1;
+  }
+
+  /* HELP BANNER */
+  .help-banner {
+    margin-top: 2rem;
+    background: var(--csu-light-green);
+    border: 1.5px solid var(--csu-accent);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .help-banner-text {
+    font-size: 0.95rem;
+    color: var(--csu-green);
+    font-weight: 500;
+  }
+  .help-banner-text strong { font-weight: 700; }
+  .help-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--csu-green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .help-btn:hover { background: var(--csu-navy); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 750px) {
+    .header h1 { font-size: 1.4rem; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
+  <h1>Brightspace Approved Integrations</h1>
+  <p>Faculty resource for all approved third-party tools integrated into Brightspace. Find instructor guides, vendor documentation, and access details below.</p>
+</div>
+
+<div class="container">
+  <div class="controls">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search integrations..." autocomplete="off">
+    </div>
+    <div class="filter-pills" id="filterPills">
+      <button class="pill active" data-filter="all">All</button>
+      <button class="pill" data-filter="Publisher Content">Publisher</button>
+      <button class="pill" data-filter="Assessment &amp; Discussion">Assessment</button>
+      <button class="pill" data-filter="Video &amp; Collaboration">Video</button>
+      <button class="pill" data-filter="Field Experience">Field Exp.</button>
+      <button class="pill" data-filter="Simulation &amp; Practice">Simulation</button>
+    </div>
+  </div>
+
+  <div class="results-count" id="resultsCount"></div>
+  <div class="cards" id="cardGrid"></div>
+
+  <div class="help-banner">
+    <div class="help-banner-text"><strong>Need help with an integration?</strong> Submit a support request to CTRE/OOIT for assistance with setup, troubleshooting, or requesting a new integration.</div>
+    <a class="help-btn" href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Submit a Request
+    </a>
+  </div>
+</div>
+
+<div class="footer">
+  Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
+  Questions? Contact CTRE/OOIT for integration support.
+</div>
+
+<script>
+const extIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+
+const integrations = [
+  // ── Publisher Content ──
+  {
+    name: "Access Pearson / Pearson Links",
+    category: "Publisher Content",
+    desc: "Connect Pearson MyLab, Mastering, and Revel courseware directly into your Brightspace course for seamless grade sync, single sign-on, and deep linking to specific content.",
+    links: [
+      { label: "Instructor Guide", url: "https://support.pearson.com/getsupport/s/document-item?language=en_US&bundleId=3pl-cg-instructor&topicId=Content/get_started-bs-13.htm&_LANG=enus" }
+    ]
+  },
+  {
+    name: "Hawkes Learning",
+    category: "Publisher Content",
+    desc: "Integrate Hawkes Learning math, statistics, and science courseware into Brightspace with automatic grade passback and deep linking to specific assignments, lessons, or assessments.",
+    links: [
+      { label: "Instructor Guide", url: "https://support.hawkeslearning.com/supportcenter/index.php?/article/AA-00732/" }
+    ]
+  },
+  {
+    name: "Follett \u2013 My Materials",
+    category: "Publisher Content",
+    desc: "Follett Discover integration provides students with access to required course materials (eTexts, OER, courseware) directly from Brightspace.",
+    links: [
+      { label: "Adoption Support", url: "https://support.follett.com/hc/en-us/sections/43353054604308-Adoption-Support" }
+    ]
+  },
+  {
+    name: "OLI Torus",
+    category: "Publisher Content",
+    desc: "Carnegie Mellon\u2019s Open Learning Initiative (OLI) adaptive courseware. Link OLI Torus courses into Brightspace for data-driven, research-based learning.",
+    links: [
+      { label: "Brightspace Integration Guide", url: "https://olihelp.zohodesk.com/portal/en/kb/articles/integrate-torus-with-d2l-brightspace" }
+    ]
+  },
+  {
+    name: "Oxford Learning Link LTI 1.3",
+    category: "Publisher Content",
+    desc: "Oxford University Press integration for linking OUP digital resources, assessments, and eTexts into Brightspace courses.",
+    links: [
+      { label: "Getting Started Guide", url: "https://support.learninglink.oup.com/s/article/I-am-an-AdministratorInstructor-how-can-I-get-started-with-Oxford-Learning-Link-content-in-my-LMSVLE?data=%7B%22topicId%22%3A%220TOSq0000001IKfOAM%22%7D" }
+    ]
+  },
+  {
+    name: "W. W. Norton Link",
+    category: "Publisher Content",
+    desc: "Integrate W. W. Norton InQuizitive, Smartwork, and other digital courseware with grade sync into Brightspace.",
+    links: [
+      { label: "Instructor LMS Guide", url: "https://knowledgebase.wwnorton.com/help/lms-instructors" }
+    ]
+  },
+  {
+    name: "Cengage",
+    category: "Publisher Content",
+    desc: "Link Cengage MindTap, WebAssign, and other Cengage platforms into Brightspace for single sign-on and automatic grading.",
+    links: [
+      { label: "Brightspace Course Setup", url: "https://help.cengage.com/mindtap/mt-instructor/common/lms-create-or-link-a-course-brightspace.html" }
+    ]
+  },
+  {
+    name: "JBLearning Courses",
+    category: "Publisher Content",
+    desc: "Jones &amp; Bartlett Learning (PSG Learning) courseware integration for health science, public safety, and nursing programs within Brightspace.",
+    links: [
+      { label: "Import Test Banks into Brightspace", url: "https://info.psglearning.com/hubfs/LTI/LTI%20Updated%20PDFs/JBL%20PSG-How%20to%20download%20and%20import%20test%20bank%20files%20into%20D2L%20Brightspace%20LMS.pdf" },
+      { label: "Redeem LTI Access Code", url: "https://info.psglearning.com/hubfs/LTI/How%20to%20Redeem%20an%20LTI%20Access%20Code%20%20JBL%20Form%20Launch%20Updated%202-2.pdf" }
+    ]
+  },
+  // ── Assessment & Discussion ──
+  {
+    name: "Packback Assignments &amp; Discussions",
+    category: "Assessment & Discussion",
+    desc: "AI-moderated discussion platform that promotes curiosity-driven inquiry. Integrates with Brightspace for roster sync and grade passback.",
+    links: [
+      { label: "Instructor Introduction Guide", url: "https://help.packback.co/hc/en-us/articles/360045380571-Introduction-to-Packback-Questions-for-Instructors" },
+      { label: "Educator Support", url: "https://help.packback.co/hc/en-us/categories/204314487-Educator-Support" }
+    ]
+  },
+  {
+    name: "Packback Deep Link",
+    category: "Assessment & Discussion",
+    desc: "Add deep-linked Packback assignments directly into your Brightspace content modules for seamless student access.",
+    links: [
+      { label: "How to Add Deep Linked Assignments", url: "https://help.packback.co/hc/en-us/articles/36558343804699-LTI-1-3-for-Educators-How-to-Add-Deep-Linked-Assignments#h_01JT8YQK5S8SA722YMKY7K403J" },
+      { label: "Educator Support", url: "https://help.packback.co/hc/en-us/categories/204314487-Educator-Support" }
+    ]
+  },
+  {
+    name: "SmarterMeasure",
+    category: "Assessment & Discussion",
+    desc: "Student readiness assessment tool that measures online learning preparedness across multiple dimensions (technical, time management, reading, typing).",
+    links: [
+      { label: "CSU Brightspace Instructions", url: "https://brightspace.csu.edu/d2l/le/lessons/6723/folders/11032" }
+    ]
+  },
+  {
+    name: "CertMaster LTI Adv",
+    category: "Assessment & Discussion",
+    desc: "CompTIA CertMaster Practice and Labs integration for IT certification preparation courses in Brightspace.",
+    links: [
+      { label: "Linking to Course Resources", url: "https://help.comptia.org/hc/en-us/articles/29155737854356-Brightspace-LTI-Advantage-1-3-Linking-to-Course-Resources" }
+    ]
+  },
+  {
+    name: "Edpuzzle",
+    category: "Assessment & Discussion",
+    desc: "Interactive video lesson platform \u2014 embed questions, audio notes, and quizzes into videos. Grades sync back to Brightspace.",
+    links: [
+      { label: "Brightspace Setup Guide", url: "https://support.edpuzzle.com/hc/en-us/articles/9477304852621-Using-Edpuzzle-with-D2L-Brightspace" }
+    ]
+  },
+  {
+    name: "ExamSoft (School of Pharmacy)",
+    category: "Assessment & Discussion",
+    desc: "Secure assessment platform for the School of Pharmacy. Push exam grades from ExamSoft directly to your Brightspace gradebook.",
+    links: [
+      { label: "Push Grades to LMS", url: "https://support.examsoft.com/hc/en-us/articles/11166534607757-Legacy-Portal-Push-Grades-to-Your-LMS" }
+    ]
+  },
+  // ── Video & Collaboration ──
+  {
+    name: "Bongo Video Assignment",
+    category: "Video & Collaboration",
+    desc: "Video-based assessment tool allowing students to record, submit, and peer-review video assignments directly in Brightspace.",
+    links: [
+      { label: "Using Video Assignments by Bongo", url: "https://community.d2l.com/brightspace/kb/articles/22807-using-virtual-classrooms-and-video-assignments-by-bongo" }
+    ]
+  },
+  {
+    name: "Bongo Virtual Classroom",
+    category: "Video & Collaboration",
+    desc: "Live virtual classroom tool integrated into Brightspace for real-time video sessions, breakout rooms, and recordings.",
+    links: [
+      { label: "Using Virtual Classrooms by Bongo", url: "https://community.d2l.com/brightspace/kb/articles/22807-using-virtual-classrooms-and-video-assignments-by-bongo" }
+    ]
+  },
+  {
+    name: "Zoom Meeting",
+    category: "Video & Collaboration",
+    desc: "Schedule and launch Zoom meetings directly from Brightspace. Students join with one click from the course. See Step 13 onward for Brightspace-specific setup.",
+    links: [
+      { label: "Zoom LTI Pro Setup (start at Step 13)", url: "https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059615#h_01FRKZZGMRCVZ52M4816AP5FEY" }
+    ]
+  },
+  {
+    name: "Microsoft Teams Meeting Link Creation",
+    category: "Video & Collaboration",
+    desc: "Create and embed Microsoft Teams meeting links within Brightspace for class sessions and office hours.",
+    links: [
+      { label: "Create a Teams Meeting in Brightspace", url: "https://community.d2l.com/brightspace/kb/articles/23772-create-a-microsoft-teams-meeting" }
+    ]
+  },
+  // ── Field Experience ──
+  {
+    name: "Tevera LTI 1.3 \u2013 CMHC",
+    category: "Field Experience",
+    desc: "Tevera (formerly Watermark) field experience management for Clinical Mental Health Counseling \u2014 track placements, hours, and evaluations.",
+    links: [
+      { label: "D2L Setup: Add Tevera Links to Courses", url: "https://community.lumivero.com/s/article/d2l-setup-for-lti-1-3-add-tevera-links-to-courses?language=en_US" }
+    ]
+  },
+  {
+    name: "Tevera LTI 1.3 \u2013 MSW",
+    category: "Field Experience",
+    desc: "Tevera field experience management for Master of Social Work \u2014 track placements, hours, and evaluations.",
+    links: [
+      { label: "D2L Setup: Add Tevera Links to Courses", url: "https://community.lumivero.com/s/article/d2l-setup-for-lti-1-3-add-tevera-links-to-courses?language=en_US" }
+    ]
+  },
+  {
+    name: "Tevera LTI 1.3 \u2013 School Counseling",
+    category: "Field Experience",
+    desc: "Tevera field experience management for School Counseling \u2014 track practicum and internship placements, hours, and evaluations.",
+    links: [
+      { label: "D2L Setup: Add Tevera Links to Courses", url: "https://community.lumivero.com/s/article/d2l-setup-for-lti-1-3-add-tevera-links-to-courses?language=en_US" }
+    ]
+  },
+  // ── Simulation & Practice ──
+  {
+    name: "Stukent",
+    category: "Simulation & Practice",
+    desc: "Business simulation platform with Mimic (marketing, analytics, social media) simulations and courseware for hands-on learning in Brightspace.",
+    links: [
+      { label: "Instructor Guide (New Content Experience)", url: "https://info.stukent.com/l/1013462/2024-08-12/2h8jn/1013462/172348048015wcWgMV/BRIGHTSPACE_Instructor_Guide_v2_NewContentExperience.pdf" },
+      { label: "Instructor Guide", url: "https://info.stukent.com/l/1013462/2024-08-12/2h8jr/1013462/17234805745BjEHs0V/BRIGHTSPACE_Instructor_Guide_v2.pdf" },
+      { label: "Course Copy Guide", url: "https://info.stukent.com/l/1013462/2026-01-08/426h3/1013462/17678903706MYNg56z/Brightspace_Course_Copy_guide.pdf" }
+    ]
+  },
+  {
+    name: "New Shoes LTI 1.3",
+    category: "Simulation & Practice",
+    desc: "Experiential learning simulation tool integrated via LTI 1.3 into Brightspace. Contact CTRE/OOIT for setup assistance.",
+    links: []
+  }
+];
+
+// Category CSS classes
+const catClass = {
+  "Publisher Content": "cat-publisher",
+  "Assessment & Discussion": "cat-assessment",
+  "Video & Collaboration": "cat-video",
+  "Field Experience": "cat-field",
+  "Simulation & Practice": "cat-simulation"
+};
+
+const grid = document.getElementById("cardGrid");
+const searchInput = document.getElementById("searchInput");
+const resultsCount = document.getElementById("resultsCount");
+let activeFilter = "all";
+
+function renderCards() {
+  const q = searchInput.value.toLowerCase().trim();
+  const filtered = integrations.filter(i => {
+    const matchFilter = activeFilter === "all" || i.category === activeFilter;
+    const matchSearch = !q || i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q) || i.category.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  resultsCount.textContent = `Showing ${filtered.length} of ${integrations.length} integrations`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">No integrations match your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(i => {
+    const linksHtml = i.links && i.links.length > 0
+      ? i.links.map(l => `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label} ${extIcon}</a>`).join("")
+      : `<span style="font-size:0.85rem;color:var(--gray-400);">Contact CTRE/OOIT for documentation</span>`;
+
+    return `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">${i.name}</span>
+        <span class="card-category ${catClass[i.category] || ''}">${i.category}</span>
+      </div>
+      <div class="card-desc">${i.desc}</div>
+      <div class="card-links">${linksHtml}</div>
+    </div>`;
+  }).join("");
+}
+
+// Filter pills
+document.getElementById("filterPills").addEventListener("click", e => {
+  if (!e.target.classList.contains("pill")) return;
+  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+  e.target.classList.add("active");
+  activeFilter = e.target.dataset.filter;
+  renderCards();
+});
+
+searchInput.addEventListener("input", renderCards);
+renderCards();
+</script>
+</body>
+</html>
