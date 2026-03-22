@@ -10,17 +10,18 @@
   :root {
     --csu-green: #0d5540;
     --csu-navy: #17375f;
-    --csu-accent: #7bba4c;
+    --csu-accent: #4a8a2a;
     --csu-light-green: #e8f5e0;
     --csu-light-navy: #e6eaf0;
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
-    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
     --gray-600: #4b5563;
     --gray-700: #374151;
     --gray-800: #1f2937;
     --radius: 10px;
+    --focus-ring: 0 0 0 3px rgba(13, 85, 64, 0.5);
   }
 
   body {
@@ -30,8 +31,33 @@
     line-height: 1.6;
   }
 
+  /* SKIP LINK */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    background: var(--csu-navy);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 0 var(--radius) var(--radius);
+    z-index: 1000;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--csu-accent);
+    outline-offset: 2px;
+  }
+
+  /* GLOBAL FOCUS */
+  *:focus-visible {
+    outline: 3px solid var(--csu-accent);
+    outline-offset: 2px;
+  }
+
   /* HEADER */
-  .header {
+  .site-header {
     background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%);
     color: #fff;
     padding: 2.5rem 2rem 2rem;
@@ -47,16 +73,16 @@
     text-transform: uppercase;
     margin-bottom: 0.75rem;
   }
-  .header h1 {
+  .site-header h1 {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.4rem;
   }
-  .header p {
+  .site-header p {
     font-size: 1rem;
-    opacity: 0.9;
     max-width: 700px;
     margin: 0 auto;
+    color: rgba(255, 255, 255, 0.95);
   }
 
   /* CONTAINER */
@@ -78,22 +104,37 @@
     flex: 1 1 280px;
     position: relative;
   }
+  .search-box label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   .search-box input {
     width: 100%;
     padding: 0.7rem 0.7rem 0.7rem 2.6rem;
     border: 2px solid var(--gray-200);
     border-radius: var(--radius);
     font-size: 0.95rem;
-    outline: none;
     transition: border-color 0.2s;
   }
-  .search-box input:focus { border-color: var(--csu-accent); }
+  .search-box input:focus-visible {
+    border-color: var(--csu-accent);
+    outline: 3px solid var(--csu-accent);
+    outline-offset: 2px;
+  }
   .search-box svg {
     position: absolute;
     left: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--gray-400);
+    color: var(--gray-600);
+    pointer-events: none;
   }
 
   .filter-pills {
@@ -102,18 +143,26 @@
     gap: 0.4rem;
   }
   .pill {
-    padding: 0.45rem 0.9rem;
+    padding: 0.55rem 1rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 20px;
-    border: 1.5px solid var(--gray-200);
+    border: 2px solid var(--gray-200);
     background: #fff;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
     color: var(--gray-700);
   }
-  .pill:hover { border-color: var(--csu-accent); color: var(--csu-green); }
-  .pill.active {
+  .pill:hover {
+    border-color: var(--csu-accent);
+    color: var(--csu-green);
+  }
+  .pill[aria-pressed="true"] {
     background: var(--csu-green);
     color: #fff;
     border-color: var(--csu-green);
@@ -157,8 +206,8 @@
   }
   .card-category {
     display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     padding: 0.2rem 0.55rem;
@@ -167,11 +216,12 @@
     flex-shrink: 0;
     margin-left: 0.5rem;
   }
-  .cat-publisher { background: var(--csu-light-navy); color: var(--csu-navy); }
-  .cat-assessment { background: #fef3c7; color: #92400e; }
-  .cat-video { background: #ede9fe; color: #5b21b6; }
-  .cat-field { background: var(--csu-light-green); color: var(--csu-green); }
-  .cat-simulation { background: #e0f2fe; color: #0369a1; }
+  /* Category badges — all pass WCAG AA contrast */
+  .cat-publisher { background: var(--csu-light-navy); color: #0f2b4d; }
+  .cat-assessment { background: #fef3c7; color: #78350f; }
+  .cat-video { background: #ede9fe; color: #4c1d95; }
+  .cat-field { background: var(--csu-light-green); color: #064e3b; }
+  .cat-simulation { background: #e0f2fe; color: #075985; }
 
   .card-desc {
     font-size: 0.9rem;
@@ -191,16 +241,19 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--csu-green);
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
     transition: color 0.2s;
+    padding: 0.15rem 0;
   }
-  .card-link:hover { color: var(--csu-accent); text-decoration: underline; }
+  .card-link:hover,
+  .card-link:focus-visible { color: var(--csu-accent); }
   .card-link svg { flex-shrink: 0; }
 
   .no-results {
     text-align: center;
     padding: 3rem 1rem;
-    color: var(--gray-400);
+    color: var(--gray-600);
     font-size: 1rem;
     grid-column: 1 / -1;
   }
@@ -232,7 +285,8 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.3rem;
+    min-height: 44px;
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
@@ -240,66 +294,139 @@
     transition: background 0.2s;
   }
   .help-btn:hover { background: var(--csu-navy); }
+  .help-btn:focus-visible {
+    outline: 3px solid var(--csu-navy);
+    outline-offset: 2px;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: var(--csu-navy);
+    border: 3px solid #fbbf24;
+    border-radius: var(--radius);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(23, 55, 95, 0.35);
+  }
+  .alert-icon {
+    flex-shrink: 0;
+    color: #fbbf24;
+    margin-top: 4px;
+  }
+  .alert-content { flex: 1; }
+  .alert-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  .alert-text {
+    font-size: 1.05rem;
+    color: #ffffff;
+    line-height: 1.6;
+  }
+  .alert-text strong {
+    color: #fbbf24;
+  }
 
   /* FOOTER */
-  .footer {
+  .site-footer {
     text-align: center;
     padding: 1.5rem 1rem;
-    font-size: 0.8rem;
-    color: var(--gray-400);
+    font-size: 0.85rem;
+    color: var(--gray-600);
     border-top: 1px solid var(--gray-200);
     margin-top: 2rem;
   }
 
+  /* VISUALLY HIDDEN UTILITY */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   @media (max-width: 750px) {
-    .header h1 { font-size: 1.4rem; }
+    .site-header h1 { font-size: 1.4rem; }
     .cards { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="header">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
   <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
   <h1>Brightspace Approved Integrations</h1>
   <p>Faculty resource for all approved third-party tools integrated into Brightspace. Find instructor guides, vendor documentation, and access details below.</p>
-</div>
+</header>
 
-<div class="container">
+<main id="main-content" class="container">
+  <div class="alert-banner" role="alert" aria-label="Important notice about Turnitin upgrade">
+    <svg class="alert-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div class="alert-content">
+      <h2 class="alert-title">Turnitin LTI 1.3 Upgrade &mdash; Action Required</h2>
+      <p class="alert-text">The end of support date for Turnitin&rsquo;s LTI 1.1 integration with D2L Brightspace is <strong>June 30, 2026</strong>. CSU will update the integration and transition <strong>May 15th</strong> to the new version. Please see documentation in the Turnitin section below.</p>
+    </div>
+  </div>
+
   <div class="controls">
     <div class="search-box">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <label for="searchInput">Search integrations</label>
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="searchInput" placeholder="Search integrations..." autocomplete="off">
     </div>
-    <div class="filter-pills" id="filterPills">
-      <button class="pill active" data-filter="all">All</button>
-      <button class="pill" data-filter="Publisher Content">Publisher</button>
-      <button class="pill" data-filter="Assessment &amp; Discussion">Assessment</button>
-      <button class="pill" data-filter="Video &amp; Collaboration">Video</button>
-      <button class="pill" data-filter="Field Experience">Field Exp.</button>
-      <button class="pill" data-filter="Simulation &amp; Practice">Simulation</button>
-    </div>
+    <nav aria-label="Filter integrations by category">
+      <div class="filter-pills" role="group" aria-label="Category filters" id="filterPills">
+        <button class="pill" aria-pressed="true" data-filter="all">All</button>
+        <button class="pill" aria-pressed="false" data-filter="Publisher Content">Publisher</button>
+        <button class="pill" aria-pressed="false" data-filter="Assessment &amp; Discussion">Assessment</button>
+        <button class="pill" aria-pressed="false" data-filter="Video &amp; Collaboration">Video</button>
+        <button class="pill" aria-pressed="false" data-filter="Field Experience">Field Exp.</button>
+        <button class="pill" aria-pressed="false" data-filter="Simulation &amp; Practice">Simulation</button>
+      </div>
+    </nav>
   </div>
 
-  <div class="results-count" id="resultsCount"></div>
-  <div class="cards" id="cardGrid"></div>
+  <div class="results-count" id="resultsCount" aria-live="polite" role="status"></div>
+  <div class="cards" id="cardGrid" role="region" aria-label="Integration cards"></div>
 
   <div class="help-banner">
-    <div class="help-banner-text"><strong>Need help with an integration?</strong> Submit a support request to CTRE/OOIT for assistance with setup, troubleshooting, or requesting a new integration.</div>
+    <p class="help-banner-text"><strong>Need help with an integration?</strong> Submit a support request to CTRE/OOIT for assistance with setup, troubleshooting, or requesting a new integration.</p>
     <a class="help-btn" href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Submit a Request
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Submit a Request<span class="sr-only"> (opens in new tab)</span>
     </a>
   </div>
-</div>
+</main>
 
-<div class="footer">
-  Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
-  Questions? Contact CTRE/OOIT for integration support.
-</div>
+<footer class="site-footer">
+  <p>Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
+  Questions? Contact CTRE/OOIT for integration support.</p>
+</footer>
 
 <script>
-const extIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+const extIcon = '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+const srNewTab = '<span class="sr-only"> (opens in new tab)</span>';
 
 const integrations = [
   // ── Publisher Content ──
@@ -424,10 +551,18 @@ const integrations = [
     category: "Assessment & Discussion",
     desc: "Originality checking and plagiarism detection tool integrated with Brightspace Assignments. Review similarity reports, submit on behalf of students, and use Quick Submit.",
     links: [
-      { label: "Assignments &amp; Turnitin in Brightspace", url: "https://community.d2l.com/brightspace/kb/articles/3408-assignments-and-turnitin" },
-      { label: "Turnitin Instructor Guides", url: "https://guides.turnitin.com/hc/en-us/sections/23289410960781" },
+      { label: "Turnitin Upgrade to LTI 1.3", url: "https://guides.turnitin.com/hc/en-us/articles/21537025206413-Turnitin-s-LTI-1-1-to-1-3-upgrade-within-D2L-Brightspace-FAQ-for-Feedback-Studio-instructors" },
+      { label: "Course Copy Recommendations", url: "https://guides.turnitin.com/hc/en-us/articles/21711285428365-LMS-course-copy-recommendations-for-Feedback-Studio-in-D2L" },
+      { label: "Assignment Copy Tool", url: "https://guides.turnitin.com/hc/en-us/articles/21510317849229-Using-the-Turnitin-Assignment-Copy-tool-in-Feedback-Studio-with-D2L-LTI-1-3" },
+      { label: "Assignment Management", url: "https://guides.turnitin.com/hc/en-us/sections/22951889001485-Assignment-management" },
       { label: "Submitting on Behalf of Students", url: "https://guides.turnitin.com/hc/en-us/articles/26723632922765-Submitting-on-behalf-of-students" },
-      { label: "Quick Submit", url: "https://guides.turnitin.com/hc/en-us/articles/22046016193165-Quick-submit" }
+      { label: "Quick Submit", url: "https://guides.turnitin.com/hc/en-us/articles/22046016193165-Quick-submit" },
+      { label: "Enhanced Similarity Report Guide", url: "https://guides.turnitin.com/hc/en-us/sections/27332898437133" },
+      { label: "Writing Report Guide", url: "https://guides.turnitin.com/hc/en-us/sections/36916412251277-The-Writing-Report" },
+      { label: "AI Writing Report Guide", url: "https://guides.turnitin.com/hc/en-us/sections/22773792790797-AI-writing" },
+      { label: "New Grading and Feedback", url: "https://guides.turnitin.com/hc/en-us/sections/35337018905869-New-grading-and-feedback" },
+      { label: "Student: Submitting to a Standard Assignment", url: "https://guides.turnitin.com/hc/en-us/articles/22049882775821-Submitting-to-a-Standard-Assignment" },
+      { label: "Student: Understanding the Standard Assignment", url: "https://guides.turnitin.com/hc/en-us/articles/38265013496589--Student-Understanding-the-Standard-Assignment" }
     ]
   },
   // ── Video & Collaboration ──
@@ -532,34 +667,51 @@ function renderCards() {
   resultsCount.textContent = `Showing ${filtered.length} of ${integrations.length} integrations`;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="no-results">No integrations match your search.</div>';
+    grid.innerHTML = '<div class="no-results" role="status">No integrations match your search.</div>';
     return;
   }
 
   grid.innerHTML = filtered.map(i => {
     const linksHtml = i.links && i.links.length > 0
-      ? i.links.map(l => `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label} ${extIcon}</a>`).join("")
-      : `<span style="font-size:0.85rem;color:var(--gray-400);">Contact CTRE/OOIT for documentation</span>`;
+      ? '<ul class="card-links" role="list">' + i.links.map(l => `<li><a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label} ${extIcon}${srNewTab}</a></li>`).join("") + '</ul>'
+      : `<p style="font-size:0.85rem;color:var(--gray-600);">Contact CTRE/OOIT for documentation</p>`;
 
     return `
-    <div class="card">
+    <article class="card">
       <div class="card-header">
-        <span class="card-title">${i.name}</span>
+        <h3 class="card-title">${i.name}</h3>
         <span class="card-category ${catClass[i.category] || ''}">${i.category}</span>
       </div>
-      <div class="card-desc">${i.desc}</div>
-      <div class="card-links">${linksHtml}</div>
-    </div>`;
+      <p class="card-desc">${i.desc}</p>
+      ${linksHtml}
+    </article>`;
   }).join("");
 }
 
 // Filter pills
 document.getElementById("filterPills").addEventListener("click", e => {
   if (!e.target.classList.contains("pill")) return;
-  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-  e.target.classList.add("active");
+  document.querySelectorAll(".pill").forEach(p => p.setAttribute("aria-pressed", "false"));
+  e.target.setAttribute("aria-pressed", "true");
   activeFilter = e.target.dataset.filter;
   renderCards();
+});
+
+// Keyboard support for filter pills
+document.getElementById("filterPills").addEventListener("keydown", e => {
+  if (!e.target.classList.contains("pill")) return;
+  const pills = Array.from(document.querySelectorAll(".pill"));
+  const idx = pills.indexOf(e.target);
+  let newIdx = -1;
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+    newIdx = (idx + 1) % pills.length;
+  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+    newIdx = (idx - 1 + pills.length) % pills.length;
+  }
+  if (newIdx >= 0) {
+    e.preventDefault();
+    pills[newIdx].focus();
+  }
 });
 
 searchInput.addEventListener("input", renderCards);
