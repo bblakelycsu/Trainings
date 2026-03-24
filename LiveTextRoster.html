@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Roster LiveText Converter — Chicago State University</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #7bba4c;
+    --csu-light-green: #e8f5e1;
+    --csu-light-navy: #e4eaf1;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    background: linear-gradient(135deg, var(--csu-light-green) 0%, var(--gray-50) 50%, var(--csu-light-navy) 100%);
+    min-height: 100vh; color: var(--gray-900);
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--csu-navy) 0%, var(--csu-green) 100%);
+    color: white; padding: 24px 40px;
+    display: flex; align-items: center; gap: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .header-icon {
+    width: 64px; height: 64px; background: var(--csu-accent);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 800; color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); flex-shrink: 0;
+  }
+  .header-text h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-text p { font-size: 14px; opacity: 0.85; margin-top: 4px; line-height: 1.4; max-width: 720px; }
+
+  .container { max-width: 1000px; margin: 28px auto; padding: 0 20px; }
+
+  /* Instructions */
+  .instructions-card {
+    background: white; border-radius: 14px; padding: 22px 26px; margin-bottom: 22px;
+    border-left: 5px solid var(--csu-accent); box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .instructions-card h2 { color: var(--csu-navy); font-size: 17px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .instructions-card ol { padding-left: 20px; color: var(--gray-700); font-size: 14px; line-height: 1.8; }
+  .instructions-card ol li::marker { color: var(--csu-green); font-weight: 700; }
+
+  /* Privacy badge */
+  .privacy-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--csu-light-green); border: 1px solid var(--csu-accent);
+    border-radius: 8px; padding: 6px 14px; font-size: 12px; color: var(--csu-green);
+    font-weight: 600; margin-top: 10px;
+  }
+
+  /* Upload */
+  .upload-card {
+    background: white; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 22px;
+    transition: box-shadow 0.2s;
+  }
+  .upload-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .upload-card-header {
+    padding: 14px 20px; font-weight: 700; font-size: 14px; color: white;
+    background: var(--csu-navy); display: flex; align-items: center; gap: 8px;
+  }
+  .drop-zone {
+    padding: 36px 20px; text-align: center; cursor: pointer;
+    border: 2px dashed var(--gray-200); margin: 16px; border-radius: 10px;
+    transition: all 0.2s; position: relative;
+  }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--csu-accent); background: var(--csu-light-green); }
+  .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+  .drop-text { color: var(--gray-500); font-size: 13px; }
+  .drop-text strong { color: var(--csu-green); font-size: 14px; }
+  .file-info { display: none; padding: 12px 20px 16px; font-size: 13px; }
+  .file-info.show { display: block; }
+  .file-name { display: flex; align-items: center; gap: 6px; color: var(--csu-green); font-weight: 600; margin-bottom: 4px; }
+  .file-meta { color: var(--gray-500); font-size: 12px; }
+
+  /* Button */
+  .action-area { text-align: center; margin-bottom: 22px; }
+  .convert-btn {
+    background: linear-gradient(135deg, var(--csu-navy) 0%, var(--csu-green) 100%);
+    color: white; border: none; padding: 15px 44px; font-size: 16px; font-weight: 700;
+    border-radius: 12px; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(23,55,95,0.3); letter-spacing: 0.3px;
+  }
+  .convert-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(23,55,95,0.4); }
+  .convert-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Results */
+  .status-card { display: none; background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 22px; }
+  .status-card.show { display: block; }
+  .status-header { background: var(--csu-green); color: white; padding: 14px 20px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .status-body { padding: 20px; }
+  .stat-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+  .stat-box { flex: 1; min-width: 120px; background: var(--gray-50); border-radius: 10px; padding: 14px 16px; text-align: center; border: 1px solid var(--gray-200); }
+  .stat-box .num { font-size: 28px; font-weight: 800; color: var(--csu-navy); }
+  .stat-box .label { font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .download-btn {
+    background: var(--csu-green); color: white; border: none; padding: 12px 36px;
+    font-size: 15px; font-weight: 600; border-radius: 10px; cursor: pointer;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .download-btn:hover { background: var(--csu-navy); transform: translateY(-1px); }
+
+  .preview-wrap { margin-top: 16px; max-height: 340px; overflow: auto; border: 1px solid var(--gray-200); border-radius: 8px; }
+  .preview-wrap table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+  .preview-wrap th { background: var(--csu-navy); color: white; padding: 8px 10px; text-align: left; position: sticky; top: 0; z-index: 2; font-size: 11px; letter-spacing: 0.3px; }
+  .preview-wrap td { padding: 6px 10px; border-bottom: 1px solid var(--gray-100); }
+  .preview-wrap tr:nth-child(even) { background: var(--gray-50); }
+  .preview-wrap tr:hover { background: var(--csu-light-green); }
+
+  .warn-box { background: #fef3cd; border: 1px solid #f0d56c; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #856404; margin-top: 12px; }
+  .info-box { background: #e8f0fe; border: 1px solid #a4c2f4; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1a3e6e; margin-top: 12px; }
+
+  .footer { text-align: center; padding: 20px; font-size: 12px; color: var(--gray-500); }
+  .footer strong { color: var(--csu-green); }
+  .footer a { color: var(--csu-navy); }
+
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">SR</div>
+  <div class="header-text">
+    <h1>Student Roster LiveText Converter</h1>
+    <p>Converts Brightspace Analytics student enrollment data into a formatted LiveText student roster import spreadsheet (.xlsx) for Chicago State University courses.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="instructions-card">
+    <h2>&#128221; Instructions</h2>
+    <ol>
+      <li>Pull the student enrollment file from <strong>Brightspace Analytics</strong> using the <strong>Section Enrollment</strong> report filtered per course. This file needs to be pulled from each course individually.</li>
+      <li>Upload the exported <strong>.xlsx</strong> file below. The tool expects the Brightspace Analytics format with headers on row 3.</li>
+      <li>Click <strong>Convert &amp; Generate</strong>. The tool will extract student data and format it for LiveText import.</li>
+      <li>Preview the results and download your new student roster spreadsheet.</li>
+    </ol>
+    <div class="privacy-badge">&#128274; No data is stored &mdash; all processing happens locally in your browser</div>
+  </div>
+
+  <div class="upload-card">
+    <div class="upload-card-header">&#128202; Brightspace Analytics &mdash; Student Enrollment Export (XLSX)</div>
+    <div class="drop-zone" id="drop1">
+      <input type="file" id="file1" accept=".csv,.xlsx,.xls" />
+      <span class="drop-icon">&#128229;</span><br>
+      <span class="drop-text"><strong>Click or drag file here</strong><br>Accepts .xlsx or .csv</span>
+    </div>
+    <div class="file-info" id="info1">
+      <div class="file-name" id="fname1"></div>
+      <div class="file-meta" id="fmeta1"></div>
+    </div>
+  </div>
+
+  <div class="action-area">
+    <button class="convert-btn" id="convertBtn" disabled onclick="convert()">Convert &amp; Generate</button>
+  </div>
+
+  <div class="status-card" id="statusCard">
+    <div class="status-header">&#9989; Conversion Results</div>
+    <div class="status-body">
+      <div class="stat-row">
+        <div class="stat-box"><div class="num" id="statInput">0</div><div class="label">Total Rows</div></div>
+        <div class="stat-box"><div class="num" id="statLearners">0</div><div class="label">Learners Found</div></div>
+        <div class="stat-box"><div class="num" id="statCourses">0</div><div class="label">Courses Detected</div></div>
+        <div class="stat-box"><div class="num" id="statOutput">0</div><div class="label">Output Rows</div></div>
+      </div>
+      <div style="text-align:center; margin-bottom: 12px;">
+        <button class="download-btn" id="dlBtn" onclick="downloadFile()">&#128190; Download Student Roster Spreadsheet</button>
+      </div>
+      <div id="warnings"></div>
+      <div class="preview-wrap" id="previewWrap" style="display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Chicago State University</strong> &bull; CTRE / OOIT &bull; Student Roster LiveText Converter<br>
+  Need help? <a href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank">Submit a Zendesk support ticket</a>
+</div>
+
+<script>
+let fileData = null;
+let outputWB = null;
+
+// File upload
+document.getElementById('file1').addEventListener('change', e => handleFile(e.target.files[0]));
+const dropEl = document.getElementById('drop1');
+dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('dragover'); });
+dropEl.addEventListener('dragleave', () => dropEl.classList.remove('dragover'));
+dropEl.addEventListener('drop', e => { e.preventDefault(); dropEl.classList.remove('dragover'); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
+
+function handleFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    let rows;
+
+    if (file.name.toLowerCase().endsWith('.csv')) {
+      // CSV: use simple split
+      const text = new TextDecoder('utf-8').decode(data);
+      const lines = text.split('\n').map(l => l.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
+      rows = lines;
+    } else {
+      const wb = XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    }
+
+    // Detect header row (look for known headers like SectionCode, CourseName, etc.)
+    const knownHeaders = ['sectioncode', 'coursename', 'externalemail', 'firstname', 'lastname', 'orgdefinedid', 'semestername'];
+    let headerIdx = 0;
+    for (let i = 0; i < Math.min(rows.length, 10); i++) {
+      const cellVals = (rows[i] || []).map(v => (v || '').toString().toLowerCase().trim());
+      const matchCount = cellVals.filter(v => knownHeaders.includes(v)).length;
+      if (matchCount >= 3) { headerIdx = i; break; }
+    }
+
+    const headers = (rows[headerIdx] || []).map(v => (v || '').toString().trim());
+    const parsed = [];
+    for (let i = headerIdx + 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.every(v => v === '' || v === null || v === undefined)) continue;
+      const obj = {};
+      headers.forEach((h, idx) => { obj[h] = (idx < row.length) ? row[idx] : ''; });
+      parsed.push(obj);
+    }
+
+    fileData = parsed;
+    document.getElementById('info1').classList.add('show');
+    document.getElementById('fname1').innerHTML = '&#9989; ' + file.name;
+    document.getElementById('fmeta1').textContent = parsed.length + ' data rows detected (header on row ' + (headerIdx + 1) + ')';
+    document.getElementById('convertBtn').disabled = !(parsed.length > 0);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// Helper to get column value with flexible header matching
+function getCol(row, names) {
+  for (const n of names) {
+    if (row[n] !== undefined && row[n] !== null && row[n] !== '') return row[n];
+  }
+  const keys = Object.keys(row);
+  for (const n of names) {
+    const lower = n.toLowerCase();
+    const match = keys.find(k => k.toLowerCase() === lower);
+    if (match && row[match] !== undefined && row[match] !== null && row[match] !== '') return row[match];
+  }
+  return '';
+}
+
+function convert() {
+  const btn = document.getElementById('convertBtn');
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+  btn.disabled = true;
+  setTimeout(() => doConvert(), 100);
+}
+
+function doConvert() {
+  const headers = ['TERM', 'CRSEID', 'SECTIONID', 'STUDENTFNAME', 'STUDENTLNAME', 'ID', 'EMAIL', 'BDATE', 'STUDENTACTION'];
+  const outputRows = [];
+  const warnings = [];
+  const courseSet = new Set();
+  let learnerCount = 0;
+  let totalRows = fileData.length;
+
+  fileData.forEach(r => {
+    // Only include Learner rows
+    const role = getCol(r, ['CourseRoleName', 'Courserolename', 'courserolename']).toString().trim();
+    if (role.toLowerCase() !== 'learner') return;
+    learnerCount++;
+
+    const sectionCode = getCol(r, ['SectionCode', 'Sectioncode', 'sectioncode']).toString().trim();
+    const courseName = getCol(r, ['CourseName', 'Coursename', 'coursename']).toString().trim();
+    const firstName = getCol(r, ['FirstName', 'Firstname', 'firstname']).toString().trim();
+    const lastName = getCol(r, ['LastName', 'Lastname', 'lastname']).toString().trim();
+    const email = getCol(r, ['ExternalEmail', 'Externalemail', 'externalemail']).toString().trim();
+    const orgId = getCol(r, ['OrgDefinedId', 'OrgDefinedID', 'Orgdefinedid', 'orgdefinedid']).toString().trim();
+
+    // TERM = last part of SectionCode after the dot (term code, e.g., 202601)
+    const sectionParts = sectionCode.split('.');
+    const term = sectionParts.length > 1 ? sectionParts[sectionParts.length - 1] : sectionCode.slice(-6);
+
+    // Parse CourseName: "Spring 2026 ... (SUBJ-CRSE-SEC)"
+    let subj = '', crseNum = '', sec = '';
+    const match = courseName.match(/\(([A-Za-z\s]+)-(\d+)-([^)]+)\)\s*$/);
+    if (match) {
+      subj = match[1].trim();
+      crseNum = match[2].trim();
+      sec = match[3].trim();
+    } else {
+      warnings.push('Could not parse course info from: ' + courseName);
+    }
+
+    // CRSEID = Subject letters + space + first part of SectionCode (CRN)
+    const crn = sectionParts[0] || '';
+    const crseId = subj + ' ' + crn;
+
+    // Track courses
+    courseSet.add(crseId + '-' + sec);
+
+    outputRows.push([term, crseId, sec, firstName, lastName, orgId, email, 'NA', 'A']);
+  });
+
+  // Build workbook
+  const wsData = [headers, ...outputRows];
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols'] = [
+    { wch: 10 }, // TERM
+    { wch: 14 }, // CRSEID
+    { wch: 12 }, // SECTIONID
+    { wch: 16 }, // STUDENTFNAME
+    { wch: 16 }, // STUDENTLNAME
+    { wch: 14 }, // ID
+    { wch: 24 }, // EMAIL
+    { wch: 8 },  // BDATE
+    { wch: 16 }, // STUDENTACTION
+  ];
+
+  outputWB = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(outputWB, ws, 'Student Roster');
+
+  // Update UI
+  document.getElementById('statInput').textContent = totalRows;
+  document.getElementById('statLearners').textContent = learnerCount;
+  document.getElementById('statCourses').textContent = courseSet.size;
+  document.getElementById('statOutput').textContent = outputRows.length;
+  document.getElementById('statusCard').classList.add('show');
+
+  // Warnings
+  const uniqueWarnings = [...new Set(warnings)];
+  const warnEl = document.getElementById('warnings');
+  let warnHtml = '';
+  if (uniqueWarnings.length) {
+    warnHtml += '<div class="warn-box"><strong>&#9888;&#65039; Warnings (' + uniqueWarnings.length + '):</strong><br>' +
+      uniqueWarnings.map(w => '&bull; ' + w).join('<br>') + '</div>';
+  }
+  if (totalRows > 0 && learnerCount === 0) {
+    warnHtml += '<div class="warn-box"><strong>&#9888;&#65039; No learner rows found.</strong> Make sure the file contains rows with CourseRoleName = "Learner".</div>';
+  }
+  warnEl.innerHTML = warnHtml;
+
+  // Preview
+  const wrap = document.getElementById('previewWrap');
+  wrap.style.display = 'block';
+  let html = '<table><thead><tr>';
+  headers.forEach(h => html += '<th>' + h + '</th>');
+  html += '</tr></thead><tbody>';
+  const maxPreview = Math.min(outputRows.length, 100);
+  for (let i = 0; i < maxPreview; i++) {
+    html += '<tr>';
+    outputRows[i].forEach(v => html += '<td>' + escHtml(v) + '</td>');
+    html += '</tr>';
+  }
+  if (outputRows.length > maxPreview) {
+    html += '<tr><td colspan="' + headers.length + '" style="text-align:center;color:#6b7280;font-style:italic;">... ' + (outputRows.length - maxPreview) + ' more rows ...</td></tr>';
+  }
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  const btn = document.getElementById('convertBtn');
+  btn.innerHTML = 'Convert &amp; Generate';
+  btn.disabled = false;
+}
+
+function downloadFile() {
+  if (!outputWB) return;
+  XLSX.writeFile(outputWB, 'Student_Roster_LiveText_Import.xlsx');
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return s.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
