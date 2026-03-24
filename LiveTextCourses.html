@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveText Converter — Chicago State University</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #7bba4c;
+    --csu-light-green: #e8f5e1;
+    --csu-light-navy: #e4eaf1;
+    --csu-gold: #c5a94e;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    background: linear-gradient(135deg, var(--csu-light-navy) 0%, var(--gray-50) 50%, var(--csu-light-green) 100%);
+    min-height: 100vh;
+    color: var(--gray-900);
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%);
+    color: white;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .header-icon {
+    width: 64px; height: 64px;
+    background: var(--csu-accent);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 800; color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+  .header-text h1 {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
+  }
+  .header-text p {
+    font-size: 14px; opacity: 0.85; margin-top: 4px; line-height: 1.4;
+    max-width: 700px;
+  }
+
+  /* Main Container */
+  .container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+
+  /* Instructions Card */
+  .instructions-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    border-left: 5px solid var(--csu-accent);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .instructions-card h2 {
+    color: var(--csu-navy);
+    font-size: 18px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .instructions-card ol {
+    padding-left: 20px;
+    color: var(--gray-700);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .instructions-card ol li::marker {
+    color: var(--csu-green);
+    font-weight: 700;
+  }
+  .file-badge {
+    display: inline-block;
+    background: var(--csu-light-navy);
+    color: var(--csu-navy);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .file-badge.green {
+    background: var(--csu-light-green);
+    color: var(--csu-green);
+  }
+
+  /* Upload Cards */
+  .upload-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .upload-row { grid-template-columns: 1fr; }
+  }
+  .upload-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .upload-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .upload-card-header {
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .upload-card-header.navy { background: var(--csu-navy); }
+  .upload-card-header.green { background: var(--csu-green); }
+
+  .drop-zone {
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px dashed var(--gray-200);
+    margin: 16px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: var(--csu-accent);
+    background: var(--csu-light-green);
+  }
+  .drop-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .drop-icon {
+    font-size: 36px; margin-bottom: 8px; display: block;
+  }
+  .drop-text {
+    color: var(--gray-500); font-size: 13px;
+  }
+  .drop-text strong {
+    color: var(--csu-green); font-size: 14px;
+  }
+
+  .file-info {
+    display: none;
+    padding: 12px 20px 16px;
+    font-size: 13px;
+  }
+  .file-info.show { display: block; }
+  .file-name {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--csu-green); font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .file-meta { color: var(--gray-500); font-size: 12px; }
+
+  /* Convert Button */
+  .action-area {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .convert-btn {
+    background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-accent) 100%);
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(13,85,64,0.3);
+    letter-spacing: 0.3px;
+  }
+  .convert-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(13,85,64,0.4);
+  }
+  .convert-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Status / Results */
+  .status-card {
+    display: none;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+  .status-card.show { display: block; }
+  .status-header {
+    background: var(--csu-navy);
+    color: white;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-body { padding: 20px; }
+
+  .stat-row {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .stat-box {
+    flex: 1;
+    min-width: 130px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+  }
+  .stat-box .num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--csu-green);
+  }
+  .stat-box .label {
+    font-size: 11px;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .download-btn {
+    background: var(--csu-navy);
+    color: white;
+    border: none;
+    padding: 12px 36px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .download-btn:hover {
+    background: var(--csu-green);
+    transform: translateY(-1px);
+  }
+
+  /* Preview Table */
+  .preview-wrap {
+    margin-top: 16px;
+    max-height: 320px;
+    overflow: auto;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+  }
+  .preview-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .preview-wrap th {
+    background: var(--csu-green);
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+  .preview-wrap td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .preview-wrap tr:nth-child(even) { background: var(--gray-50); }
+  .preview-wrap tr:hover { background: var(--csu-light-green); }
+  .preview-wrap tr.duplicate-row { background: #fef9e7; }
+  .preview-wrap tr.duplicate-row:hover { background: #fdf2cc; }
+
+  .warn-box {
+    background: #fef3cd;
+    border: 1px solid #f0d56c;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #856404;
+    margin-top: 12px;
+  }
+
+  /* Error styling */
+  .error-msg {
+    background: #fdecea;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #721c24;
+    margin-top: 12px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .footer strong { color: var(--csu-green); }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">LT</div>
+  <div class="header-text">
+    <h1>LiveText Converter</h1>
+    <p>Transforms Argos section enrollment data and Brightspace analytics into a formatted LiveText-ready import spreadsheet for Chicago State University.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions-card">
+    <h2>&#128221; Instructions</h2>
+    <ol>
+      <li>Upload <span class="file-badge">File 1</span> — the <strong>Section Enrollment Report from Argos</strong> (CSV) with only the selected classes added. Remove any extra courses before uploading.</li>
+      <li>Upload <span class="file-badge green">File 2</span> — the <strong>Brightspace Analytics export</strong> (XLSX) with the courses also filtered down. Only rows with <strong>LIS</strong> or <strong>TPS</strong> in the CourseName will be used for matching.</li>
+      <li>Click <strong>Convert &amp; Generate</strong>. Only <strong>LIS</strong> and <strong>TPS</strong> subject courses will be included. Canceled classes (STAT = C) are automatically removed.</li>
+      <li>Preview the results and download your new LiveText-ready spreadsheet.</li>
+    </ol>
+  </div>
+
+  <!-- UPLOAD AREA -->
+  <div class="upload-row">
+    <!-- File 1 -->
+    <div class="upload-card">
+      <div class="upload-card-header navy">&#128196; File 1 — Argos Section Enrollment (CSV)</div>
+      <div class="drop-zone" id="drop1">
+        <input type="file" id="file1" accept=".csv,.xlsx,.xls" />
+        <span class="drop-icon">&#128229;</span><br>
+        <span class="drop-text"><strong>Click or drag file here</strong><br>Accepts .csv or .xlsx</span>
+      </div>
+      <div class="file-info" id="info1">
+        <div class="file-name" id="fname1"></div>
+        <div class="file-meta" id="fmeta1"></div>
+      </div>
+    </div>
+    <!-- File 2 -->
+    <div class="upload-card">
+      <div class="upload-card-header green">&#128202; File 2 — Brightspace Analytics (XLSX)</div>
+      <div class="drop-zone" id="drop2">
+        <input type="file" id="file2" accept=".csv,.xlsx,.xls" />
+        <span class="drop-icon">&#128229;</span><br>
+        <span class="drop-text"><strong>Click or drag file here</strong><br>Accepts .xlsx or .csv</span>
+      </div>
+      <div class="file-info" id="info2">
+        <div class="file-name" id="fname2"></div>
+        <div class="file-meta" id="fmeta2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERT -->
+  <div class="action-area">
+    <button class="convert-btn" id="convertBtn" disabled onclick="convert()">Convert &amp; Generate</button>
+  </div>
+
+  <!-- STATUS / RESULTS -->
+  <div class="status-card" id="statusCard">
+    <div class="status-header">&#9989; Conversion Results</div>
+    <div class="status-body">
+      <div class="stat-row">
+        <div class="stat-box"><div class="num" id="statInput">0</div><div class="label">Input Rows</div></div>
+        <div class="stat-box"><div class="num" id="statFiltered">0</div><div class="label">Non-LIS/TPS (Filtered)</div></div>
+        <div class="stat-box"><div class="num" id="statSkipped">0</div><div class="label">Canceled (Skipped)</div></div>
+        <div class="stat-box"><div class="num" id="statBsUsed">0</div><div class="label">Brightspace LIS/TPS Rows</div></div>
+        <div class="stat-box"><div class="num" id="statMatched">0</div><div class="label">Email Matches</div></div>
+        <div class="stat-box"><div class="num" id="statOutput">0</div><div class="label">Output Rows</div></div>
+      </div>
+      <div style="text-align:center; margin-bottom: 12px;">
+        <button class="download-btn" id="dlBtn" onclick="downloadFile()">&#128190; Download LiveText Spreadsheet</button>
+      </div>
+      <div id="warnings"></div>
+      <div id="errors"></div>
+      <div class="preview-wrap" id="previewWrap" style="display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Chicago State University</strong> &bull; CTRE / OOIT &bull; LiveText Converter Tool
+</div>
+
+<script>
+// ── State ───────────────────────────────────────────────────────────
+let file1Data = null; // parsed rows from Argos CSV
+let file2Data = null; // parsed rows from Brightspace XLSX
+let outputWB = null;  // generated workbook
+
+// ── File upload handlers ────────────────────────────────────────────
+document.getElementById('file1').addEventListener('change', e => handleFile(e.target.files[0], 1));
+document.getElementById('file2').addEventListener('change', e => handleFile(e.target.files[0], 2));
+
+['drop1','drop2'].forEach((id, i) => {
+  const el = document.getElementById(id);
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('dragover'); });
+  el.addEventListener('dragleave', () => el.classList.remove('dragover'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); el.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0], i+1);
+  });
+});
+
+function handleFile(file, num) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    let rows;
+
+    if (file.name.toLowerCase().endsWith('.csv')) {
+      const text = new TextDecoder('utf-8').decode(data);
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: 'greedy' });
+      rows = parsed.data.filter(r => {
+        const vals = Object.values(r);
+        return vals.some(v => v && v.toString().trim().length > 0);
+      });
+    } else {
+      const wb = XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+
+      // Detect the real header row: Brightspace exports sometimes have
+      // a title row on Row 1 and blank Row 2, with actual headers on Row 3+.
+      // Scan for the row that contains recognizable column names.
+      const allRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      let headerRowIdx = 0;
+      const knownHeaders = ['orgdefinedid','externalemail','coursename','startdate',
+                            'term_desc','term_code_key','subj','pri_id','semestername'];
+      for (let i = 0; i < Math.min(allRows.length, 10); i++) {
+        const cellVals = allRows[i].map(v => (v || '').toString().toLowerCase().trim());
+        const matchCount = cellVals.filter(v => knownHeaders.includes(v)).length;
+        if (matchCount >= 3) { headerRowIdx = i; break; }
+      }
+      // Build rows using the detected header row
+      const headers2 = allRows[headerRowIdx].map(v => (v || '').toString().trim());
+      rows = [];
+      for (let i = headerRowIdx + 1; i < allRows.length; i++) {
+        const rowData = allRows[i];
+        // Skip empty rows
+        if (!rowData || rowData.every(v => v === '' || v === null || v === undefined)) continue;
+        const obj = {};
+        headers2.forEach((h, idx) => { obj[h] = (idx < rowData.length) ? rowData[idx] : ''; });
+        rows.push(obj);
+      }
+    }
+
+    if (num === 1) {
+      // Normalize headers: strip quotes and whitespace
+      if (rows.length > 0) {
+        const first = rows[0];
+        const cleanRows = rows.map(r => {
+          const nr = {};
+          for (const k in r) {
+            nr[k.replace(/^"|"$/g,'').trim()] = (typeof r[k] === 'string') ? r[k].replace(/^"|"$/g,'').trim() : r[k];
+          }
+          return nr;
+        });
+        // Filter out rows that are actually the header repeated
+        file1Data = cleanRows.filter(r => r['TERM_DESC'] && r['TERM_DESC'] !== 'TERM_DESC');
+      } else {
+        file1Data = [];
+      }
+      showInfo(1, file.name, file1Data.length + ' data rows');
+    } else {
+      // Normalize File 2 headers: strip quotes and whitespace
+      if (rows.length > 0) {
+        file2Data = rows.map(r => {
+          const nr = {};
+          for (const k in r) {
+            const cleanKey = k.replace(/^"|"$/g,'').trim();
+            nr[cleanKey] = (typeof r[k] === 'string') ? r[k].replace(/^"|"$/g,'').trim() : r[k];
+          }
+          return nr;
+        });
+      } else {
+        file2Data = [];
+      }
+      showInfo(2, file.name, file2Data.length + ' data rows');
+    }
+    checkReady();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showInfo(num, name, meta) {
+  document.getElementById('info' + num).classList.add('show');
+  document.getElementById('fname' + num).innerHTML = '&#9989; ' + name;
+  document.getElementById('fmeta' + num).textContent = meta;
+}
+
+function checkReady() {
+  document.getElementById('convertBtn').disabled = !(file1Data && file1Data.length && file2Data && file2Data.length);
+}
+
+// ── Conversion logic ────────────────────────────────────────────────
+function convert() {
+  const btn = document.getElementById('convertBtn');
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+  btn.disabled = true;
+
+  setTimeout(() => doConvert(), 100);
+}
+
+function doConvert() {
+  // Helper to find a column value by trying multiple possible header names
+  function getCol(row, names) {
+    for (const n of names) {
+      if (row[n] !== undefined && row[n] !== null && row[n] !== '') return row[n];
+    }
+    // Fallback: case-insensitive search
+    const keys = Object.keys(row);
+    for (const n of names) {
+      const lower = n.toLowerCase();
+      const match = keys.find(k => k.toLowerCase() === lower);
+      if (match && row[match] !== undefined && row[match] !== null && row[match] !== '') return row[match];
+    }
+    return '';
+  }
+
+  // Normalize an ID: convert to string, trim, strip leading zeros, remove non-alphanumeric
+  function normalizeId(val) {
+    return val.toString().trim().replace(/\.0+$/, '').replace(/^0+/, '') || '0';
+  }
+
+  // Build lookup from File 2: OrgDefinedId -> { email, startDate, endDate }
+  // Only include Brightspace rows where CourseName contains LIS or TPS
+  // Store both raw and normalized keys for robust matching
+  const lookup = {};
+  const lookupNorm = {};
+  let bsUsed = 0;
+  file2Data.forEach(r => {
+    const courseName = getCol(r, ['CourseName','Course Name','courseName']).toString().toUpperCase();
+    if (!courseName.includes('LIS') && !courseName.includes('TPS')) return;
+    bsUsed++;
+    const orgIdRaw = getCol(r, ['OrgDefinedId','OrgDefinedID','Org Defined Id','OrgDefinedid']);
+    const orgId = orgIdRaw.toString().trim();
+    const orgIdNorm = normalizeId(orgIdRaw);
+    if (!orgId) return;
+    let start = getCol(r, ['StartDate','Start Date','startDate']);
+    let end = getCol(r, ['EndDate','End Date','endDate']);
+    // Handle Excel date serial numbers
+    if (typeof start === 'number') start = excelDateToStr(start);
+    else if (start instanceof Date) start = formatDate(start);
+    else start = start.toString().trim();
+    if (typeof end === 'number') end = excelDateToStr(end);
+    else if (end instanceof Date) end = formatDate(end);
+    else end = end.toString().trim();
+
+    const email = getCol(r, ['ExternalEmail','External Email','externalEmail']).toString().trim();
+    const entry = { email, start, end };
+    if (!lookup[orgId]) lookup[orgId] = entry;
+    if (!lookupNorm[orgIdNorm]) lookupNorm[orgIdNorm] = entry;
+  });
+
+  let inputCount = file1Data.length;
+  let filteredCount = 0;
+  let skippedCount = 0;
+  let matchedCount = 0;
+  const allowedSubjects = ['LIS', 'TPS'];
+  const warnings = [];
+  const outputRows = [];
+
+  // Column order: A-X
+  const headers = [
+    'TERM','CRSEID','SECTIONID','TERMNAME','CRSECODE','CRSENAME',
+    'SECTIONCODE','INSTRFNAME','INSTRLNAME','INSTRID','INSTREMAIL',
+    'INSTRBMONTH','INSTRBDAY','INSTRBYEAR',
+    'TERMBEGIN','TERMEND','CRSEDESC','CREDITHOURS',
+    'COLLEGE','DEPARTMENT',
+    'TERMACTION','CRSEACTION','SECTIONACTION','INSTRACTION'
+  ];
+
+  file1Data.forEach(r => {
+    // Filter to only LIS and TPS subjects
+    const subjectCheck = (r['SUBJ'] || '').toString().trim().toUpperCase();
+    if (!allowedSubjects.includes(subjectCheck)) { filteredCount++; return; }
+
+    // Skip canceled
+    const stat = (r['STAT'] || '').toString().trim().toUpperCase();
+    if (stat === 'C') { skippedCount++; return; }
+
+    const termCode = (r['TERM_CODE_KEY'] || '').toString().trim();
+    const termDesc = (r['TERM_DESC'] || '').toString().trim();
+    const subj = (r['SUBJ'] || '').toString().trim();
+    const crn  = (r['CRN'] || '').toString().trim();
+    const crse = (r['CRSE'] || '').toString().trim();
+    const sec  = (r['SEC'] || '').toString().trim();
+    const title = (r['TITLE'] || '').toString().trim();
+    const ctHr = (r['CT_HR'] || '').toString().trim();
+    const priId = (r['PRI_ID'] || '').toString().trim();
+    const priFname = (r['PRI_FNAME'] || '').toString().trim();
+    const priLname = (r['PRI_LNAME'] || '').toString().trim();
+    const dept = (r['DEPT'] || '').toString().trim();
+
+    // TERMNAME: TERM_CODE + first word of TERM_DESC (e.g. "202601 Spring")
+    const termFirstWord = termDesc.split(' ')[0] || '';
+    const termName = termCode + ' ' + termFirstWord;
+
+    // CRSECODE: TERM_CODE - SUBJ CRSE
+    const crseCode = termCode + ' - ' + subj + ' ' + crse;
+
+    // CRSEID: SUBJ CRN
+    const crseId = subj + ' ' + crn;
+
+    // Lookup email & dates from File 2 (try exact match, then normalized match)
+    let email = '';
+    let startDate = '';
+    let endDate = '';
+    let matchEntry = null;
+    if (priId) {
+      if (lookup[priId]) {
+        matchEntry = lookup[priId];
+      } else if (lookupNorm[normalizeId(priId)]) {
+        matchEntry = lookupNorm[normalizeId(priId)];
+      } else {
+        // Last resort: numeric comparison
+        const priNum = parseFloat(priId);
+        if (!isNaN(priNum)) {
+          for (const [id, entry] of Object.entries(lookup)) {
+            if (parseFloat(id) === priNum) { matchEntry = entry; break; }
+          }
+        }
+      }
+    }
+    if (matchEntry) {
+      email = matchEntry.email;
+      startDate = matchEntry.start;
+      endDate = matchEntry.end;
+      matchedCount++;
+    } else if (priId) {
+      warnings.push('No Brightspace match for PRI_ID: ' + priId + ' (' + priFname + ' ' + priLname + ')');
+    }
+
+    // If no startDate/endDate from match, try to get it from any matching file2 row (term-wide dates)
+    if (!startDate || !endDate) {
+      for (const fr of file2Data) {
+        const cn = getCol(fr, ['CourseName','Course Name','courseName']).toString().toUpperCase();
+        if (!cn.includes('LIS') && !cn.includes('TPS')) continue;
+        let s = getCol(fr, ['StartDate','Start Date','startDate']);
+        let e = getCol(fr, ['EndDate','End Date','endDate']);
+        if (typeof s === 'number') s = excelDateToStr(s);
+        else if (s instanceof Date) s = formatDate(s);
+        else s = s.toString().trim();
+        if (typeof e === 'number') e = excelDateToStr(e);
+        else if (e instanceof Date) e = formatDate(e);
+        else e = e.toString().trim();
+        if (!startDate && s) startDate = s;
+        if (!endDate && e) endDate = e;
+        if (startDate && endDate) break;
+      }
+    }
+
+    // Build original instructor row
+    const origRow = [
+      termCode, crseId, sec, termName, crseCode, title,
+      sec, priFname, priLname, priId, email,
+      'NONE', 'NONE', 'NONE',
+      startDate, endDate, title, ctHr,
+      'CAS', dept,
+      'A', 'A', 'A', 'A'
+    ];
+    outputRows.push({ data: origRow, isDuplicate: false });
+
+    // Build duplicate row for Department of LIMS
+    const dupRow = [
+      termCode, crseId, sec, termName, crseCode, title,
+      sec, 'Department of LIMS', 'CSU Administrator', 'csuadminlims', 'livetext@csu.edu',
+      '1', '1', '2000',
+      startDate, endDate, title, ctHr,
+      'CAS', dept,
+      'A', 'A', 'A', 'A'
+    ];
+    outputRows.push({ data: dupRow, isDuplicate: true });
+  });
+
+  // Build workbook
+  const wsData = [headers];
+  outputRows.forEach(r => wsData.push(r.data));
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Set column widths
+  ws['!cols'] = headers.map((h, i) => {
+    if (i === 4) return { wch: 22 }; // CRSECODE
+    if (i === 5 || i === 16) return { wch: 28 }; // CRSENAME / CRSEDESC
+    if (i === 3) return { wch: 16 }; // TERMNAME
+    if (i === 10) return { wch: 22 }; // INSTREMAIL
+    if (i === 7) return { wch: 20 }; // INSTRFNAME
+    return { wch: 14 };
+  });
+
+  outputWB = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(outputWB, ws, 'LiveText Import');
+
+  // Deduplicate warnings
+  const uniqueWarnings = [...new Set(warnings)];
+
+  // Update UI
+  document.getElementById('statInput').textContent = inputCount;
+  document.getElementById('statFiltered').textContent = filteredCount;
+  document.getElementById('statSkipped').textContent = skippedCount;
+  document.getElementById('statBsUsed').textContent = bsUsed + ' (' + Object.keys(lookup).length + ' instructors)';
+  document.getElementById('statMatched').textContent = matchedCount;
+  document.getElementById('statOutput').textContent = outputRows.length;
+
+  document.getElementById('statusCard').classList.add('show');
+
+  // Warnings
+  const warnEl = document.getElementById('warnings');
+  let warnHtml = '';
+  if (uniqueWarnings.length) {
+    warnHtml += '<div class="warn-box"><strong>&#9888;&#65039; Warnings (' + uniqueWarnings.length + '):</strong><br>' +
+      uniqueWarnings.map(w => '&bull; ' + w).join('<br>') + '</div>';
+  }
+  // Diagnostic: show lookup contents if there are unmatched IDs
+  if (uniqueWarnings.length > 0 || bsUsed === 0) {
+    const lookupIds = Object.keys(lookup);
+    warnHtml += '<div class="warn-box" style="margin-top:8px;background:#e8f0fe;border-color:#a4c2f4;color:#1a3e6e;">' +
+      '<strong>&#128269; Diagnostic Info:</strong><br>' +
+      '&bull; Brightspace file total rows: ' + file2Data.length + '<br>' +
+      '&bull; Brightspace rows with LIS/TPS in CourseName: ' + bsUsed + '<br>' +
+      '&bull; Unique instructor IDs in lookup: ' + lookupIds.length + '<br>';
+    if (lookupIds.length > 0) {
+      warnHtml += '&bull; Lookup IDs: ' + lookupIds.slice(0, 15).join(', ') + (lookupIds.length > 15 ? '...' : '') + '<br>';
+    }
+    // Show first few File 2 headers so user can verify
+    if (file2Data.length > 0) {
+      warnHtml += '&bull; Brightspace column headers: ' + Object.keys(file2Data[0]).join(', ') + '<br>';
+    }
+    warnHtml += '</div>';
+  }
+  warnEl.innerHTML = warnHtml;
+
+  // Preview table
+  const wrap = document.getElementById('previewWrap');
+  wrap.style.display = 'block';
+  let html = '<table><thead><tr>';
+  headers.forEach(h => html += '<th>' + h + '</th>');
+  html += '</tr></thead><tbody>';
+  const maxPreview = Math.min(outputRows.length, 100);
+  for (let i = 0; i < maxPreview; i++) {
+    const cls = outputRows[i].isDuplicate ? ' class="duplicate-row"' : '';
+    html += '<tr' + cls + '>';
+    outputRows[i].data.forEach(v => html += '<td>' + escHtml(v) + '</td>');
+    html += '</tr>';
+  }
+  if (outputRows.length > maxPreview) {
+    html += '<tr><td colspan="' + headers.length + '" style="text-align:center;color:#6b7280;font-style:italic;">... ' +
+      (outputRows.length - maxPreview) + ' more rows ...</td></tr>';
+  }
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  // Reset button
+  const btn = document.getElementById('convertBtn');
+  btn.innerHTML = 'Convert &amp; Generate';
+  btn.disabled = false;
+}
+
+// ── Download ────────────────────────────────────────────────────────
+function downloadFile() {
+  if (!outputWB) return;
+  XLSX.writeFile(outputWB, 'LiveText_Import.xlsx');
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────
+function excelDateToStr(serial) {
+  const utcDays = Math.floor(serial - 25569);
+  const d = new Date(utcDays * 86400 * 1000);
+  return formatDate(d);
+}
+
+function formatDate(d) {
+  if (!(d instanceof Date) || isNaN(d)) return '';
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const y = d.getFullYear();
+  return m + '/' + day + '/' + y;
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return s.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
