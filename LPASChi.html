@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPAS — Legacy Preservation & Asset Stabilization</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2C5F2D;
+  --forest-deep: #1E4620;
+  --gold: #C9A84C;
+  --gold-light: #E8D5A0;
+  --cream: #FAF6F0;
+  --cream-warm: #F5EDE0;
+  --sage: #7D9B76;
+  --sage-light: #B5C9B0;
+  --charcoal: #2D2A27;
+  --charcoal-light: #5A5652;
+  --white: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  overflow-x: hidden;
+}
+
+/* ============ NAV ============ */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 1.2rem 4%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.4s ease;
+  background: transparent;
+}
+
+nav.scrolled {
+  background: rgba(250, 246, 240, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 30px rgba(0,0,0,0.06);
+  padding: 0.8rem 4%;
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: var(--forest);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.nav-logo span {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: -2px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--forest); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: var(--forest) !important;
+  color: var(--white) !important;
+  padding: 0.65rem 1.6rem;
+  border-radius: 6px;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.nav-cta:hover {
+  background: var(--forest-deep) !important;
+  transform: translateY(-1px);
+}
+
+.nav-cta::after { display: none !important; }
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 20px;
+  position: relative;
+}
+
+.mobile-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--charcoal);
+  position: absolute;
+  left: 0;
+  transition: 0.3s;
+}
+
+.mobile-toggle span:nth-child(1) { top: 0; }
+.mobile-toggle span:nth-child(2) { top: 9px; }
+.mobile-toggle span:nth-child(3) { top: 18px; }
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 4% 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(44, 95, 45, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3.6rem;
+  line-height: 1.15;
+  color: var(--forest-deep);
+  margin-bottom: 1.5rem;
+}
+
+.hero-text h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-text p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--charcoal-light);
+  max-width: 520px;
+  margin-bottom: 2.2rem;
+  font-weight: 300;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--forest);
+  color: var(--white);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--forest-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(44, 95, 45, 0.25);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--forest);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid var(--sage-light);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--forest);
+  background: rgba(44, 95, 45, 0.04);
+}
+
+.hero-visual {
+  position: relative;
+}
+
+.hero-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.hero-card-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--forest), var(--sage));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.hero-card-icon svg { width: 28px; height: 28px; }
+
+.hero-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  color: var(--forest-deep);
+  margin-bottom: 0.8rem;
+}
+
+.hero-card p {
+  font-size: 0.9rem;
+  color: var(--charcoal-light);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--cream-warm);
+}
+
+.hero-stat-number {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+}
+
+.hero-stat-label {
+  font-size: 0.72rem;
+  color: var(--charcoal-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+
+.floating-badge {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  background: var(--gold);
+  color: var(--white);
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px rgba(201, 168, 76, 0.3);
+}
+
+/* ============ TRUST BAR ============ */
+.trust-bar {
+  padding: 3rem 4%;
+  background: var(--white);
+  border-top: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.trust-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3.5rem;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--charcoal-light);
+  font-weight: 500;
+}
+
+.trust-item svg { width: 22px; height: 22px; color: var(--sage); flex-shrink: 0; }
+
+/* ============ ABOUT ============ */
+.about {
+  padding: 7rem 4%;
+  position: relative;
+}
+
+.about-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.section-tag::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.about h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.6rem;
+  line-height: 1.2;
+  color: var(--forest-deep);
+  margin-bottom: 1.5rem;
+}
+
+.about-text p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--charcoal-light);
+  font-weight: 300;
+  margin-bottom: 1.2rem;
+}
+
+.about-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.value-card {
+  background: var(--white);
+  padding: 1.8rem;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.06);
+}
+
+.value-card-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--cream-warm);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.value-card-icon svg { width: 22px; height: 22px; color: var(--forest); }
+
+.value-card h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: var(--forest-deep);
+  margin-bottom: 0.5rem;
+}
+
+.value-card p {
+  font-size: 0.82rem;
+  color: var(--charcoal-light);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ============ PROCESS ============ */
+.process {
+  padding: 7rem 4%;
+  background: var(--forest-deep);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.process::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+.process-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.process .section-tag { color: var(--gold-light); }
+.process .section-tag::before { background: var(--gold-light); }
+
+.process h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.6rem;
+  margin-bottom: 1rem;
+}
+
+.process-subtitle {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.65);
+  font-weight: 300;
+  max-width: 550px;
+  margin-bottom: 3.5rem;
+  line-height: 1.7;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.process-step {
+  position: relative;
+  padding: 2rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.process-step:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-4px);
+}
+
+.step-number {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem;
+  color: var(--gold);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.process-step h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  margin-bottom: 0.7rem;
+}
+
+.process-step p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ============ SERVICES ============ */
+.services {
+  padding: 7rem 4%;
+}
+
+.services-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.services h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.6rem;
+  color: var(--forest-deep);
+  margin-bottom: 1rem;
+}
+
+.services-subtitle {
+  font-size: 1.05rem;
+  color: var(--charcoal-light);
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.service-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 2.5rem;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--forest), var(--sage));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--cream-warm), var(--cream));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.service-icon svg { width: 26px; height: 26px; color: var(--forest); }
+
+.service-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--forest-deep);
+  margin-bottom: 0.8rem;
+}
+
+.service-card p {
+  font-size: 0.9rem;
+  color: var(--charcoal-light);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+.service-card .learn-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--forest);
+  text-decoration: none;
+  transition: gap 0.3s ease;
+}
+
+.service-card:hover .learn-more { gap: 0.7rem; }
+
+/* ============ TESTIMONIAL ============ */
+.testimonial {
+  padding: 6rem 4%;
+  background: var(--cream-warm);
+}
+
+.testimonial-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.quote-mark {
+  font-family: 'DM Serif Display', serif;
+  font-size: 5rem;
+  color: var(--gold);
+  line-height: 1;
+  opacity: 0.4;
+}
+
+.testimonial blockquote {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.55rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--forest-deep);
+  margin-bottom: 1.5rem;
+}
+
+.testimonial-author {
+  font-size: 0.9rem;
+  color: var(--charcoal-light);
+  font-weight: 500;
+}
+
+.testimonial-author span {
+  color: var(--gold);
+}
+
+/* ============ CONTACT / BOOKING ============ */
+.contact {
+  padding: 7rem 4%;
+}
+
+.contact-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.contact h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.6rem;
+  color: var(--forest-deep);
+  margin-bottom: 1rem;
+}
+
+.contact-text p {
+  font-size: 1.05rem;
+  color: var(--charcoal-light);
+  line-height: 1.8;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.contact-info-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--cream-warm);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-info-icon svg { width: 20px; height: 20px; color: var(--forest); }
+
+.contact-info-item .info-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--charcoal-light);
+  font-weight: 600;
+}
+
+.contact-info-item .info-value {
+  font-size: 1rem;
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.contact-form {
+  background: var(--white);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.06);
+}
+
+.contact-form h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--forest-deep);
+  margin-bottom: 1.8rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group { margin-bottom: 1rem; }
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  background: var(--cream);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+}
+
+.form-group textarea { resize: vertical; min-height: 110px; }
+
+.form-submit {
+  width: 100%;
+  padding: 1rem;
+  background: var(--forest);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.form-submit:hover {
+  background: var(--forest-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(44, 95, 45, 0.25);
+}
+
+/* ============ CTA BANNER ============ */
+.cta-banner {
+  padding: 5rem 4%;
+  background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 50%, var(--sage) 100%);
+  text-align: center;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.1) 0%, transparent 50%);
+  z-index: 0;
+}
+
+.cta-banner-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-banner h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+}
+
+.cta-banner p {
+  font-size: 1.05rem;
+  opacity: 0.8;
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gold);
+  color: var(--forest-deep);
+  padding: 1rem 2.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(201, 168, 76, 0.35);
+}
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--charcoal);
+  color: rgba(255,255,255,0.6);
+  padding: 4rem 4% 2rem;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.footer-brand span {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.52rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: -2px;
+}
+
+footer p {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  max-width: 300px;
+}
+
+.footer-col h4 {
+  font-family: 'DM Serif Display', serif;
+  color: var(--white);
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.footer-col a {
+  display: block;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 0.7rem;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+/* ============ ANIMATIONS ============ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 968px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-text h1 { font-size: 2.6rem; }
+  .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .process-steps { grid-template-columns: repeat(2, 1fr); }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-inner { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .mobile-toggle { display: block; }
+  .hero-text h1 { font-size: 2.1rem; }
+  .process-steps { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .trust-bar-inner { gap: 1.5rem; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .hero { padding-top: 6rem; }
+  h2 { font-size: 2rem !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">LPAS<span>Legacy Preservation & Asset Stabilization</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Our Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Book a Consultation</a></li>
+  </ul>
+  <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-text fade-up">
+      <h1>Protect What You've Built. <em>Preserve</em> What Matters.</h1>
+      <p>LPAS helps homeowners safeguard their most important investment — their property. From proactive preservation to comprehensive asset stabilization, we deliver peace of mind rooted in expertise and genuine care.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">
+          Schedule a Consultation
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#services" class="btn-secondary">View Our Services</a>
+      </div>
+    </div>
+    <div class="hero-visual fade-up" style="transition-delay: 0.2s">
+      <div class="hero-card">
+        <div class="floating-badge">Trusted</div>
+        <div class="hero-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3>Your Home, Our Priority</h3>
+        <p>Every property tells a story. We help ensure that story continues — strong, stable, and secure for generations to come.</p>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-number">100%</div>
+            <div class="hero-stat-label">Dedicated</div>
+          </div>
+          <div>
+            <div class="hero-stat-number">24/7</div>
+            <div class="hero-stat-label">Support</div>
+          </div>
+          <div>
+            <div class="hero-stat-number">Local</div>
+            <div class="hero-stat-label">Chicago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRUST BAR ===== -->
+<div class="trust-bar">
+  <div class="trust-bar-inner">
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Licensed & Insured
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Homeowner Focused
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      Community Rooted
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Personalized Service
+    </div>
+  </div>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-text fade-up">
+      <div class="section-tag">About LPAS</div>
+      <h2>Built on a Foundation of Trust &amp; Legacy</h2>
+      <p>LPAS — Legacy Preservation and Asset Stabilization — was founded on a simple belief: every homeowner deserves a partner who treats their property with the same care and urgency they would their own.</p>
+      <p>We specialize in helping property owners protect, stabilize, and strengthen their most valuable assets. Whether you're facing an urgent need or planning proactively, our team brings deep expertise and a personal touch to every engagement.</p>
+      <p>Based in Chicago, we understand the unique challenges that local homeowners face — and we're here to help you navigate them with confidence.</p>
+    </div>
+    <div class="about-values fade-up" style="transition-delay: 0.15s">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <h4>Genuine Care</h4>
+        <p>We treat your home like our own. Every decision is guided by what's best for you and your family.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Protection First</h4>
+        <p>Proactive strategies that prevent costly damage before it starts, saving you time and money.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+        </div>
+        <h4>Transparency</h4>
+        <p>No hidden costs, no surprises. Clear communication and honest assessments every step of the way.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h4>Community</h4>
+        <p>Rooted in the neighborhoods we serve. We're invested in building stronger communities block by block.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section class="process" id="process">
+  <div class="process-inner">
+    <div class="section-tag fade-up">How We Work</div>
+    <h2 class="fade-up">A Clear Path to Protection</h2>
+    <p class="process-subtitle fade-up">From the first conversation to lasting results, our process is designed to be straightforward, supportive, and tailored entirely to your needs.</p>
+    <div class="process-steps">
+      <div class="process-step fade-up">
+        <div class="step-number">01</div>
+        <h4>Consultation</h4>
+        <p>We start by listening — understanding your property, your concerns, and your goals during a free initial consultation.</p>
+      </div>
+      <div class="process-step fade-up" style="transition-delay: 0.1s">
+        <div class="step-number">02</div>
+        <h4>Assessment</h4>
+        <p>Our team conducts a thorough evaluation of your property to identify vulnerabilities and opportunities for stabilization.</p>
+      </div>
+      <div class="process-step fade-up" style="transition-delay: 0.2s">
+        <div class="step-number">03</div>
+        <h4>Custom Plan</h4>
+        <p>We develop a personalized preservation and stabilization plan with clear timelines, costs, and expected outcomes.</p>
+      </div>
+      <div class="process-step fade-up" style="transition-delay: 0.3s">
+        <div class="step-number">04</div>
+        <h4>Execution</h4>
+        <p>Our skilled team delivers on the plan with professionalism and care — keeping you informed every step of the way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-header fade-up">
+      <div class="section-tag" style="justify-content: center;">Our Services</div>
+      <h2>Comprehensive Property Protection</h2>
+      <p class="services-subtitle">Every service we offer is designed to preserve the value, safety, and longevity of your home — today and for generations to come.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card fade-up">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3>Property Preservation</h3>
+        <p>Proactive maintenance and protection services that keep your property in peak condition, preventing deterioration before it starts.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay: 0.1s">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Asset Stabilization</h3>
+        <p>Strategic interventions to stabilize properties at risk — addressing structural, environmental, and financial vulnerabilities with expert precision.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay: 0.2s">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <h3>Property Assessments</h3>
+        <p>Comprehensive evaluations that give you a clear picture of your property's condition, risk factors, and recommended next steps.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <h3>Risk Mitigation Planning</h3>
+        <p>Custom strategies to identify and reduce threats to your property's value — from environmental risks to deferred maintenance.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay: 0.1s">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>
+        </div>
+        <h3>Legacy Planning</h3>
+        <p>Long-term strategies to ensure your property retains its value and remains a source of stability for your family's future.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="service-card fade-up" style="transition-delay: 0.2s">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3>Owner Advocacy</h3>
+        <p>We stand beside you — navigating complex situations, connecting you to resources, and advocating for your best interests as a homeowner.</p>
+        <a href="#contact" class="learn-more">Learn More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIAL ===== -->
+<section class="testimonial">
+  <div class="testimonial-inner fade-up">
+    <div class="quote-mark">"</div>
+    <blockquote>LPAS gave us the clarity and confidence we needed to protect our family's home. Their team truly cares about the people they serve.</blockquote>
+    <div class="testimonial-author">— Satisfied Homeowner <span>•</span> Chicago, IL</div>
+  </div>
+</section>
+
+<!-- ===== CONTACT / BOOKING ===== -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-text fade-up">
+      <div class="section-tag">Get In Touch</div>
+      <h2>Ready to Protect Your Legacy?</h2>
+      <p>Whether you have questions, need a property assessment, or want to discuss your options — we're here for you. Schedule a free consultation and take the first step toward securing your most valuable asset.</p>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Phone</div>
+          <div class="info-value">(312) 555-LPAS</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value">hello@lpasgroup.com</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Serving</div>
+          <div class="info-value">Chicago & Surrounding Communities</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form fade-up" style="transition-delay: 0.15s">
+      <h3>Book a Free Consultation</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Your first name">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Your last name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" placeholder="(312) 555-0000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Service of Interest</label>
+        <select>
+          <option value="">Select a service...</option>
+          <option>Property Preservation</option>
+          <option>Asset Stabilization</option>
+          <option>Property Assessment</option>
+          <option>Risk Mitigation Planning</option>
+          <option>Legacy Planning</option>
+          <option>Owner Advocacy</option>
+          <option>General Inquiry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tell Us About Your Needs</label>
+        <textarea placeholder="Briefly describe your property concerns or what you're looking for..."></textarea>
+      </div>
+      <button class="form-submit">Request My Free Consultation →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA BANNER ===== -->
+<section class="cta-banner">
+  <div class="cta-banner-inner fade-up">
+    <h2>Your Legacy Starts with a Conversation</h2>
+    <p>Don't wait until small problems become costly ones. Let LPAS help you build a plan that protects what matters most.</p>
+    <a href="#contact" class="btn-gold">
+      Get Started Today
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">LPAS<span>Legacy Preservation & Asset Stabilization</span></div>
+      <p>Protecting Chicago homeowners' most valuable assets with care, expertise, and a commitment to community.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#services">Property Preservation</a>
+      <a href="#services">Asset Stabilization</a>
+      <a href="#services">Property Assessments</a>
+      <a href="#services">Risk Mitigation</a>
+      <a href="#services">Legacy Planning</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#about">About Us</a>
+      <a href="#process">Our Process</a>
+      <a href="#contact">Contact</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Google Reviews</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 LPAS — Legacy Preservation & Asset Stabilization. All rights reserved.</span>
+    <span>Privacy Policy &nbsp;|&nbsp; Terms of Service</span>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Fade-up on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
