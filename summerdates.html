@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSU – Summer PTM Course Evaluation Date Calculator</title>
+    <style>
+        :root {
+            --csu-primary: #0d5540;
+            --csu-secondary: #17375f;
+            --csu-accent: #7bba4c;
+            --csu-light: #f4f7f6;
+            --csu-border: #d0d7d3;
+            --csu-danger: #b3261e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: var(--csu-secondary);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+            color: #fff;
+            padding: 1.5rem 2rem;
+        }
+
+        header h1 { margin: 0; font-size: 1.5rem; }
+
+        header p {
+            margin: 0.35rem 0 0;
+            font-size: 0.95rem;
+            max-width: 900px;
+        }
+
+        .term-badge {
+            display: inline-block;
+            background: var(--csu-accent);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem 2rem;
+        }
+
+        .tool-card {
+            background: var(--csu-light);
+            border: 1px solid var(--csu-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--csu-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .helper-text {
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        .note-box {
+            background: #fff8e1;
+            border-left: 4px solid #f9a825;
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid var(--csu-border);
+            padding: 0.4rem 0.5rem;
+            text-align: left;
+        }
+
+        thead th {
+            background: #e6ece9;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) { background: #f9fbfa; }
+
+        .ptm-input-table th:nth-child(1),
+        .ptm-input-table td:nth-child(1) { width: 25%; }
+        .ptm-input-table th:nth-child(2),
+        .ptm-input-table td:nth-child(2) { width: 45%; }
+        .ptm-input-table th:nth-child(3),
+        .ptm-input-table td:nth-child(3) { width: 30%; }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            background: var(--csu-primary);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 0.8rem;
+        }
+
+        button:hover { background: var(--csu-secondary); }
+
+        .error {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--csu-danger);
+            font-weight: bold;
+            display: none;
+        }
+
+        .results-section { margin-top: 1.75rem; }
+
+        .muted { font-size: 0.8rem; color: #666; }
+
+        .results-table-wrapper {
+            margin-top: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .copy-section { margin-top: 1.5rem; }
+
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            padding: 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            resize: vertical;
+            background: #fff;
+            white-space: pre-wrap;
+        }
+
+        .copy-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .copy-row button { margin-top: 0; white-space: nowrap; }
+
+        .pill {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 999px;
+            background: var(--csu-accent);
+            color: #fff;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-left: 0.25rem;
+        }
+
+        .upload-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-section label {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 2px dashed var(--csu-primary);
+            background: #fff;
+            color: var(--csu-primary);
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .upload-section label:hover {
+            background: var(--csu-light);
+            border-color: var(--csu-secondary);
+        }
+
+        .upload-section input[type="file"] { display: none; }
+
+        .upload-status {
+            font-size: 0.85rem;
+            color: var(--csu-primary);
+            font-weight: bold;
+        }
+
+        .upload-status.error-text {
+            color: var(--csu-danger);
+        }
+
+        @media (max-width: 700px) {
+            header { padding: 1.25rem 1rem; }
+            main { padding: 0 0.75rem 1.5rem; }
+            .copy-row { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Summer PTM Course Evaluation Date Calculator <span class="term-badge">Summer 2026</span></h1>
+    <p>
+        Enter the <strong>course end date (Saturday) for each PTM group</strong> below to generate survey windows,
+        instructor email reminders, and report access dates. All summer courses end on a <strong>Saturday</strong>.
+        There are no finals in summer term.
+    </p>
+</header>
+
+<main>
+    <div class="tool-card">
+        <div class="section-heading">1. Enter Course End Dates</div>
+
+        <div class="note-box">
+            <strong>Summer Term Rules:</strong> All summer courses end on a Saturday. The survey closes the
+            <strong>day before</strong> the course ends (Friday at 11:59 PM) and opens <strong>6 days before
+            the close</strong> (Sunday at 11:59 PM), giving students <strong>5 effective days</strong>
+            (Monday–Friday) to complete evaluations. There are no finals in summer; no final-week buffer is needed.
+            <br><br>
+            <strong>Future note:</strong> Starting Summer 2027, OLHY and UNIV evaluations will run in the same project.
+        </div>
+
+        <div class="helper-text">
+            Rules used for each PTM:<br>
+            • <strong>Survey Close:</strong> 1 day before course end — Friday at 11:59 PM<br>
+            • <strong>Survey Open (System):</strong> 6 days before Survey Close — Sunday at 11:59 PM<br>
+            • <strong>Survey Open (Effective):</strong> 1 day after Survey Open system date — Monday (first full day students see the survey)<br>
+            • <strong>Survey Window:</strong> 5 effective days (Monday through Friday)<br>
+            • <strong>Instructor Emails:</strong> 3 weeks, 2 weeks, and 1 week before the Survey Open date (sent at 8:00 AM)<br>
+            • <strong>Admin Report Access (System):</strong> 8 days after course end (11:59 PM); effective first full day = next day<br>
+            • <strong>Instructor Report Access:</strong> 15 days after course end (11:59 PM); effective first full day = next day<br>
+            • <strong>DDS:</strong> Dynamic Date Session — dates are <strong>course-specific</strong> and may vary by section.<br>
+        </div>
+
+        <div class="upload-section">
+            <label for="csvUpload">📁 Upload Section Enrollment CSV</label>
+            <input type="file" id="csvUpload" accept=".csv">
+            <span class="upload-status" id="uploadStatus"></span>
+        </div>
+
+        <table class="ptm-input-table">
+            <thead>
+                <tr>
+                    <th>PTM Input Group</th>
+                    <th>PTMs &amp; Descriptors</th>
+                    <th>Course End Date (Saturday)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Intersession Group</td>
+                    <td>PTM I – Intersession</td>
+                    <td><input type="date" id="ptm-I"></td>
+                </tr>
+                <tr>
+                    <td>1st Half Group</td>
+                    <td>
+                        PTM 2 – First Half<br>
+                        PTM H2 – Hybrid 1st Half<br>
+                        PTM W2 – Summer Online 1st 5-Weeks
+                    </td>
+                    <td><input type="date" id="ptm-first-half"></td>
+                </tr>
+                <tr>
+                    <td>Full Term / 2nd Half Group</td>
+                    <td>
+                        PTM 1 – Full Term<br>
+                        PTM 3 – Second Half<br>
+                        PTM H – Hybrid<br>
+                        PTM H3 – Hybrid 2nd Half<br>
+                        PTM W – Distance Learning (WEB) Term<br>
+                        PTM W3 – Summer Online 2nd 5-Weeks
+                    </td>
+                    <td><input type="date" id="ptm-full-second"></td>
+                </tr>
+                <tr>
+                    <td>DDS Group</td>
+                    <td>PTM DDS – Dynamic Date Session</td>
+                    <td><input type="date" id="ptm-DDS"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button id="calcAllBtn">Calculate Dates for All</button>
+        <div id="error" class="error">Please enter at least one valid course end date (must be a Saturday).</div>
+
+        <div class="results-section" id="resultsSection" style="display:none;">
+            <div class="section-heading">2. Results by PTM</div>
+            <p class="muted">
+                Survey opens at <strong>11:59 PM on Sunday</strong> (students effectively see it Monday morning).
+                Survey closes at <strong>11:59 PM on Friday</strong>, the day before the Saturday course end.
+                Students have <strong>5 effective days</strong> (Mon–Fri) to complete evaluations.
+                Administrator report access begins at <strong>11:59 PM</strong> on the system date shown;
+                the effective first full day is the next calendar day.
+                For <strong>DDS</strong>, dates are course-specific and may vary by section.
+            </p>
+
+            <div class="results-table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PTMs</th>
+                            <th>Descriptors</th>
+                            <th>Course End<br>(Saturday)</th>
+                            <th>Survey Close<br>(Friday)<br><span class="pill">11:59 PM</span></th>
+                            <th>Survey Open<br>(Sunday)<br><span class="pill">11:59 PM</span></th>
+                            <th>Survey Open<br>Effective<br>(Monday)</th>
+                            <th>Email 3wk<br>Before Open<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 2wk<br>Before Open<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 1wk<br>Before Open<br><span class="pill">8:00 AM</span></th>
+                            <th>Admin Report<br>Start (System)<br><span class="pill">11:59 PM</span></th>
+                            <th>Admin Report<br>Effective Day</th>
+                            <th>Instructor Report<br>Start<br><span class="pill">11:59 PM</span></th>
+                            <th>Instructor Report<br>Effective Day</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+
+            <div class="copy-section">
+                <div class="copy-row">
+                    <div class="section-heading" style="margin-bottom:0;">3. Easy Copy (Word Bullet Format)</div>
+                    <button id="copyBtn">Copy Bullet List to Clipboard</button>
+                </div>
+                <p class="muted">
+                    Copy this block and paste into a Word document. It is structured as nested bullets for each PTM.
+                    Staff should still verify dates against the academic calendar.
+                </p>
+                <textarea id="copyField" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // --- CSV Upload & Auto-fill ---
+    // Maps PTRM_CODE values from the CSV to input field IDs
+    const ptmToInputMap = {
+        'I':   'ptm-I',
+        '2':   'ptm-first-half',
+        'H2':  'ptm-first-half',
+        'W2':  'ptm-first-half',
+        '1':   'ptm-full-second',
+        '3':   'ptm-full-second',
+        'H':   'ptm-full-second',
+        'H3':  'ptm-full-second',
+        'W':   'ptm-full-second',
+        'W3':  'ptm-full-second',
+        'DDS': 'ptm-DDS'
+    };
+
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (inQuotes) {
+                if (ch === '"' && i + 1 < line.length && line[i + 1] === '"') {
+                    current += '"';
+                    i++;
+                } else if (ch === '"') {
+                    inQuotes = false;
+                } else {
+                    current += ch;
+                }
+            } else {
+                if (ch === '"') {
+                    inQuotes = true;
+                } else if (ch === ',') {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+        }
+        result.push(current.trim());
+        return result;
+    }
+
+    function parseDateToISO(dateStr) {
+        // Accepts M/D/YYYY or MM/DD/YYYY and returns YYYY-MM-DD for date input
+        const parts = dateStr.split('/');
+        if (parts.length !== 3) return null;
+        const m = parts[0].padStart(2, '0');
+        const d = parts[1].padStart(2, '0');
+        const y = parts[2];
+        if (y.length !== 4) return null;
+        return y + '-' + m + '-' + d;
+    }
+
+    document.getElementById('csvUpload').addEventListener('change', function (e) {
+        const statusEl = document.getElementById('uploadStatus');
+        const file = e.target.files[0];
+        if (!file) return;
+
+        statusEl.textContent = 'Reading file…';
+        statusEl.classList.remove('error-text');
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            try {
+                const text = ev.target.result;
+                const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
+                if (lines.length < 2) {
+                    statusEl.textContent = 'CSV appears empty or has no data rows.';
+                    statusEl.classList.add('error-text');
+                    return;
+                }
+
+                const headers = parseCSVLine(lines[0]);
+                const ptrmIdx = headers.indexOf('PTRM_CODE');
+                const endIdx  = headers.indexOf('PTRM_END_DATE');
+
+                if (ptrmIdx === -1 || endIdx === -1) {
+                    statusEl.textContent = 'CSV missing PTRM_CODE or PTRM_END_DATE columns.';
+                    statusEl.classList.add('error-text');
+                    return;
+                }
+
+                // Collect unique PTRM_CODE → end date mappings
+                const found = {};
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = parseCSVLine(lines[i]);
+                    if (cols.length <= Math.max(ptrmIdx, endIdx)) continue;
+                    const code = cols[ptrmIdx].replace(/"/g, '').trim();
+                    const endRaw = cols[endIdx].replace(/"/g, '').trim();
+                    if (!code || !endRaw) continue;
+                    const inputId = ptmToInputMap[code];
+                    if (inputId && !found[inputId]) {
+                        const iso = parseDateToISO(endRaw);
+                        if (iso) found[inputId] = iso;
+                    }
+                }
+
+                // Fill in the date inputs
+                let filledCount = 0;
+                for (const [inputId, isoDate] of Object.entries(found)) {
+                    const el = document.getElementById(inputId);
+                    if (el) {
+                        el.value = isoDate;
+                        filledCount++;
+                    }
+                }
+
+                if (filledCount > 0) {
+                    statusEl.textContent = '✓ Auto-filled ' + filledCount + ' of 4 date fields from "' + file.name + '"';
+                    statusEl.classList.remove('error-text');
+                } else {
+                    statusEl.textContent = 'No matching summer PTM codes found in the file.';
+                    statusEl.classList.add('error-text');
+                }
+            } catch (err) {
+                statusEl.textContent = 'Error parsing CSV: ' + err.message;
+                statusEl.classList.add('error-text');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    // --- PTM Entries & Calculation (unchanged) ---
+    const ptmEntries = [
+        { code: "I",   desc: "Intersession",                inputId: "ptm-I",            courseSpecific: false },
+        { code: "2",   desc: "First Half",                  inputId: "ptm-first-half",    courseSpecific: false },
+        { code: "H2",  desc: "Hybrid 1st Half",             inputId: "ptm-first-half",    courseSpecific: false },
+        { code: "W2",  desc: "Summer Online 1st 5-Weeks",   inputId: "ptm-first-half",    courseSpecific: false },
+        { code: "1",   desc: "Full Term",                   inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "3",   desc: "Second Half",                 inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "H",   desc: "Hybrid",                      inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "H3",  desc: "Hybrid 2nd Half",             inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "W",   desc: "Distance Learning (WEB) Term",inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "W3",  desc: "Summer Online 2nd 5-Weeks",   inputId: "ptm-full-second",   courseSpecific: false },
+        { code: "DDS", desc: "Dynamic Date Session",        inputId: "ptm-DDS",           courseSpecific: true  }
+    ];
+
+    function addDays(date, days) {
+        const result = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatDatePlain(date) {
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day   = String(date.getDate()).padStart(2, '0');
+        const year  = date.getFullYear();
+        return month + '/' + day + '/' + year;
+    }
+
+    function formatDate1159(date) { return formatDatePlain(date) + ' 11:59 PM'; }
+    function formatDate800(date)  { return formatDatePlain(date) + ' 8:00 AM'; }
+
+    function getDayName(date) {
+        return date.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+
+    document.getElementById('calcAllBtn').addEventListener('click', function () {
+        const errorEl        = document.getElementById('error');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsBody    = document.getElementById('resultsBody');
+        const copyField      = document.getElementById('copyField');
+
+        let anyValid    = false;
+        let tbodyHtml   = '';
+        let bulletLines = [];
+
+        // Validate Saturday constraint
+        let saturdayError = false;
+
+        // Group PTM entries by their input field (shared date = one row)
+        const groups = {};
+        const groupOrder = [];
+        ptmEntries.forEach(entry => {
+            const input = document.getElementById(entry.inputId);
+            const val   = input.value;
+            if (!val) return;
+
+            const endDate = new Date(val + 'T00:00:00');
+            if (isNaN(endDate.getTime())) return;
+
+            if (endDate.getDay() !== 6) {
+                saturdayError = true;
+                return;
+            }
+
+            // Group key = inputId (entries sharing an input share a date)
+            const key = entry.inputId;
+            if (!groups[key]) {
+                groups[key] = { entries: [], endDate: endDate, courseSpecific: false };
+                groupOrder.push(key);
+            }
+            groups[key].entries.push(entry);
+            if (entry.courseSpecific) groups[key].courseSpecific = true;
+        });
+
+        groupOrder.forEach(key => {
+            const group   = groups[key];
+            const endDate = group.endDate;
+            anyValid = true;
+
+            // Combined PTM label: "1, 3, H, H3, W, W3"
+            const codeList = group.entries.map(e => e.code).join(', ');
+            // Combined descriptor lines: "Full Term / Second Half / Hybrid / …"
+            const descList = group.entries.map(e => e.desc).join(' / ');
+            // Bullet-friendly list: "PTM 1 – Full Term, PTM 3 – Second Half, …"
+            const bulletPtmList = group.entries.map(e => 'PTM ' + e.code + ' – ' + e.desc).join(', ');
+
+            // --- Summer rules ---
+            const surveyClose             = addDays(endDate, -1);
+            const surveyOpen              = addDays(surveyClose, -6);
+            const surveyOpenEffective     = addDays(surveyOpen, 1);
+            const email3wk                = addDays(surveyOpen, -21);
+            const email2wk                = addDays(surveyOpen, -14);
+            const email1wk                = addDays(surveyOpen, -7);
+            const adminAccess             = addDays(endDate, 8);
+            const adminAccessEffective    = addDays(adminAccess, 1);
+            const instructorAccess        = addDays(endDate, 15);
+            const instructorAccessEffective = addDays(instructorAccess, 1);
+
+            const notesText = group.courseSpecific
+                ? "Course-specific; confirm dates per section (DDS)."
+                : "";
+
+            tbodyHtml += '<tr>' +
+                '<td>' + codeList + '</td>' +
+                '<td>' + descList + '</td>' +
+                '<td>' + formatDatePlain(endDate) + ' (' + getDayName(endDate) + ')</td>' +
+                '<td>' + formatDate1159(surveyClose) + ' (' + getDayName(surveyClose) + ')</td>' +
+                '<td>' + formatDate1159(surveyOpen) + ' (' + getDayName(surveyOpen) + ')</td>' +
+                '<td>' + formatDatePlain(surveyOpenEffective) + ' (' + getDayName(surveyOpenEffective) + ')</td>' +
+                '<td>' + formatDate800(email3wk) + '</td>' +
+                '<td>' + formatDate800(email2wk) + '</td>' +
+                '<td>' + formatDate800(email1wk) + '</td>' +
+                '<td>' + formatDate1159(adminAccess) + '</td>' +
+                '<td>' + formatDatePlain(adminAccessEffective) + '</td>' +
+                '<td>' + formatDate1159(instructorAccess) + '</td>' +
+                '<td>' + formatDatePlain(instructorAccessEffective) + '</td>' +
+                '<td>' + notesText + '</td>' +
+                '</tr>';
+
+            const bulletBlock =
+`• ${bulletPtmList}
+   • Course End (Saturday): ${formatDatePlain(endDate)}
+   • Survey Close (Friday – 11:59 PM): ${formatDate1159(surveyClose)}
+   • Survey Open (System – Sunday 11:59 PM): ${formatDate1159(surveyOpen)}
+   • Survey Open (Effective – Monday): ${formatDatePlain(surveyOpenEffective)}
+   • Survey Window: 5 effective days (${formatDatePlain(surveyOpenEffective)} – ${formatDatePlain(surveyClose)})
+   • Instructor Emails (before Survey Open):
+      • 3 Weeks Before Survey Open (8:00 AM): ${formatDate800(email3wk)}
+      • 2 Weeks Before Survey Open (8:00 AM): ${formatDate800(email2wk)}
+      • 1 Week Before Survey Open  (8:00 AM): ${formatDate800(email1wk)}
+   • Admin Report Access (System – 11:59 PM): ${formatDate1159(adminAccess)}
+   • Admin Report Access (Effective First Full Day): ${formatDatePlain(adminAccessEffective)}
+   • Instructor Report Access (System – 11:59 PM): ${formatDate1159(instructorAccess)}
+   • Instructor Report Access Effective (first full day): ${formatDatePlain(instructorAccessEffective)}
+   • Notes: ${notesText || "N/A"}`;
+
+            bulletLines.push(bulletBlock);
+        });
+
+        if (saturdayError) {
+            errorEl.textContent = 'All course end dates must fall on a Saturday for summer term.';
+            errorEl.style.display = 'block';
+            resultsSection.style.display = 'none';
+            return;
+        }
+
+        if (!anyValid) {
+            errorEl.textContent = 'Please enter at least one valid course end date (must be a Saturday).';
+            errorEl.style.display = 'block';
+            resultsSection.style.display = 'none';
+            return;
+        }
+
+        errorEl.style.display = 'none';
+        resultsBody.innerHTML = tbodyHtml;
+        copyField.value = bulletLines.join("\n\n");
+        resultsSection.style.display = 'block';
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function () {
+        const copyField = document.getElementById('copyField');
+        copyField.select();
+        copyField.setSelectionRange(0, 99999);
+        try {
+            const successful = document.execCommand('copy');
+            if (!successful && navigator.clipboard) {
+                navigator.clipboard.writeText(copyField.value);
+            }
+        } catch (e) {
+            console.warn("Copy command failed:", e);
+        }
+    });
+</script>
+</body>
+</html>
