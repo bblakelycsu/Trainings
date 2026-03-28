@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CSU – Semester Course Separation Tool</title>
+<title>CSU – Old Course Converter</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
@@ -32,6 +32,23 @@
 
     header h1 {
         margin: 0 0 0.3rem 0;
+    }
+
+    header .subtitle {
+        font-size: 0.85rem;
+        opacity: 0.85;
+        margin-top: 0.25rem;
+    }
+
+    header .legacy-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+        letter-spacing: 0.5px;
     }
 
     main {
@@ -128,11 +145,8 @@
     }
 
     .badge {
-        display: inline-block,
+        display: inline-block;
         padding: 0.15rem 0.35rem;
-    }
-
-    .badge {
         border-radius: 3px;
         border: 1px solid var(--csu-border);
         background: #ffffff;
@@ -164,8 +178,10 @@
 <body>
 
 <header>
-    <h1>CSU Semester Course Separation Tool</h1>
+    <h1>Old Course Converter</h1>
     <p>Brightspace Code = XLST + TERM_CODE_KEY OR CRN + "." + TERM_CODE_KEY</p>
+    <div class="subtitle">Output: CES Courses workbook</div>
+    <div class="legacy-badge">LEGACY — LAST TERM USE</div>
 </header>
 
 <main>
@@ -175,7 +191,8 @@
     <p>
         <small>
             Required header (any position): <code>TERM_CODE_KEY</code><br>
-            Expected additional headers: <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTM</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
+            Expected additional headers: <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTRM_CODE</code>, <code>SUBJ</code>, <code>SEC</code>.<br>
+            Course dates (<code>PTRM_START_DATE</code>, <code>PTRM_END_DATE</code>) are carried through to all output sheets.<br>
             Brightspace code stored in <code>BrightspaceCode</code>.
         </small>
     </p>
@@ -185,7 +202,7 @@
 
     <div>
         <button id="processBtn" class="primary" disabled>Process &amp; Separate</button>
-        <button id="downloadBtn" class="secondary" disabled>Download Workbook</button>
+        <button id="downloadBtn" class="secondary" disabled>Download CES Courses Workbook</button>
     </div>
 
     <div id="status" class="status muted">No file loaded yet.</div>
@@ -224,12 +241,10 @@
     let lastTermCode = "";
     let lastFileName = "";
 
-    // Keep underscores; just trim + uppercase
     function normalize(str) {
         return String(str || "").trim().toUpperCase();
     }
 
-    // Map logical → actual header names
     function buildColumnMap(row) {
         const keys = Object.keys(row);
         const map = {};
@@ -237,14 +252,16 @@
         keys.forEach(k => {
             const n = normalize(k);
 
-            if (!map.TERM_CODE && n === "TERM_CODE_KEY") map.TERM_CODE = k;
-            if (!map.CRN && n === "CRN")                map.CRN = k;
-            if (!map.XLST && n === "XLST")              map.XLST = k;
-            if (!map.STAT && n === "STAT")              map.STAT = k;
-            if (!map.CR && n === "CR")                  map.CR = k;
-            if (!map.PTM && n === "PTM")                map.PTM = k;
-            if (!map.SUBJ && n === "SUBJ")              map.SUBJ = k;
-            if (!map.SEC && n === "SEC")                map.SEC = k;
+            if (!map.TERM_CODE && n === "TERM_CODE_KEY")              map.TERM_CODE = k;
+            if (!map.CRN && n === "CRN")                              map.CRN = k;
+            if (!map.XLST && n === "XLST")                            map.XLST = k;
+            if (!map.STAT && n === "STAT")                            map.STAT = k;
+            if (!map.CR && n === "CR")                                map.CR = k;
+            if (!map.PTM && (n === "PTRM_CODE" || n === "PTM"))       map.PTM = k;
+            if (!map.SUBJ && n === "SUBJ")                            map.SUBJ = k;
+            if (!map.SEC && n === "SEC")                              map.SEC = k;
+            if (!map.PTRM_START_DATE && n === "PTRM_START_DATE")      map.PTRM_START_DATE = k;
+            if (!map.PTRM_END_DATE && n === "PTRM_END_DATE")          map.PTRM_END_DATE = k;
         });
 
         return map;
@@ -326,8 +343,7 @@
             OLHY_BrightspaceCodes: []
         };
 
-        // For finding overlap XLST codes between UNIV and OLHY
-        const xlstGroups = {}; // { xlst: { univ: [], olhy: [] } }
+        const xlstGroups = {};
 
         let firstTerm = "";
         let codeCount = 0;
@@ -356,7 +372,6 @@
             const isZeroCredit = !isNaN(cr) && cr === 0;
             const isCancelled = (stat === "C");
 
-            // Track XLST groupings for overlap detection
             if (xlst) {
                 if (!xlstGroups[xlst]) {
                     xlstGroups[xlst] = { univ: [], olhy: [] };
@@ -368,14 +383,12 @@
                 }
             }
 
-            // Crosslisted sheets by group
             if (xlst && isUniv) {
                 buckets.UNIV_Crosslisted.push(out);
             } else if (xlst && isOlhy) {
                 buckets.OLHY_Crosslisted.push(out);
             }
 
-            // NON-CROSSLISTED UNIV / OLHY but remove cancelled & 0-credit
             if (!xlst && !isCancelled && !isZeroCredit) {
                 if (isUniv) {
                     buckets.UNIV_NoXLST.push(out);
@@ -384,7 +397,6 @@
                 }
             }
 
-            // Main sheet membership
             let sheet = "Other_Active";
 
             if (isCancelled) sheet = "Cancelled";
@@ -396,14 +408,12 @@
             buckets[sheet].push(out);
         });
 
-        // Overlap_Crosslisted: XLST codes that have both UNIV and OLHY
         Object.values(xlstGroups).forEach(group => {
             if (group.univ.length && group.olhy.length) {
                 buckets.Overlap_Crosslisted.push(...group.univ, ...group.olhy);
             }
         });
 
-        // Build UNIQUE Brightspace code lists for UNIV and OLHY
         const univCodeSet = new Set();
         buckets.UNIV.forEach(r => {
             if (r.BrightspaceCode) univCodeSet.add(r.BrightspaceCode);
@@ -424,7 +434,6 @@
         const allKeys = new Set(headers);
 
         Object.entries(buckets).forEach(([name, rows]) => {
-            // Don't let code-only sheets pollute main header set
             if (name === "UNIV_BrightspaceCodes" || name === "OLHY_BrightspaceCodes") return;
             rows.forEach(r => {
                 Object.keys(r).forEach(k => allKeys.add(k));
@@ -436,8 +445,10 @@
             if (!headers.includes(k)) headers.push(k);
         });
 
-        if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
-        if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
+        // Ensure date columns and computed columns are always present
+        ["PTRM_START_DATE", "PTRM_END_DATE", "BrightspaceCode", "PTM_Group"].forEach(col => {
+            if (!headers.includes(col)) headers.push(col);
+        });
 
         return headers;
     }
@@ -460,9 +471,11 @@
             `XLST → ${map.XLST || "NOT FOUND"} | ` +
             `STAT → ${map.STAT || "NOT FOUND"} | ` +
             `CR → ${map.CR || "NOT FOUND"} | ` +
-            `PTM → ${map.PTM || "NOT FOUND"} | ` +
+            `PTRM_CODE → ${map.PTM || "NOT FOUND"} | ` +
             `SUBJ → ${map.SUBJ || "NOT FOUND"} | ` +
-            `SEC → ${map.SEC || "NOT FOUND"}`;
+            `SEC → ${map.SEC || "NOT FOUND"} | ` +
+            `START_DATE → ${map.PTRM_START_DATE || "NOT FOUND"} | ` +
+            `END_DATE → ${map.PTRM_END_DATE || "NOT FOUND"}`;
     }
 
     function renderSummary(buckets) {
@@ -530,14 +543,12 @@
         const wb = XLSX.utils.book_new();
         const fullHeaders = computeHeadersFromSheets(separatedSheets);
 
-        // Data & code sheets
         SHEET_ORDER.forEach(n => {
             const rows = separatedSheets[n];
             if (!rows || !rows.length) return;
 
             let ws;
             if (n === "UNIV_BrightspaceCodes" || n === "OLHY_BrightspaceCodes") {
-                // Single-column sheets with just BrightspaceCode
                 ws = XLSX.utils.json_to_sheet(rows, { header: ["BrightspaceCode"] });
             } else {
                 ws = XLSX.utils.json_to_sheet(rows, { header: fullHeaders });
@@ -545,7 +556,6 @@
             XLSX.utils.book_append_sheet(wb, ws, n.substring(0,31));
         });
 
-        // Summary sheet
         const summaryRows = SHEET_ORDER.map(name => ({
             Bucket: name,
             Count: (separatedSheets[name] || []).length
@@ -554,8 +564,9 @@
         XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
 
         const term = lastTermCode || "TERM";
-        const safe = (lastFileName || "courses").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
-        XLSX.writeFile(wb, `${safe}_Separated_${term}.xlsx`);
+        const outName = `CES_Courses_${term}.xlsx`;
+
+        XLSX.writeFile(wb, outName);
     }
 
     function handleFileSelected(evt) {
@@ -590,9 +601,9 @@
         const reader = new FileReader();
         reader.onload = e => {
             try {
-                const wb = XLSX.read(e.target.result, { type:"array" });
+                const wb = XLSX.read(e.target.result, { type: "array", raw: true });
                 const sheet = wb.SheetNames[0];
-                const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval:"" });
+                const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval: "", raw: false });
 
                 if (!data.length) {
                     setStatus("Sheet is empty.", "warn");
@@ -613,6 +624,10 @@
                     setStatus("CRN column missing.", "warn");
                     document.getElementById("processBtn").disabled = false;
                     return;
+                }
+
+                if (!columnMap.PTRM_START_DATE || !columnMap.PTRM_END_DATE) {
+                    console.warn("Date columns (PTRM_START_DATE / PTRM_END_DATE) not found in file.");
                 }
 
                 const { buckets, firstTerm, codeCount } = separateRows(data, columnMap);
