@@ -1,763 +1,812 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CSU – Semester Course Delta Checker</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <meta charset="UTF-8">
+    <title>CSU – PTM Course Evaluation Date Calculator</title>
+    <style>
+        :root {
+            --csu-primary: #0d5540;
+            --csu-secondary: #17375f;
+            --csu-accent: #7bba4c;
+            --csu-light: #f4f7f6;
+            --csu-border: #d0d7d3;
+            --csu-danger: #b3261e;
+            --csu-warn: #e8a317;
+        }
 
-<style>
-    :root {
-        --csu-primary: #0d5540;
-        --csu-secondary: #17375f;
-        --csu-accent: #7bba4c;
-        --csu-light: #f4f7f6;
-        --csu-border: #d0d7d3;
-        --csu-warn: #d9534f;
-        --csu-muted: #6c757d;
-    }
+        * { box-sizing: border-box; }
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #ffffff;
-        color: var(--csu-secondary);
-    }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: var(--csu-secondary);
+        }
 
-    header {
-        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
-        color: #ffffff;
-        padding: 1.5rem 1rem;
-        text-align: center;
-    }
+        header {
+            background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+            color: #fff;
+            padding: 1.5rem 2rem;
+        }
+        header h1 { margin: 0; font-size: 1.5rem; }
+        header p  { margin: 0.35rem 0 0; font-size: 0.95rem; max-width: 960px; }
 
-    header h1 {
-        margin: 0 0 0.3rem 0;
-    }
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem 2rem;
+        }
 
-    main {
-        max-width: 1100px;
-        margin: 1.5rem auto 2.5rem;
-        padding: 0 1rem;
-    }
+        .tool-card {
+            background: var(--csu-light);
+            border: 1px solid var(--csu-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
-    .card {
-        background: var(--csu-light);
-        padding: 1.25rem 1.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--csu-border);
-        margin-bottom: 1.25rem;
-    }
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--csu-primary);
+            margin-bottom: 0.5rem;
+        }
 
-    .card h2 {
-        margin-top: 0;
-        color: var(--csu-primary);
-    }
+        .helper-text {
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
 
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 0.3rem;
-    }
+        /* ---- Tabs ---- */
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1.25rem;
+            border-bottom: 2px solid var(--csu-border);
+        }
+        .tab-btn {
+            padding: 0.6rem 1.4rem;
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .tab-btn:hover { color: var(--csu-primary); }
+        .tab-btn.active {
+            color: var(--csu-primary);
+            border-bottom-color: var(--csu-accent);
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
-    input[type="file"] {
-        margin-bottom: 0.75rem;
-    }
+        /* ---- Upload area ---- */
+        .upload-zone {
+            border: 2px dashed var(--csu-border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 1rem;
+        }
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--csu-accent);
+            background: #f0f8ec;
+        }
+        .upload-zone .icon { font-size: 2rem; margin-bottom: 0.4rem; }
+        .upload-zone .label { font-weight: bold; color: var(--csu-primary); }
+        .upload-zone .sub   { font-size: 0.82rem; color: #666; margin-top: 0.25rem; }
+        .upload-zone input[type="file"] { display: none; }
 
-    button {
-        padding: 0.6rem 0.95rem;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-        font-size: 0.95rem;
-        margin-right: 0.5rem;
-    }
+        .file-status {
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 6px;
+            background: #e8f5e1;
+            border: 1px solid #b5dda0;
+            font-size: 0.88rem;
+            margin-bottom: 1rem;
+        }
+        .file-status.show { display: flex; }
+        .file-status .fname { font-weight: bold; color: var(--csu-primary); }
+        .file-status .fmeta { color: #555; }
+        .file-status .remove-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--csu-danger);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+        }
 
-    button.primary {
-        background: var(--csu-primary);
-        color: #ffffff;
-    }
+        /* ---- Detected PTM summary ---- */
+        .detected-summary {
+            display: none;
+            margin-bottom: 1rem;
+        }
+        .detected-summary.show { display: block; }
+        .detected-summary table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            background: #fff;
+        }
+        .detected-summary th, .detected-summary td {
+            border: 1px solid var(--csu-border);
+            padding: 0.35rem 0.55rem;
+            text-align: left;
+        }
+        .detected-summary thead th {
+            background: #e6ece9;
+            font-weight: bold;
+        }
+        .detected-summary tbody tr:nth-child(even) { background: #f9fbfa; }
+        .badge {
+            display: inline-block;
+            padding: 0.1rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .badge-ok  { background: #d4edda; color: #155724; }
+        .badge-multi { background: #fff3cd; color: #856404; }
 
-    button.secondary {
-        background: #ffffff;
-        color: var(--csu-secondary);
-        border: 1px solid var(--csu-border);
-    }
+        /* ---- Tables (shared) ---- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid var(--csu-border);
+            padding: 0.4rem 0.5rem;
+            text-align: left;
+        }
+        thead th {
+            background: #e6ece9;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(even) { background: #f9fbfa; }
 
-    button:disabled {
-        opacity: 0.5;
-        cursor: default;
-    }
+        .ptm-input-table th:nth-child(1),
+        .ptm-input-table td:nth-child(1) { width: 25%; }
+        .ptm-input-table th:nth-child(2),
+        .ptm-input-table td:nth-child(2) { width: 45%; }
+        .ptm-input-table th:nth-child(3),
+        .ptm-input-table td:nth-child(3) { width: 30%; }
 
-    .status {
-        margin-top: 0.5rem;
-        font-size: 0.9rem;
-    }
+        input[type="date"] {
+            width: 100%;
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            font-size: 0.9rem;
+        }
 
-    .status.ok {
-        color: var(--csu-primary);
-    }
+        button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            background: var(--csu-primary);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 0.8rem;
+        }
+        button:hover { background: var(--csu-secondary); }
 
-    .status.warn {
-        color: var(--csu-warn);
-    }
+        .error {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--csu-danger);
+            font-weight: bold;
+            display: none;
+        }
 
-    .status.muted {
-        color: var(--csu-muted);
-    }
+        .results-section { margin-top: 1.75rem; }
+        .muted { font-size: 0.8rem; color: #666; }
 
-    #mappingInfo {
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
-        line-height: 1.6;
-    }
+        .results-table-wrapper { margin-top: 0.75rem; overflow-x: auto; }
 
-    #summaryList {
-        list-style: none;
-        padding-left: 0;
-    }
+        .copy-section { margin-top: 1.5rem; }
 
-    #summaryList li {
-        margin-bottom: 0.2rem;
-    }
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            padding: 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--csu-border);
+            resize: vertical;
+            background: #fff;
+            white-space: pre-wrap;
+        }
 
-    .sheet-preview {
-        margin-bottom: 1.25rem;
-        overflow-x: auto;
-    }
+        .copy-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .copy-row button { margin-top: 0; white-space: nowrap; }
 
-    .sheet-preview h3 {
-        margin: 0 0 0.3rem 0;
-    }
+        .pill {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 999px;
+            background: var(--csu-accent);
+            color: #fff;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-left: 0.25rem;
+        }
 
-    .badge {
-        display: inline-block;
-        padding: 0.15rem 0.35rem;
-        border-radius: 3px;
-        border: 1px solid var(--csu-border);
-        background: #ffffff;
-        font-size: 0.7rem;
-    }
+        /* Section count summary */
+        .section-count-summary {
+            display: none;
+            margin-top: 1.5rem;
+        }
+        .section-count-summary.show { display: block; }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 0.4rem;
-        font-size: 0.85rem;
-        background: #ffffff;
-    }
-
-    th, td {
-        border: 1px solid var(--csu-border);
-        padding: 0.25rem 0.4rem;
-        white-space: nowrap;
-    }
-
-    th {
-        background: #e7eeeb;
-        position: sticky;
-        top: 0;
-    }
-</style>
+        @media (max-width: 700px) {
+            header { padding: 1.25rem 1rem; }
+            main { padding: 0 0.75rem 1.5rem; }
+            .copy-row { flex-direction: column; align-items: flex-start; }
+            .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
+        }
+    </style>
 </head>
-
 <body>
-
 <header>
-    <h1>CSU Semester Course Delta Checker</h1>
-    <p>Compares original vs updated semester files and separates only added / newly cancelled courses.</p>
+    <h1>PTM Course Evaluation Date Calculator</h1>
+    <p>
+        Upload a <strong>Section Enrollment Report CSV</strong> to auto-detect PTM groups and end dates, or enter dates manually.
+        Survey and report dates assume <strong>11:59 PM</strong>; instructor emails are sent at <strong>8:00 AM</strong>.
+    </p>
 </header>
 
 <main>
+    <div class="tool-card">
 
-<section class="card">
-    <h2>1. Upload original &amp; updated spreadsheets</h2>
-    <p>
-        <small>
-            Both files must have the same structure.<br>
-            Required header: <code>TERM_CODE_KEY</code>. Key is <code>TERM_CODE_KEY + CRN</code> for comparison.<br>
-            Brightspace Code = <code>XLST + TERM_CODE_KEY</code> or <code>CRN + "." + TERM_CODE_KEY</code>
-        </small>
-    </p>
+        <!-- Tab bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="upload">Upload CSV</button>
+            <button class="tab-btn" data-tab="manual">Manual Entry</button>
+        </div>
 
-    <label for="fileOriginal">Original semester file</label>
-    <input id="fileOriginal" type="file" accept=".xlsx,.xls,.csv,.ods">
+        <!-- ==================== UPLOAD TAB ==================== -->
+        <div class="tab-panel active" id="tab-upload">
 
-    <label for="fileUpdated">Updated semester file</label>
-    <input id="fileUpdated" type="file" accept=".xlsx,.xls,.csv,.ods">
+            <div class="section-heading">1. Upload Section Enrollment Report</div>
+            <div class="helper-text">
+                Drop a <strong>.csv</strong> file exported from Banner (Section Enrollment Report).
+                The tool reads the <code>PTRM_CODE</code>, <code>PTRM_DESC</code>, and <code>PTRM_END_DATE</code> columns
+                to group PTMs and detect course end dates automatically. Only <strong>Active (A)</strong> sections are included by default.
+            </div>
 
-    <div>
-        <button id="processBtn" class="primary" disabled>Compare &amp; Generate</button>
-        <button id="downloadBtn" class="secondary" disabled>Download Changes Workbook</button>
+            <div class="upload-zone" id="uploadZone">
+                <div class="icon">📄</div>
+                <div class="label">Click or drag &amp; drop CSV here</div>
+                <div class="sub">Section_Enrollment_Report_*.csv</div>
+                <input type="file" id="csvInput" accept=".csv">
+            </div>
+
+            <div class="file-status" id="fileStatus">
+                <span>✅</span>
+                <span class="fname" id="fileName"></span>
+                <span class="fmeta" id="fileMeta"></span>
+                <button class="remove-btn" id="removeFileBtn" title="Remove file">✕</button>
+            </div>
+
+            <div class="detected-summary" id="detectedSummary">
+                <div class="section-heading">Detected PTM Groups</div>
+                <div class="helper-text">
+                    Showing unique PTM groups found in the file. Groups with a single end date are ready.
+                    Groups with multiple end dates (rare) will use the <strong>latest</strong> end date; override below if needed.
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PTM Code</th>
+                            <th>Descriptor</th>
+                            <th>End Date(s)</th>
+                            <th>Active Sections</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detectedBody"></tbody>
+                </table>
+                <button id="calcUploadBtn" style="margin-top:1rem;">Calculate Dates from Upload</button>
+            </div>
+        </div>
+
+        <!-- ==================== MANUAL TAB ==================== -->
+        <div class="tab-panel" id="tab-manual">
+
+            <div class="section-heading">1. Enter Course End Dates</div>
+            <div class="helper-text">
+                Rules used for each PTM:<br>
+                • Survey Start: <strong>20 days before</strong> course end (system 11:59 PM; effective first full day = next day)<br>
+                • Survey End: <strong>8 days before</strong> course end (11:59 PM)<br>
+                • Instructor Emails: <strong>27, 13, and 6 days before the Survey Start Date</strong> (sent at 8:00 AM)<br>
+                • Admin Report Access: <strong>8 days after</strong> course end (system 11:59 PM; effective first full day = next day)<br>
+                • Instructor Report Access: <strong>15 days after</strong> course end (11:59 PM)<br>
+                • Instructor Report Access Effective: <strong>1 day after</strong> the Instructor Report Access Start Date<br>
+                • <strong>DDC / DDS:</strong> Dynamic Date Course/Session – dates are <strong>course-specific</strong>.<br><br>
+                Evaluations should run for approximately <strong>two weeks</strong>, beginning on the
+                <strong>Monday morning</strong> of the evaluation period (represented in the system as
+                <strong>Sunday 11:59 PM</strong>) and ending on <strong>Friday at 11:59 PM</strong> before the
+                last week of the course or finals week. Always <strong>double check the output</strong> against
+                the academic calendar. You should always have <strong>one full week at the end of the class
+                (last week/finals week) without active evaluations</strong>.
+            </div>
+
+            <table class="ptm-input-table">
+                <thead>
+                    <tr>
+                        <th>PTM Input Group</th>
+                        <th>PTMs &amp; Descriptors</th>
+                        <th>Course End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Main PTM Group</td>
+                        <td>
+                            PTM 1 – Full Term<br>
+                            PTM 5 – 12-Weeks<br>
+                            PTM 82T – 2nd 8-Weeks<br>
+                            PTM H – Hybrid<br>
+                            PTM W – Distance Learning (WEB)<br>
+                            PTM ZDC – Dual Enrollment
+                        </td>
+                        <td><input type="date" id="ptm-main-group"></td>
+                    </tr>
+                    <tr>
+                        <td>81T Group</td>
+                        <td>PTM 81T – 1st 8-Weeks</td>
+                        <td><input type="date" id="ptm-81T"></td>
+                    </tr>
+                    <tr>
+                        <td>Intersession Group</td>
+                        <td>PTM I – Intersession</td>
+                        <td><input type="date" id="ptm-I"></td>
+                    </tr>
+                    <tr>
+                        <td>DDC / DDS Group</td>
+                        <td>PTM DDC – Dynamic Date Course<br>PTM DDS – Dynamic Date Session</td>
+                        <td><input type="date" id="ptm-DDC"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button id="calcManualBtn">Calculate Dates for All</button>
+        </div>
+
+        <!-- ==================== SHARED ERROR / RESULTS ==================== -->
+        <div id="error" class="error">Please enter at least one valid course end date or upload a CSV.</div>
+
+        <div class="results-section" id="resultsSection" style="display:none;">
+            <div class="section-heading">2. Results by PTM</div>
+            <p class="muted">
+                Survey opens at <strong>11:59 PM</strong> on the Survey Start date (students effectively see it the
+                following day). Administrator report access also begins at <strong>11:59 PM</strong> on the system date
+                shown; the effective first full day is the next calendar day. For <strong>DDC/DDS</strong>, dates are
+                course-specific and may vary by section.
+            </p>
+
+            <div class="results-table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PTM(s)</th>
+                            <th>Included PTMs</th>
+                            <th>Course End</th>
+                            <th>Survey Start<br><span class="pill">11:59 PM</span></th>
+                            <th>Survey Start<br>Effective Day</th>
+                            <th>Survey End<br><span class="pill">11:59 PM</span></th>
+                            <th>Email 27d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 13d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Email 6d<br>Before Start<br><span class="pill">8:00 AM</span></th>
+                            <th>Admin Report<br>Start (System)<br><span class="pill">11:59 PM</span></th>
+                            <th>Admin Report<br>Effective Day</th>
+                            <th>Instructor Report<br>Start<br><span class="pill">11:59 PM</span></th>
+                            <th>Instructor Report Access<br>Effective (first full day)</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Section count summary (upload only) -->
+            <div class="section-count-summary" id="sectionCountSummary">
+                <div class="section-heading">Section Counts by PTM</div>
+                <p class="muted">Number of <strong>Active (A)</strong> sections detected in the uploaded file per PTM code.</p>
+                <div class="results-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PTM Code</th>
+                                <th>Descriptor</th>
+                                <th>Active Sections</th>
+                                <th>Course End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sectionCountBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="copy-section">
+                <div class="copy-row">
+                    <div class="section-heading" style="margin-bottom:0;">3. Easy Copy (Word Bullet Format)</div>
+                    <button id="copyBtn">Copy Bullet List to Clipboard</button>
+                </div>
+                <p class="muted">
+                    Copy this block and paste into a Word document. It is structured as nested bullets for each PTM.
+                    Staff should still verify dates against the academic calendar and confirm that one full final week
+                    of class is evaluation-free.
+                </p>
+                <textarea id="copyField" readonly></textarea>
+            </div>
+        </div>
     </div>
-
-    <div id="status" class="status muted">No files loaded yet.</div>
-    <div id="mappingInfo" class="status muted"></div>
-</section>
-
-<section class="card">
-    <h2>2. Preview &amp; sheet summary (changes only)</h2>
-    <p><small>Preview shows first 5 rows per sheet for added / newly cancelled courses. Sorted by part-of-term: 1st 8-Weeks → 12-Weeks → 2nd 8-Weeks → Full Term → others.</small></p>
-    <ul id="summaryList"></ul>
-    <div id="preview"></div>
-</section>
-
 </main>
 
 <script>
-    const SHEET_ORDER = [
-        "PHAR",
-        "UNIV",
-        "UNIV_BrightspaceCodes",
-        "OLHY",
-        "OLHY_BrightspaceCodes",
-        "Zero_Credit",
-        "Cancelled",
-        "Other_Active",
-        "UNIV_Crosslisted",
-        "OLHY_Crosslisted",
-        "Overlap_Crosslisted",
-        "UNIV_NoXLST",
-        "OLHY_NoXLST"
-    ];
-
-    /* ── Part-of-term sort order ── */
-    const PTRM_SORT_ORDER = {
-        "1ST 8-WEEKS":                   1,
-        "12-WEEKS":                      2,
-        "2ND 8-WEEKS":                   3,
-        "FULL TERM":                     4,
-        "DISTANCE LEARNING (WEB) TERM":  5,
-        "DUAL ENROLLMENT":               6,
-        "DYNAMIC DATE SESSION":          7,
-        "HYBRID":                        8,
-        "INTERSESSION":                  9
-    };
-    const PTRM_SORT_DEFAULT = 99;
-
-    function getPtrmSortKey(ptrmDesc) {
-        const key = String(ptrmDesc || "").trim().toUpperCase();
-        return PTRM_SORT_ORDER[key] !== undefined ? PTRM_SORT_ORDER[key] : PTRM_SORT_DEFAULT;
-    }
-
-    function sortRowsByPtrm(rows) {
-        return rows.sort((a, b) => {
-            const descA = a.PTRM_DESC || a.ptrm_desc || "";
-            const descB = b.PTRM_DESC || b.ptrm_desc || "";
-            return getPtrmSortKey(descA) - getPtrmSortKey(descB);
-        });
-    }
-
-    let separatedSheets = null;
-    let baseHeaders = [];
-    let columnMapUpdated = null;
-    let lastTermCode = "";
-    let lastFileNameUpdated = "";
-    let lastFileNameOriginal = "";
-
-    function normalize(str) {
-        return String(str || "").trim().toUpperCase();
-    }
-
-    function buildColumnMap(row) {
-        const keys = Object.keys(row);
-        const map = {};
-
-        keys.forEach(k => {
-            const n = normalize(k);
-
-            if (!map.TERM_CODE      && n === "TERM_CODE_KEY")   map.TERM_CODE = k;
-            if (!map.CRN            && n === "CRN")             map.CRN = k;
-            if (!map.XLST           && n === "XLST")            map.XLST = k;
-            if (!map.STAT           && n === "STAT")            map.STAT = k;
-            if (!map.CR             && n === "CR")              map.CR = k;
-            if (!map.PTM            && n === "PTM")             map.PTM = k;
-            if (!map.SUBJ           && n === "SUBJ")            map.SUBJ = k;
-            if (!map.SEC            && n === "SEC")             map.SEC = k;
-            if (!map.PTRM_DESC      && n === "PTRM_DESC")      map.PTRM_DESC = k;
-            if (!map.PTRM_START_DATE && n === "PTRM_START_DATE") map.PTRM_START_DATE = k;
-            if (!map.PTRM_END_DATE  && n === "PTRM_END_DATE")  map.PTRM_END_DATE = k;
-        });
-
-        return map;
-    }
-
-    function getVal(row, map, logical) {
-        const k = map[logical];
-        return k ? row[k] : "";
-    }
-
-    function toUpperString(v) {
-        return v === undefined || v === null ? "" : String(v).trim().toUpperCase();
-    }
-
-    function toNumber(v) {
-        if (v === undefined || v === null || v === "") return NaN;
-        const n = parseFloat(v);
-        return isNaN(n) ? NaN : n;
-    }
-
-    function getSectionNumber(secRaw) {
-        const s = String(secRaw || "").trim();
-        const m = s.match(/^(\d{1,3})/);
-        return m ? parseInt(m[1], 10) : NaN;
-    }
-
-    function isUnivSection(secRaw) {
-        const n = getSectionNumber(secRaw);
-        return !isNaN(n) && ((n >= 1 && n <= 19) || (n >= 61 && n <= 69));
-    }
-
-    function isOlhySection(secRaw) {
-        const n = getSectionNumber(secRaw);
-        return !isNaN(n) && ((n >= 21 && n <= 29) || (n >= 51 && n <= 59));
-    }
-
-    function getPtmGroupLabel(ptm) {
-        switch (ptm) {
-            case "1":   return "16-week";
-            case "5":   return "12-week";
-            case "81T": return "1st 8-weeks";
-            case "82T": return "2nd 8-weeks";
-            case "DDS": return "Dynamic";
-            case "H":   return "Hybrid";
-            case "R5":  return "Rise Cohort 5";
-            case "W":   return "Distance/Web";
-            case "ZDC": return "Dual Credit";
-            default:    return ptm || "";
-        }
-    }
-
-    function computeBrightspaceCode(row, map) {
-        if (!map.TERM_CODE) return "";
-        const term = String(getVal(row, map, "TERM_CODE") || "").trim();
-        if (!term) return "";
-
-        const crn  = String(getVal(row, map, "CRN")  || "").trim();
-        const xlst = String(getVal(row, map, "XLST") || "").trim();
-
-        if (xlst) return xlst + term;
-        if (crn)  return crn + "." + term;
-        return "";
-    }
-
-    function separateRows(rows, map) {
-        const buckets = {
-            PHAR: [],
-            UNIV: [],
-            OLHY: [],
-            Zero_Credit: [],
-            Cancelled: [],
-            Other_Active: [],
-            UNIV_Crosslisted: [],
-            OLHY_Crosslisted: [],
-            Overlap_Crosslisted: [],
-            UNIV_NoXLST: [],
-            OLHY_NoXLST: [],
-            UNIV_BrightspaceCodes: [],
-            OLHY_BrightspaceCodes: []
-        };
-
-        const xlstGroups = {};
-
-        let firstTerm = "";
-        let codeCount = 0;
-
-        rows.forEach(row => {
-            const out = { ...row };
-
-            const stat = toUpperString(getVal(row, map, "STAT"));
-            const cr = toNumber(getVal(row, map, "CR"));
-            const subj = toUpperString(getVal(row, map, "SUBJ"));
-            const sec = toUpperString(getVal(row, map, "SEC"));
-            const ptm = toUpperString(getVal(row, map, "PTM"));
-            const xlst = String(getVal(row, map, "XLST") || "").trim();
-
-            const termVal = getVal(row, map, "TERM_CODE");
-            const term = termVal ? String(termVal).trim() : "";
-            if (!firstTerm && term) firstTerm = term;
-
-            const bcode = computeBrightspaceCode(row, map);
-            if (bcode) codeCount++;
-            out.BrightspaceCode = bcode;
-            out.PTM_Group = getPtmGroupLabel(ptm);
-
-            const isUniv = isUnivSection(sec);
-            const isOlhy = isOlhySection(sec);
-            const isZeroCredit = !isNaN(cr) && cr === 0;
-            const isCancelled = (stat === "C");
-
-            if (xlst) {
-                if (!xlstGroups[xlst]) {
-                    xlstGroups[xlst] = { univ: [], olhy: [] };
-                }
-                if (isUniv) {
-                    xlstGroups[xlst].univ.push(out);
-                } else if (isOlhy) {
-                    xlstGroups[xlst].olhy.push(out);
-                }
-            }
-
-            if (xlst && isUniv) {
-                buckets.UNIV_Crosslisted.push(out);
-            } else if (xlst && isOlhy) {
-                buckets.OLHY_Crosslisted.push(out);
-            }
-
-            if (!xlst && !isCancelled && !isZeroCredit) {
-                if (isUniv) {
-                    buckets.UNIV_NoXLST.push(out);
-                } else if (isOlhy) {
-                    buckets.OLHY_NoXLST.push(out);
-                }
-            }
-
-            let sheet = "Other_Active";
-
-            if (isCancelled) sheet = "Cancelled";
-            else if (isZeroCredit) sheet = "Zero_Credit";
-            else if (subj === "PHAR") sheet = "PHAR";
-            else if (isUniv) sheet = "UNIV";
-            else if (isOlhy) sheet = "OLHY";
-
-            buckets[sheet].push(out);
-        });
-
-        // Overlap crosslists
-        Object.values(xlstGroups).forEach(group => {
-            if (group.univ.length && group.olhy.length) {
-                buckets.Overlap_Crosslisted.push(...group.univ, ...group.olhy);
-            }
-        });
-
-        // Unique Brightspace codes
-        const univCodeSet = new Set();
-        buckets.UNIV.forEach(r => {
-            if (r.BrightspaceCode) univCodeSet.add(r.BrightspaceCode);
-        });
-        buckets.UNIV_BrightspaceCodes = Array.from(univCodeSet).map(code => ({ BrightspaceCode: code }));
-
-        const olhyCodeSet = new Set();
-        buckets.OLHY.forEach(r => {
-            if (r.BrightspaceCode) olhyCodeSet.add(r.BrightspaceCode);
-        });
-        buckets.OLHY_BrightspaceCodes = Array.from(olhyCodeSet).map(code => ({ BrightspaceCode: code }));
-
-        /* ── Sort every bucket by PTRM_DESC ── */
-        Object.keys(buckets).forEach(name => {
-            if (name === "UNIV_BrightspaceCodes" || name === "OLHY_BrightspaceCodes") return;
-            if (buckets[name].length) {
-                sortRowsByPtrm(buckets[name]);
-            }
-        });
-
-        return { buckets, firstTerm, codeCount };
-    }
-
-    function computeHeadersFromSheets(buckets) {
-        let headers = baseHeaders.slice();
-        const allKeys = new Set(headers);
-
-        Object.entries(buckets).forEach(([name, rows]) => {
-            if (name === "UNIV_BrightspaceCodes" || name === "OLHY_BrightspaceCodes") return;
-            rows.forEach(r => {
-                Object.keys(r).forEach(k => allKeys.add(k));
-            });
-        });
-
-        headers = headers.filter(h => allKeys.has(h));
-        allKeys.forEach(k => {
-            if (!headers.includes(k)) headers.push(k);
-        });
-
-        if (!headers.includes("BrightspaceCode")) headers.push("BrightspaceCode");
-        if (!headers.includes("PTM_Group")) headers.push("PTM_Group");
-
-        return headers;
-    }
-
-    function setStatus(msg, cls) {
-        const e = document.getElementById("status");
-        e.textContent = msg;
-        e.className = "status " + cls;
-    }
-
-    function showMappingInfo(map) {
-        const e = document.getElementById("mappingInfo");
-        if (!map || Object.keys(map).length === 0) {
-            e.textContent = "Mapped columns → (none yet)";
-            return;
-        }
-        e.innerHTML =
-            `<strong>Column mapping:</strong><br>` +
-            `TERM_CODE_KEY → ${map.TERM_CODE || "NOT FOUND"} | ` +
-            `CRN → ${map.CRN || "NOT FOUND"} | ` +
-            `XLST → ${map.XLST || "NOT FOUND"} | ` +
-            `STAT → ${map.STAT || "NOT FOUND"} | ` +
-            `CR → ${map.CR || "NOT FOUND"} | ` +
-            `PTM → ${map.PTM || "NOT FOUND"} | ` +
-            `SUBJ → ${map.SUBJ || "NOT FOUND"} | ` +
-            `SEC → ${map.SEC || "NOT FOUND"}<br>` +
-            `PTRM_DESC → ${map.PTRM_DESC || "NOT FOUND"} | ` +
-            `PTRM_START_DATE → ${map.PTRM_START_DATE || "NOT FOUND"} | ` +
-            `PTRM_END_DATE → ${map.PTRM_END_DATE || "NOT FOUND"}`;
-    }
-
-    function renderSummary(buckets) {
-        const ul = document.getElementById("summaryList");
-        ul.innerHTML = "";
-        SHEET_ORDER.forEach(name => {
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${name}</strong>: ${(buckets[name] || []).length}`;
-            ul.appendChild(li);
-        });
-    }
-
-    function renderPreview(buckets) {
-        const c = document.getElementById("preview");
-        c.innerHTML = "";
-
-        SHEET_ORDER.forEach(name => {
-            const rows = buckets[name];
-            if (!rows || rows.length === 0) return;
-
-            const div = document.createElement("div");
-            div.className = "sheet-preview";
-
-            div.innerHTML = `<h3>${name} <span class="badge">${rows.length}</span></h3>
-                             <small>First 5 rows</small>`;
-
-            const table = document.createElement("table");
-            const thead = document.createElement("thead");
-            const tbody = document.createElement("tbody");
-
-            const headers = Object.keys(rows[0]);
-            const trh = document.createElement("tr");
-            headers.forEach(h => {
-                const th = document.createElement("th");
-                th.textContent = h;
-                trh.appendChild(th);
-            });
-            thead.appendChild(trh);
-
-            const max = Math.min(5, rows.length);
-            for (let i = 0; i < max; i++) {
-                const r = rows[i];
-                const tr = document.createElement("tr");
-                headers.forEach(h => {
-                    const td = document.createElement("td");
-                    td.textContent = r[h] ?? "";
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            }
-
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            div.appendChild(table);
-            c.appendChild(div);
-        });
-    }
-
-    function downloadWorkbook() {
-        if (!separatedSheets) {
-            alert("You must compare files first.");
-            return;
-        }
-
-        const wb = XLSX.utils.book_new();
-        const fullHeaders = computeHeadersFromSheets(separatedSheets);
-
-        SHEET_ORDER.forEach(n => {
-            const rows = separatedSheets[n];
-            if (!rows || !rows.length) return;
-
-            let ws;
-            if (n === "UNIV_BrightspaceCodes" || n === "OLHY_BrightspaceCodes") {
-                ws = XLSX.utils.json_to_sheet(rows, { header: ["BrightspaceCode"] });
-            } else {
-                ws = XLSX.utils.json_to_sheet(rows, { header: fullHeaders });
-            }
-            XLSX.utils.book_append_sheet(wb, ws, n.substring(0,31));
-        });
-
-        const summaryRows = SHEET_ORDER.map(name => ({
-            Bucket: name,
-            Count: (separatedSheets[name] || []).length
-        }));
-        const summaryWs = XLSX.utils.json_to_sheet(summaryRows, { header: ["Bucket", "Count"] });
-        XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
-
-        const term = lastTermCode || "TERM";
-        const safeOrig = (lastFileNameOriginal || "original").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
-        const safeUpd = (lastFileNameUpdated || "updated").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
-        const outName = `${safeOrig}_vs_${safeUpd}_Changes_${term}.xlsx`;
-
-        XLSX.writeFile(wb, outName);
-    }
-
-    function handleFileInputsChange() {
-        const orig = document.getElementById("fileOriginal").files[0];
-        const upd  = document.getElementById("fileUpdated").files[0];
-
-        separatedSheets = null;
-        baseHeaders = [];
-        columnMapUpdated = null;
-        lastTermCode = "";
-        lastFileNameOriginal = orig ? orig.name : "";
-        lastFileNameUpdated  = upd ? upd.name  : "";
-
-        document.getElementById("summaryList").innerHTML = "";
-        document.getElementById("preview").innerHTML = "";
-        document.getElementById("downloadBtn").disabled = true;
-        showMappingInfo(null);
-
-        if (!orig || !upd) {
-            setStatus("Please select both original and updated files.", "muted");
-            document.getElementById("processBtn").disabled = true;
-            return;
-        }
-
-        setStatus(`Files loaded: ${orig.name} (original) and ${upd.name} (updated). Click Compare & Generate.`, "ok");
-        document.getElementById("processBtn").disabled = false;
-    }
-
-    function readFirstSheetToJson(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    const wb = XLSX.read(e.target.result, { type: "array", cellDates: false, raw: true });
-                    const sheet = wb.SheetNames[0];
-                    const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval: "", raw: true });
-                    resolve(data);
-                } catch (err) {
-                    reject(err);
-                }
-            };
-            reader.onerror = () => reject(new Error("Error reading file"));
-            reader.readAsArrayBuffer(file);
-        });
-    }
-
-    async function processFiles() {
-        const orig = document.getElementById("fileOriginal").files[0];
-        const upd  = document.getElementById("fileUpdated").files[0];
-        if (!orig || !upd) return;
-
-        setStatus("Reading and comparing files...", "muted");
-        document.getElementById("processBtn").disabled = true;
-        document.getElementById("downloadBtn").disabled = true;
-
-        try {
-            const [origRows, updRows] = await Promise.all([
-                readFirstSheetToJson(orig),
-                readFirstSheetToJson(upd)
-            ]);
-
-            if (!updRows.length) {
-                setStatus("Updated sheet is empty.", "warn");
-                document.getElementById("processBtn").disabled = false;
-                return;
-            }
-
-            baseHeaders = Object.keys(updRows[0]);
-            columnMapUpdated = buildColumnMap(updRows[0]);
-            showMappingInfo(columnMapUpdated);
-
-            if (!columnMapUpdated.TERM_CODE) {
-                setStatus("TERM_CODE_KEY column missing in updated file.", "warn");
-                document.getElementById("processBtn").disabled = false;
-                return;
-            }
-            if (!columnMapUpdated.CRN) {
-                setStatus("CRN column missing in updated file.", "warn");
-                document.getElementById("processBtn").disabled = false;
-                return;
-            }
-
-            // Build map for original rows
-            let columnMapOriginal = null;
-            if (origRows.length) {
-                columnMapOriginal = buildColumnMap(origRows[0]);
-            }
-
-            function buildKey(row, map) {
-                const term = String(getVal(row, map, "TERM_CODE") || "").trim();
-                const crn  = String(getVal(row, map, "CRN") || "").trim();
-                return term + "||" + crn;
-            }
-
-            const origIndex = {};
-            if (columnMapOriginal) {
-                origRows.forEach(r => {
-                    const key = buildKey(r, columnMapOriginal);
-                    if (key !== "||") {
-                        origIndex[key] = r;
-                    }
-                });
-            }
-
-            const changes = [];
-            let addedCount = 0;
-            let cancelledCount = 0;
-
-            updRows.forEach(rUpd => {
-                const keyUpd = buildKey(rUpd, columnMapUpdated);
-                if (keyUpd === "||") return;
-
-                const rOrig = origIndex[keyUpd];
-                const statUpd  = toUpperString(getVal(rUpd, columnMapUpdated, "STAT"));
-                const statOrig = rOrig ? toUpperString(getVal(rOrig, columnMapOriginal, "STAT")) : "";
-
-                if (!rOrig) {
-                    // New course
-                    changes.push(rUpd);
-                    addedCount++;
-                } else if (statOrig !== "C" && statUpd === "C") {
-                    // Newly cancelled
-                    changes.push(rUpd);
-                    cancelledCount++;
-                }
-            });
-
-            if (!changes.length) {
-                setStatus("No added or newly cancelled courses detected. No workbook generated.", "ok");
-                document.getElementById("processBtn").disabled = false;
-                separatedSheets = null;
-                document.getElementById("summaryList").innerHTML = "";
-                document.getElementById("preview").innerHTML = "";
-                return;
-            }
-
-            const { buckets, firstTerm, codeCount } = separateRows(changes, columnMapUpdated);
-            separatedSheets = buckets;
-            lastTermCode = firstTerm;
-
-            renderSummary(buckets);
-            renderPreview(buckets);
-
-            document.getElementById("downloadBtn").disabled = false;
-            document.getElementById("processBtn").disabled = false;
-
-            setStatus(
-                `Changes found: ${addedCount} added, ${cancelledCount} newly cancelled. ` +
-                `Generated ${codeCount} Brightspace codes for changed courses.`,
-                "ok"
-            );
-        } catch (err) {
-            console.error(err);
-            setStatus("Error reading or processing files.", "warn");
-            document.getElementById("processBtn").disabled = false;
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("fileOriginal").addEventListener("change", handleFileInputsChange);
-        document.getElementById("fileUpdated").addEventListener("change", handleFileInputsChange);
-        document.getElementById("processBtn").addEventListener("click", processFiles);
-        document.getElementById("downloadBtn").addEventListener("click", downloadWorkbook);
+/* ===================================================================
+   SHARED DATE UTILITIES
+   =================================================================== */
+function addDays(date, days) {
+    const r = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    r.setDate(r.getDate() + days);
+    return r;
+}
+function fmtPlain(d) {
+    return String(d.getMonth()+1).padStart(2,'0') + '/' +
+           String(d.getDate()).padStart(2,'0') + '/' + d.getFullYear();
+}
+function fmt1159(d) { return fmtPlain(d) + ' 11:59 PM'; }
+function fmt800(d)  { return fmtPlain(d) + ' 8:00 AM'; }
+
+function computeDates(endDate) {
+    const surveyStart          = addDays(endDate, -20);
+    const surveyStartEffective = addDays(surveyStart, 1);
+    const surveyEnd            = addDays(endDate, -8);
+    const email27              = addDays(surveyStart, -27);
+    const email13              = addDays(surveyStart, -13);
+    const email6               = addDays(surveyStart, -6);
+    const adminAccess          = addDays(endDate, 8);
+    const adminAccessEffective = addDays(adminAccess, 1);
+    const instrAccess          = addDays(endDate, 15);
+    const instrAccessEffective = addDays(instrAccess, 1);
+    return { surveyStart, surveyStartEffective, surveyEnd,
+             email27, email13, email6,
+             adminAccess, adminAccessEffective,
+             instrAccess, instrAccessEffective };
+}
+
+/*  Group an array of {code, desc, endDate (Date), courseSpecific} items
+    by identical endDate, then produce combined rows & bullets.
+    Returns { rows:[], bullets:[] }                                       */
+function groupAndBuild(items) {
+    // bucket by date string
+    const buckets = new Map(); // dateStr -> [{code,desc,courseSpecific}]
+    items.forEach(p => {
+        const key = p.endDate.getTime();
+        if (!buckets.has(key)) buckets.set(key, { endDate: p.endDate, members: [] });
+        buckets.get(key).members.push(p);
     });
-</script>
 
+    const rows = [], bullets = [];
+
+    buckets.forEach(({ endDate, members }) => {
+        const d = computeDates(endDate);
+        const anyCourseSpecific = members.some(m => m.courseSpecific);
+
+        // Combined label: "1, 5, 82T, H, W, ZDC"
+        const codeLabel = members.map(m => m.code).join(', ');
+        // Combined descriptors stacked: "Full Term / 12-Weeks / ..."
+        const descLabel = members.map(m => m.code + ' – ' + m.desc).join('<br>');
+        const descLabelPlain = members.map(m => m.code + ' – ' + m.desc).join(', ');
+        const notes = anyCourseSpecific ? 'Course-specific; confirm dates per section.' : '';
+
+        rows.push('<tr>' +
+            '<td>' + codeLabel + '</td>' +
+            '<td>' + descLabel + '</td>' +
+            '<td>' + fmtPlain(endDate) + '</td>' +
+            '<td>' + fmt1159(d.surveyStart) + '</td>' +
+            '<td>' + fmtPlain(d.surveyStartEffective) + '</td>' +
+            '<td>' + fmt1159(d.surveyEnd) + '</td>' +
+            '<td>' + fmt800(d.email27) + '</td>' +
+            '<td>' + fmt800(d.email13) + '</td>' +
+            '<td>' + fmt800(d.email6) + '</td>' +
+            '<td>' + fmt1159(d.adminAccess) + '</td>' +
+            '<td>' + fmtPlain(d.adminAccessEffective) + '</td>' +
+            '<td>' + fmt1159(d.instrAccess) + '</td>' +
+            '<td>' + fmtPlain(d.instrAccessEffective) + '</td>' +
+            '<td>' + notes + '</td></tr>');
+
+        bullets.push(`• PTMs: ${descLabelPlain}
+   • Course End: ${fmtPlain(endDate)}
+   • Survey Start (System – 11:59 PM): ${fmt1159(d.surveyStart)}
+   • Survey Start (Effective First Full Day): ${fmtPlain(d.surveyStartEffective)}
+   • Survey End (11:59 PM): ${fmt1159(d.surveyEnd)}
+   • Instructor Emails (before Survey Start):
+      • 27 Days Before Survey Start (8:00 AM): ${fmt800(d.email27)}
+      • 13 Days Before Survey Start (8:00 AM): ${fmt800(d.email13)}
+      • 6 Days Before Survey Start  (8:00 AM): ${fmt800(d.email6)}
+   • Admin Report Access (System – 11:59 PM): ${fmt1159(d.adminAccess)}
+   • Admin Report Access (Effective First Full Day): ${fmtPlain(d.adminAccessEffective)}
+   • Instructor Report Access (System – 11:59 PM): ${fmt1159(d.instrAccess)}
+   • Instructor Report Access Effective (first full day): ${fmtPlain(d.instrAccessEffective)}
+   • Notes: ${notes || 'N/A'}`);
+    });
+
+    return { rows, bullets };
+}
+
+function showResults(rows, bullets, showSectionCounts) {
+    const errorEl = document.getElementById('error');
+    const resultsSection = document.getElementById('resultsSection');
+    if (rows.length === 0) {
+        errorEl.style.display = 'block';
+        resultsSection.style.display = 'none';
+        return;
+    }
+    errorEl.style.display = 'none';
+    document.getElementById('resultsBody').innerHTML = rows.join('');
+    document.getElementById('copyField').value = bullets.join('\n\n');
+    resultsSection.style.display = 'block';
+
+    const scs = document.getElementById('sectionCountSummary');
+    if (showSectionCounts) scs.classList.add('show');
+    else scs.classList.remove('show');
+}
+
+/* ===================================================================
+   TAB SWITCHING
+   =================================================================== */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        // Hide results when switching
+        document.getElementById('resultsSection').style.display = 'none';
+        document.getElementById('error').style.display = 'none';
+    });
+});
+
+/* ===================================================================
+   CSV UPLOAD LOGIC
+   =================================================================== */
+let parsedPTMs = []; // [{code, desc, endDate (Date), sectionCount}]
+
+const uploadZone = document.getElementById('uploadZone');
+const csvInput   = document.getElementById('csvInput');
+const fileStatus = document.getElementById('fileStatus');
+const detectedSummary = document.getElementById('detectedSummary');
+
+uploadZone.addEventListener('click', () => csvInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+csvInput.addEventListener('change', () => { if (csvInput.files.length) handleFile(csvInput.files[0]); });
+
+document.getElementById('removeFileBtn').addEventListener('click', () => {
+    csvInput.value = '';
+    fileStatus.classList.remove('show');
+    detectedSummary.classList.remove('show');
+    uploadZone.style.display = '';
+    parsedPTMs = [];
+    document.getElementById('resultsSection').style.display = 'none';
+    document.getElementById('sectionCountSummary').classList.remove('show');
+});
+
+function handleFile(file) {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+        alert('Please upload a .csv file.');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        parseCSV(text, file.name, file.size);
+    };
+    reader.readAsText(file);
+}
+
+function parseCSV(text, fname, fsize) {
+    const lines = text.split(/\r?\n/);
+    if (lines.length < 2) { alert('CSV appears empty.'); return; }
+
+    // Parse header
+    const header = parseCSVLine(lines[0]);
+    const idxCode = header.indexOf('PTRM_CODE');
+    const idxDesc = header.indexOf('PTRM_DESC');
+    const idxEnd  = header.indexOf('PTRM_END_DATE');
+    const idxStat = header.indexOf('STAT');
+
+    if (idxCode < 0 || idxDesc < 0 || idxEnd < 0) {
+        alert('CSV is missing required columns: PTRM_CODE, PTRM_DESC, PTRM_END_DATE');
+        return;
+    }
+
+    // Group by PTM code
+    const groups = {}; // code -> {desc, endDates: Set, count}
+    let totalRows = 0;
+
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const cols = parseCSVLine(line);
+        const code = (cols[idxCode] || '').trim();
+        const desc = (cols[idxDesc] || '').trim();
+        const endRaw = (cols[idxEnd] || '').trim();
+        const stat = idxStat >= 0 ? (cols[idxStat] || '').trim() : 'A';
+        if (!code || !endRaw) continue;
+        // Only count active sections
+        if (stat !== 'A') continue;
+        totalRows++;
+        if (!groups[code]) groups[code] = { desc: desc, endDates: new Set(), count: 0 };
+        groups[code].endDates.add(endRaw);
+        groups[code].count++;
+    }
+
+    // Build summary
+    parsedPTMs = [];
+    let detHtml = '';
+    // Sort: known order first, then alphabetically
+    const order = ['1','5','82T','H','W','ZDC','81T','I','DDC','DDS'];
+    const codes = Object.keys(groups).sort((a,b) => {
+        const ia = order.indexOf(a), ib = order.indexOf(b);
+        if (ia >= 0 && ib >= 0) return ia - ib;
+        if (ia >= 0) return -1;
+        if (ib >= 0) return 1;
+        return a.localeCompare(b);
+    });
+
+    codes.forEach(code => {
+        const g = groups[code];
+        const endArr = Array.from(g.endDates).sort((a,b) => new Date(a) - new Date(b));
+        // Use latest end date
+        const latestStr = endArr[endArr.length - 1];
+        const latestDate = new Date(latestStr);
+        const isMulti = endArr.length > 1;
+        const isCourseSpecific = code === 'DDC' || code === 'DDS';
+
+        parsedPTMs.push({ code, desc: g.desc, endDate: latestDate, sectionCount: g.count, courseSpecific: isCourseSpecific });
+
+        detHtml += '<tr>' +
+            '<td><strong>' + code + '</strong></td>' +
+            '<td>' + g.desc + '</td>' +
+            '<td>' + endArr.join('<br>') + '</td>' +
+            '<td>' + g.count + '</td>' +
+            '<td>' + (isMulti
+                ? '<span class="badge badge-multi">Multiple – using latest</span>'
+                : '<span class="badge badge-ok">Ready</span>') + '</td>' +
+            '</tr>';
+    });
+
+    document.getElementById('detectedBody').innerHTML = detHtml;
+    document.getElementById('fileName').textContent = fname;
+    document.getElementById('fileMeta').textContent = '(' + totalRows + ' active sections, ' + codes.length + ' PTM groups)';
+    fileStatus.classList.add('show');
+    detectedSummary.classList.add('show');
+    uploadZone.style.display = 'none';
+}
+
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (inQuotes) {
+            if (ch === '"') {
+                if (i + 1 < line.length && line[i+1] === '"') { current += '"'; i++; }
+                else inQuotes = false;
+            } else { current += ch; }
+        } else {
+            if (ch === '"') inQuotes = true;
+            else if (ch === ',') { result.push(current); current = ''; }
+            else current += ch;
+        }
+    }
+    result.push(current);
+    return result;
+}
+
+/* ===================================================================
+   CALCULATE – UPLOAD MODE
+   =================================================================== */
+document.getElementById('calcUploadBtn').addEventListener('click', function() {
+    if (parsedPTMs.length === 0) return;
+
+    const items = parsedPTMs.map(p => ({
+        code: p.code,
+        desc: p.desc,
+        endDate: p.endDate,
+        courseSpecific: p.courseSpecific
+    }));
+    const { rows, bullets } = groupAndBuild(items);
+
+    // Section count table (always ungrouped – one row per PTM)
+    let scHtml = '';
+    parsedPTMs.forEach(p => {
+        scHtml += '<tr><td><strong>' + p.code + '</strong></td><td>' + p.desc + '</td><td>' + p.sectionCount + '</td><td>' + fmtPlain(p.endDate) + '</td></tr>';
+    });
+    document.getElementById('sectionCountBody').innerHTML = scHtml;
+
+    showResults(rows, bullets, true);
+});
+
+/* ===================================================================
+   CALCULATE – MANUAL MODE (original logic preserved)
+   =================================================================== */
+const manualEntries = [
+    { code: "1",   desc: "Full Term",               inputId: "ptm-main-group", courseSpecific: false },
+    { code: "5",   desc: "12-Weeks",                inputId: "ptm-main-group", courseSpecific: false },
+    { code: "82T", desc: "2nd 8-Weeks",             inputId: "ptm-main-group", courseSpecific: false },
+    { code: "H",   desc: "Hybrid",                  inputId: "ptm-main-group", courseSpecific: false },
+    { code: "W",   desc: "Distance Learning (WEB)", inputId: "ptm-main-group", courseSpecific: false },
+    { code: "ZDC", desc: "Dual Enrollment",         inputId: "ptm-main-group", courseSpecific: false },
+    { code: "81T", desc: "1st 8-Weeks",             inputId: "ptm-81T",        courseSpecific: false },
+    { code: "I",   desc: "Intersession",            inputId: "ptm-I",          courseSpecific: false },
+    { code: "DDC", desc: "Dynamic Date Course",     inputId: "ptm-DDC",        courseSpecific: true  }
+];
+
+document.getElementById('calcManualBtn').addEventListener('click', function() {
+    const items = [];
+
+    manualEntries.forEach(entry => {
+        const val = document.getElementById(entry.inputId).value;
+        if (!val) return;
+        const endDate = new Date(val + 'T00:00:00');
+        if (isNaN(endDate.getTime())) return;
+        items.push({ code: entry.code, desc: entry.desc, endDate, courseSpecific: entry.courseSpecific });
+    });
+
+    const { rows, bullets } = groupAndBuild(items);
+    showResults(rows, bullets, false);
+});
+
+/* ===================================================================
+   COPY BUTTON
+   =================================================================== */
+document.getElementById('copyBtn').addEventListener('click', function() {
+    const field = document.getElementById('copyField');
+    field.select();
+    field.setSelectionRange(0, 99999);
+    try {
+        const ok = document.execCommand('copy');
+        if (!ok && navigator.clipboard) navigator.clipboard.writeText(field.value);
+    } catch(e) { console.warn('Copy failed:', e); }
+});
+</script>
 </body>
 </html>
