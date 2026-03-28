@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSU – CES Courses File Generator</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+    :root {
+        --csu-primary: #0d5540;
+        --csu-secondary: #17375f;
+        --csu-accent: #7bba4c;
+        --csu-light: #f4f7f6;
+        --csu-border: #d0d7d3;
+        --csu-warn: #d9534f;
+        --csu-muted: #6c757d;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+        color: var(--csu-secondary);
+    }
+
+    header {
+        background: linear-gradient(135deg, var(--csu-primary), var(--csu-secondary));
+        color: #ffffff;
+        padding: 1.5rem 1rem;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0 0 0.3rem 0;
+    }
+
+    main {
+        max-width: 1100px;
+        margin: 1.5rem auto 2.5rem;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: var(--csu-light);
+        padding: 1.25rem 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--csu-border);
+        margin-bottom: 1.25rem;
+    }
+
+    .card h2 {
+        margin-top: 0;
+        color: var(--csu-primary);
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    input[type="file"] {
+        margin-bottom: 0.75rem;
+    }
+
+    button {
+        padding: 0.6rem 0.95rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+        margin-right: 0.5rem;
+    }
+
+    button.primary {
+        background: var(--csu-primary);
+        color: #ffffff;
+    }
+
+    button.secondary {
+        background: #ffffff;
+        color: var(--csu-secondary);
+        border: 1px solid var(--csu-border);
+    }
+
+    button:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+
+    .status {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .status.ok {
+        color: var(--csu-primary);
+    }
+
+    .status.warn {
+        color: var(--csu-warn);
+    }
+
+    .status.muted {
+        color: var(--csu-muted);
+    }
+
+    #mappingInfo {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        line-height: 1.6;
+    }
+
+    #summaryList {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    #summaryList li {
+        margin-bottom: 0.2rem;
+    }
+
+    .sheet-preview {
+        margin-bottom: 1.25rem;
+        overflow-x: auto;
+    }
+
+    .sheet-preview h3 {
+        margin: 0 0 0.3rem 0;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.15rem 0.35rem;
+        border-radius: 3px;
+        border: 1px solid var(--csu-border);
+        background: #ffffff;
+        font-size: 0.7rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.4rem;
+        font-size: 0.85rem;
+        background: #ffffff;
+    }
+
+    th, td {
+        border: 1px solid var(--csu-border);
+        padding: 0.25rem 0.4rem;
+        white-space: nowrap;
+    }
+
+    th {
+        background: #e7eeeb;
+        position: sticky;
+        top: 0;
+    }
+
+    .download-note {
+        font-size: 0.8rem;
+        color: var(--csu-muted);
+        margin-top: 0.4rem;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>CSU CES Courses File Generator</h1>
+    <p>Brightspace Code = XLST + TERM_CODE_KEY OR CRN + "." + TERM_CODE_KEY</p>
+</header>
+
+<main>
+
+<section class="card">
+    <h2>1. Upload semester spreadsheet</h2>
+    <p>
+        <small>
+            Required header (any position): <code>TERM_CODE_KEY</code><br>
+            Expected additional headers: <code>CRN</code>, <code>XLST</code>, <code>STAT</code>, <code>CR</code>, <code>PTRM_CODE</code>, <code>SUBJ</code>, <code>SEC</code>,
+            <code>PTRM_DESC</code>, <code>PTRM_START_DATE</code>, <code>PTRM_END_DATE</code>,
+            <code>PRI_FNAME</code>, <code>PRI_LNAME</code>, <code>TITLE</code>, <code>CRSE</code>.<br>
+            Group column indicates <code>UNIV</code> or <code>OLHY</code>.
+        </small>
+    </p>
+
+    <label for="fileInput">Semester file</label>
+    <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.ods">
+
+    <div>
+        <button id="processBtn" class="primary" disabled>Process &amp; Separate</button>
+        <button id="downloadBtn" class="secondary" disabled>Download CES Courses Workbook</button>
+    </div>
+
+    <div id="status" class="status muted">No file loaded yet.</div>
+    <div id="mappingInfo" class="status muted"></div>
+    <div id="downloadNote" class="download-note" style="display:none;">
+        If the download doesn't start, <a id="downloadLink" href="#" download="workbook.xlsx">click here to save the file</a>.
+    </div>
+</section>
+
+<section class="card">
+    <h2>2. Preview &amp; sheet summary</h2>
+    <p><small>Preview shows first 5 rows per sheet. Sorted by part-of-term: 1st 8-Weeks → 12-Weeks → 2nd 8-Weeks → Full Term → others.</small></p>
+    <ul id="summaryList"></ul>
+    <div id="preview"></div>
+</section>
+
+</main>
+
+<script>
+    /* ── Sheet order (consolidated + new sheets) ── */
+    const SHEET_ORDER = [
+        "PHAR",
+        "PHAR_BrightspaceCodes",
+        "All_Courses",
+        "All_BrightspaceCodes",
+        "Zero_Credit",
+        "Cancelled",
+        "Other_Active",
+        "All_Crosslisted",
+        "Crosslisted_Instructors",
+        "All_NoXLST"
+    ];
+
+    /* Headers for special sheets */
+    const CROSSLISTED_INSTR_HEADERS = [
+        "XLST",
+        "BrightspaceCode",
+        "CRN_Codes",
+        "Instructor",
+        "Courses",
+        "Title",
+        "Group",
+        "Overlap",
+        "PTRM_DESC",
+        "PTRM_START_DATE",
+        "PTRM_END_DATE"
+    ];
+
+    /* ── Part-of-term sort order ── */
+    const PTRM_SORT_ORDER = {
+        "1ST 8-WEEKS":                   1,
+        "12-WEEKS":                      2,
+        "2ND 8-WEEKS":                   3,
+        "FULL TERM":                     4,
+        "DISTANCE LEARNING (WEB) TERM":  5,
+        "DUAL ENROLLMENT":               6,
+        "DYNAMIC DATE SESSION":          7,
+        "HYBRID":                        8,
+        "INTERSESSION":                  9
+    };
+    const PTRM_SORT_DEFAULT = 99;
+
+    function getPtrmSortKey(ptrmDesc) {
+        const key = String(ptrmDesc || "").trim().toUpperCase();
+        return PTRM_SORT_ORDER[key] !== undefined ? PTRM_SORT_ORDER[key] : PTRM_SORT_DEFAULT;
+    }
+
+    function sortRowsByPtrm(rows) {
+        return rows.sort((a, b) => {
+            const descA = String(a.PTRM_DESC || a.ptrm_desc || "");
+            const descB = String(b.PTRM_DESC || b.ptrm_desc || "");
+            return getPtrmSortKey(descA) - getPtrmSortKey(descB);
+        });
+    }
+
+    let separatedSheets = null;
+    let baseHeaders = [];
+    let columnMap = null;
+    let lastTermCode = "";
+    let lastFileName = "";
+
+    function normalize(str) {
+        return String(str || "").trim().toUpperCase();
+    }
+
+    function buildColumnMap(row) {
+        const keys = Object.keys(row);
+        const map = {};
+
+        keys.forEach(k => {
+            const n = normalize(k);
+
+            if (!map.TERM_CODE       && n === "TERM_CODE_KEY")    map.TERM_CODE = k;
+            if (!map.CRN             && n === "CRN")              map.CRN = k;
+            if (!map.XLST            && n === "XLST")             map.XLST = k;
+            if (!map.STAT            && n === "STAT")             map.STAT = k;
+            if (!map.CR              && n === "CR")               map.CR = k;
+            if (!map.PTRM_CODE       && (n === "PTRM_CODE" || n === "PTM"))  map.PTRM_CODE = k;
+            if (!map.SUBJ            && n === "SUBJ")             map.SUBJ = k;
+            if (!map.SEC             && n === "SEC")              map.SEC = k;
+            if (!map.CRSE            && n === "CRSE")             map.CRSE = k;
+            if (!map.TITLE           && n === "TITLE")            map.TITLE = k;
+            if (!map.PRI_FNAME       && n === "PRI_FNAME")        map.PRI_FNAME = k;
+            if (!map.PRI_LNAME       && n === "PRI_LNAME")        map.PRI_LNAME = k;
+            if (!map.PTRM_DESC       && n === "PTRM_DESC")        map.PTRM_DESC = k;
+            if (!map.PTRM_START_DATE && n === "PTRM_START_DATE")  map.PTRM_START_DATE = k;
+            if (!map.PTRM_END_DATE   && n === "PTRM_END_DATE")   map.PTRM_END_DATE = k;
+        });
+
+        return map;
+    }
+
+    function getVal(row, map, logical) {
+        const k = map[logical];
+        return k ? row[k] : "";
+    }
+
+    function toUpperString(v) {
+        return v === undefined || v === null ? "" : String(v).trim().toUpperCase();
+    }
+
+    function toNumber(v) {
+        if (v === undefined || v === null || v === "") return NaN;
+        const n = parseFloat(v);
+        return isNaN(n) ? NaN : n;
+    }
+
+    function getSectionNumber(secRaw) {
+        const s = String(secRaw || "").trim();
+        const m = s.match(/^(\d{1,3})/);
+        return m ? parseInt(m[1], 10) : NaN;
+    }
+
+    function isUnivSection(secRaw) {
+        const n = getSectionNumber(secRaw);
+        return !isNaN(n) && ((n >= 1 && n <= 19) || (n >= 61 && n <= 69));
+    }
+
+    function isOlhySection(secRaw) {
+        const n = getSectionNumber(secRaw);
+        return !isNaN(n) && ((n >= 21 && n <= 29) || (n >= 51 && n <= 59));
+    }
+
+    function getPtmGroupLabel(ptm) {
+        switch (ptm) {
+            case "1":   return "16-week";
+            case "5":   return "12-week";
+            case "81T": return "1st 8-weeks";
+            case "82T": return "2nd 8-weeks";
+            case "DDS": return "Dynamic";
+            case "H":   return "Hybrid";
+            case "R5":  return "Rise Cohort 5";
+            case "W":   return "Distance/Web";
+            case "ZDC": return "Dual Credit";
+            default:    return ptm || "";
+        }
+    }
+
+    function computeBrightspaceCode(row, map) {
+        if (!map.TERM_CODE) return "";
+        const term = String(getVal(row, map, "TERM_CODE") || "").trim();
+        if (!term) return "";
+
+        const crn  = String(getVal(row, map, "CRN")  || "").trim();
+        const xlst = String(getVal(row, map, "XLST") || "").trim();
+
+        if (xlst) return xlst + term;
+        if (crn)  return crn + "." + term;
+        return "";
+    }
+
+    function separateRows(rows, map) {
+        const buckets = {
+            PHAR: [],
+            PHAR_BrightspaceCodes: [],
+            All_Courses: [],
+            Zero_Credit: [],
+            Cancelled: [],
+            Other_Active: [],
+            All_Crosslisted: [],
+            Crosslisted_Instructors: [],
+            All_NoXLST: [],
+            All_BrightspaceCodes: []
+        };
+
+        /* Track XLST groups for overlap detection and instructor condensing */
+        const xlstGroups = {};       // { xlst: { univ: bool, olhy: bool } }
+        const xlstSections = {};     // { xlst: [ row, row, ... ] }
+        const crosslistedRows = [];  // temporary for overlap tagging
+
+        let firstTerm = "";
+        let codeCount = 0;
+
+        rows.forEach(row => {
+            const out = { ...row };
+
+            const stat = toUpperString(getVal(row, map, "STAT"));
+            const cr   = toNumber(getVal(row, map, "CR"));
+            const subj = toUpperString(getVal(row, map, "SUBJ"));
+            const sec  = toUpperString(getVal(row, map, "SEC"));
+            const ptm  = toUpperString(getVal(row, map, "PTRM_CODE"));
+            const xlst = String(getVal(row, map, "XLST") || "").trim();
+
+            const termVal = getVal(row, map, "TERM_CODE");
+            const term = termVal ? String(termVal).trim() : "";
+            if (!firstTerm && term) firstTerm = term;
+
+            const bcode = computeBrightspaceCode(row, map);
+            if (bcode) codeCount++;
+            out.BrightspaceCode = bcode;
+            out.PTM_Group = getPtmGroupLabel(ptm);
+
+            const isUniv = isUnivSection(sec);
+            const isOlhy = isOlhySection(sec);
+            const isZeroCredit = !isNaN(cr) && cr === 0;
+            const isCancelled  = (stat === "C");
+
+            /* Assign Group column */
+            if (isUniv)      out.Group = "UNIV";
+            else if (isOlhy) out.Group = "OLHY";
+            else             out.Group = "";
+
+            /* Track XLST overlap */
+            if (xlst) {
+                if (!xlstGroups[xlst]) xlstGroups[xlst] = { univ: false, olhy: false };
+                if (isUniv) xlstGroups[xlst].univ = true;
+                if (isOlhy) xlstGroups[xlst].olhy = true;
+
+                if (!xlstSections[xlst]) xlstSections[xlst] = [];
+                xlstSections[xlst].push(out);
+            }
+
+            /* Crosslisted → hold for overlap tagging */
+            if (xlst && (isUniv || isOlhy)) {
+                out._xlstKey = xlst;
+                crosslistedRows.push(out);
+            }
+
+            /* Non-crosslisted, non-cancelled, non-zero-credit UNIV/OLHY */
+            if (!xlst && !isCancelled && !isZeroCredit && (isUniv || isOlhy)) {
+                buckets.All_NoXLST.push(out);
+            }
+
+            /* Main sheet membership */
+            let sheet = "Other_Active";
+
+            if (isCancelled)            sheet = "Cancelled";
+            else if (isZeroCredit)      sheet = "Zero_Credit";
+            else if (subj === "PHAR")   sheet = "PHAR";
+            else if (isUniv || isOlhy)  sheet = "All_Courses";
+
+            buckets[sheet].push(out);
+        });
+
+        /* Tag overlap and push crosslisted rows */
+        crosslistedRows.forEach(r => {
+            const xlst = r._xlstKey;
+            const grp = xlstGroups[xlst];
+            r.Overlap = (grp && grp.univ && grp.olhy) ? "Yes" : "";
+            delete r._xlstKey;
+            buckets.All_Crosslisted.push(r);
+        });
+
+        /* ── PHAR Brightspace Codes ── */
+        const pharCodeSet = new Set();
+        buckets.PHAR.forEach(r => {
+            if (r.BrightspaceCode) pharCodeSet.add(r.BrightspaceCode);
+        });
+        buckets.PHAR_BrightspaceCodes = Array.from(pharCodeSet).map(code => ({ BrightspaceCode: code }));
+
+        /* ── Combined unique Brightspace codes from All_Courses ── */
+        const codeSet = new Set();
+        buckets.All_Courses.forEach(r => {
+            if (r.BrightspaceCode) codeSet.add(r.BrightspaceCode + "||" + (r.Group || ""));
+        });
+        buckets.All_BrightspaceCodes = Array.from(codeSet).map(entry => {
+            const [code, group] = entry.split("||");
+            return { BrightspaceCode: code, Group: group };
+        });
+
+        /* ── Crosslisted Instructors (condensed: one row per XLST group) ── */
+        Object.keys(xlstSections).sort().forEach(xlst => {
+            const sectionRows = xlstSections[xlst];
+            if (!sectionRows.length) return;
+
+            const term = String(getVal(sectionRows[0], map, "TERM_CODE") || "").trim();
+            const bcode = xlst + term;
+
+            /* Collect unique instructors */
+            const instructorSet = new Set();
+            sectionRows.forEach(r => {
+                const fname = String(getVal(r, map, "PRI_FNAME") || "").trim();
+                const lname = String(getVal(r, map, "PRI_LNAME") || "").trim();
+                const full = (fname + " " + lname).trim();
+                if (full) instructorSet.add(full);
+            });
+
+            /* Collect courses (SUBJ CRSE) and CRN codes */
+            const courseList = [];
+            const crnCodeList = [];
+            const titleSet = new Set();
+            sectionRows.forEach(r => {
+                const subj = String(getVal(r, map, "SUBJ") || "").trim();
+                const crse = String(getVal(r, map, "CRSE") || "").trim();
+                const crn  = String(getVal(r, map, "CRN") || "").trim();
+                const title = String(getVal(r, map, "TITLE") || "").trim();
+
+                if (subj || crse) courseList.push(subj + " " + crse);
+                if (crn && term) crnCodeList.push(crn + "." + term);
+                if (title) titleSet.add(title);
+            });
+
+            /* Determine Group(s) and Overlap */
+            const grpInfo = xlstGroups[xlst] || { univ: false, olhy: false };
+            let groupLabel = "";
+            if (grpInfo.univ && grpInfo.olhy)      groupLabel = "UNIV / OLHY";
+            else if (grpInfo.univ)                  groupLabel = "UNIV";
+            else if (grpInfo.olhy)                  groupLabel = "OLHY";
+
+            const overlap = (grpInfo.univ && grpInfo.olhy) ? "Yes" : "";
+
+            /* Use dates from the file as-is */
+            const ptrmDesc  = String(getVal(sectionRows[0], map, "PTRM_DESC") || "").trim();
+            const ptrmStart = String(getVal(sectionRows[0], map, "PTRM_START_DATE") || "").trim();
+            const ptrmEnd   = String(getVal(sectionRows[0], map, "PTRM_END_DATE") || "").trim();
+
+            buckets.Crosslisted_Instructors.push({
+                XLST:              xlst,
+                BrightspaceCode:   bcode,
+                CRN_Codes:         crnCodeList.join(" | "),
+                Instructor:        Array.from(instructorSet).join(" / "),
+                Courses:           courseList.join(" | "),
+                Title:             Array.from(titleSet).join(" | "),
+                Group:             groupLabel,
+                Overlap:           overlap,
+                PTRM_DESC:         ptrmDesc,
+                PTRM_START_DATE:   ptrmStart,
+                PTRM_END_DATE:     ptrmEnd
+            });
+        });
+
+        /* Sort Crosslisted_Instructors by PTRM too */
+        sortRowsByPtrm(buckets.Crosslisted_Instructors);
+
+        /* Sort every other data bucket by PTRM_DESC */
+        Object.keys(buckets).forEach(name => {
+            if (name === "All_BrightspaceCodes" || name === "PHAR_BrightspaceCodes" || name === "Crosslisted_Instructors") return;
+            if (buckets[name].length) sortRowsByPtrm(buckets[name]);
+        });
+
+        return { buckets, firstTerm, codeCount };
+    }
+
+    function computeHeadersFromSheets(buckets) {
+        let headers = baseHeaders.slice();
+        const allKeys = new Set(headers);
+
+        Object.entries(buckets).forEach(([name, rows]) => {
+            if (name === "All_BrightspaceCodes" || name === "PHAR_BrightspaceCodes" || name === "Crosslisted_Instructors") return;
+            rows.forEach(r => {
+                Object.keys(r).forEach(k => allKeys.add(k));
+            });
+        });
+
+        headers = headers.filter(h => allKeys.has(h));
+        allKeys.forEach(k => {
+            if (!headers.includes(k)) headers.push(k);
+        });
+
+        /* Ensure computed columns are present */
+        ["Group", "BrightspaceCode", "PTM_Group", "Overlap"].forEach(col => {
+            if (!headers.includes(col)) headers.push(col);
+        });
+
+        return headers;
+    }
+
+    function setStatus(msg, cls) {
+        const e = document.getElementById("status");
+        e.textContent = msg;
+        e.className = "status " + cls;
+    }
+
+    function showMappingInfo(map) {
+        const e = document.getElementById("mappingInfo");
+        if (!map || Object.keys(map).length === 0) {
+            e.textContent = "Mapped columns → (none yet)";
+            return;
+        }
+        e.innerHTML =
+            `<strong>Column mapping:</strong><br>` +
+            `TERM_CODE_KEY → ${map.TERM_CODE || "NOT FOUND"} | ` +
+            `CRN → ${map.CRN || "NOT FOUND"} | ` +
+            `XLST → ${map.XLST || "NOT FOUND"} | ` +
+            `STAT → ${map.STAT || "NOT FOUND"} | ` +
+            `CR → ${map.CR || "NOT FOUND"} | ` +
+            `PTRM_CODE → ${map.PTRM_CODE || "NOT FOUND"} | ` +
+            `SUBJ → ${map.SUBJ || "NOT FOUND"} | ` +
+            `SEC → ${map.SEC || "NOT FOUND"} | ` +
+            `CRSE → ${map.CRSE || "NOT FOUND"} | ` +
+            `TITLE → ${map.TITLE || "NOT FOUND"}<br>` +
+            `PRI_FNAME → ${map.PRI_FNAME || "NOT FOUND"} | ` +
+            `PRI_LNAME → ${map.PRI_LNAME || "NOT FOUND"} | ` +
+            `PTRM_DESC → ${map.PTRM_DESC || "NOT FOUND"} | ` +
+            `PTRM_START_DATE → ${map.PTRM_START_DATE || "NOT FOUND"} | ` +
+            `PTRM_END_DATE → ${map.PTRM_END_DATE || "NOT FOUND"}`;
+    }
+
+    function renderSummary(buckets) {
+        const ul = document.getElementById("summaryList");
+        ul.innerHTML = "";
+        SHEET_ORDER.forEach(name => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${name}</strong>: ${(buckets[name] || []).length}`;
+            ul.appendChild(li);
+        });
+    }
+
+    function renderPreview(buckets) {
+        const c = document.getElementById("preview");
+        c.innerHTML = "";
+
+        SHEET_ORDER.forEach(name => {
+            const rows = buckets[name];
+            if (!rows || rows.length === 0) return;
+
+            const div = document.createElement("div");
+            div.className = "sheet-preview";
+
+            div.innerHTML = `<h3>${name} <span class="badge">${rows.length}</span></h3>
+                             <small>First 5 rows</small>`;
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const headers = Object.keys(rows[0]);
+            const trh = document.createElement("tr");
+            headers.forEach(h => {
+                const th = document.createElement("th");
+                th.textContent = h;
+                trh.appendChild(th);
+            });
+            thead.appendChild(trh);
+
+            const max = Math.min(5, rows.length);
+            for (let i = 0; i < max; i++) {
+                const r = rows[i];
+                const tr = document.createElement("tr");
+                headers.forEach(h => {
+                    const td = document.createElement("td");
+                    td.textContent = r[h] ?? "";
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            }
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            div.appendChild(table);
+            c.appendChild(div);
+        });
+    }
+
+    function buildWorkbook() {
+        const wb = XLSX.utils.book_new();
+        const fullHeaders = computeHeadersFromSheets(separatedSheets);
+
+        SHEET_ORDER.forEach(n => {
+            const rows = separatedSheets[n];
+            if (!rows || !rows.length) return;
+
+            let ws;
+            if (n === "PHAR_BrightspaceCodes") {
+                ws = XLSX.utils.json_to_sheet(rows, { header: ["BrightspaceCode"] });
+            } else if (n === "All_BrightspaceCodes") {
+                ws = XLSX.utils.json_to_sheet(rows, { header: ["BrightspaceCode", "Group"] });
+            } else if (n === "Crosslisted_Instructors") {
+                ws = XLSX.utils.json_to_sheet(rows, { header: CROSSLISTED_INSTR_HEADERS });
+                /* Auto-size the columns a bit wider for readability */
+                ws["!cols"] = CROSSLISTED_INSTR_HEADERS.map(h => {
+                    if (h === "CRN_Codes" || h === "Courses" || h === "Title") return { wch: 35 };
+                    if (h === "Instructor") return { wch: 25 };
+                    if (h === "BrightspaceCode") return { wch: 18 };
+                    return { wch: 14 };
+                });
+            } else {
+                ws = XLSX.utils.json_to_sheet(rows, { header: fullHeaders });
+            }
+            XLSX.utils.book_append_sheet(wb, ws, n.substring(0, 31));
+        });
+
+        /* Summary sheet */
+        const summaryRows = SHEET_ORDER.map(name => ({
+            Bucket: name,
+            Count: (separatedSheets[name] || []).length
+        }));
+        const summaryWs = XLSX.utils.json_to_sheet(summaryRows, { header: ["Bucket", "Count"] });
+        XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+
+        return wb;
+    }
+
+    function downloadWorkbook() {
+        if (!separatedSheets) {
+            alert("You must process a file first.");
+            return;
+        }
+
+        const wb = buildWorkbook();
+        const term = lastTermCode || "TERM";
+        const safe = (lastFileName || "courses").replace(/\.[^.]+$/, "").replace(/[^\w\-]+/g, "_");
+        const outName = `CES_Courses_${safe}_${term}.xlsx`;
+
+        try {
+            const wbOut = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+            const blob = new Blob([wbOut], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = outName;
+            document.body.appendChild(a);
+            a.click();
+
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 250);
+
+            showFallbackLink(blob, outName);
+
+        } catch (err1) {
+            console.warn("Blob download failed, trying data URI fallback:", err1);
+            try {
+                const wbOut = XLSX.write(wb, { bookType: "xlsx", type: "base64" });
+                const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + wbOut;
+
+                const a = document.createElement("a");
+                a.href = dataUri;
+                a.download = outName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => document.body.removeChild(a), 250);
+
+                showFallbackDataUri(dataUri, outName);
+
+            } catch (err2) {
+                console.error("All download methods failed:", err2);
+                alert("Download failed. Please open this HTML file directly in your browser for downloads to work.");
+            }
+        }
+    }
+
+    function showFallbackLink(blob, filename) {
+        const note = document.getElementById("downloadNote");
+        const link = document.getElementById("downloadLink");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = filename;
+        link.textContent = "click here to save " + filename;
+        note.style.display = "block";
+    }
+
+    function showFallbackDataUri(dataUri, filename) {
+        const note = document.getElementById("downloadNote");
+        const link = document.getElementById("downloadLink");
+        link.href = dataUri;
+        link.download = filename;
+        link.textContent = "click here to save " + filename;
+        note.style.display = "block";
+    }
+
+    function handleFileSelected(evt) {
+        const f = evt.target.files[0];
+        separatedSheets = null;
+        baseHeaders = [];
+        columnMap = null;
+        lastTermCode = "";
+        lastFileName = f ? f.name : "";
+        document.getElementById("summaryList").innerHTML = "";
+        document.getElementById("preview").innerHTML = "";
+        document.getElementById("downloadBtn").disabled = true;
+        document.getElementById("downloadNote").style.display = "none";
+        showMappingInfo(null);
+
+        if (!f) {
+            setStatus("No file selected.", "muted");
+            document.getElementById("processBtn").disabled = true;
+            return;
+        }
+
+        setStatus(`File loaded: ${f.name}. Click Process.`, "ok");
+        document.getElementById("processBtn").disabled = false;
+    }
+
+    function processFile() {
+        const f = document.getElementById("fileInput").files[0];
+        if (!f) return;
+
+        setStatus("Processing...", "muted");
+        document.getElementById("processBtn").disabled = true;
+        document.getElementById("downloadNote").style.display = "none";
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const wb = XLSX.read(e.target.result, { type: "array", cellDates: false, raw: true });
+                const sheet = wb.SheetNames[0];
+                const data = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval: "", raw: true });
+
+                if (!data.length) {
+                    setStatus("Sheet is empty.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
+
+                baseHeaders = Object.keys(data[0]);
+                columnMap = buildColumnMap(data[0]);
+                showMappingInfo(columnMap);
+
+                if (!columnMap.TERM_CODE) {
+                    setStatus("TERM_CODE_KEY column missing.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
+                if (!columnMap.CRN) {
+                    setStatus("CRN column missing.", "warn");
+                    document.getElementById("processBtn").disabled = false;
+                    return;
+                }
+
+                const { buckets, firstTerm, codeCount } = separateRows(data, columnMap);
+                separatedSheets = buckets;
+                lastTermCode = firstTerm;
+
+                renderSummary(buckets);
+                renderPreview(buckets);
+
+                document.getElementById("downloadBtn").disabled = false;
+                document.getElementById("processBtn").disabled = false;
+
+                if (codeCount === 0)
+                    setStatus("Processed, but no Brightspace codes were created.", "warn");
+                else
+                    setStatus(`Completed. Generated ${codeCount} Brightspace codes across ${SHEET_ORDER.length} sheets.`, "ok");
+
+            } catch (err) {
+                console.error(err);
+                setStatus("Error reading file.", "warn");
+                document.getElementById("processBtn").disabled = false;
+            }
+        };
+
+        reader.onerror = () => {
+            setStatus("Error reading file.", "warn");
+            document.getElementById("processBtn").disabled = false;
+        };
+
+        reader.readAsArrayBuffer(f);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("fileInput").addEventListener("change", handleFileSelected);
+        document.getElementById("processBtn").addEventListener("click", processFile);
+        document.getElementById("downloadBtn").addEventListener("click", downloadWorkbook);
+    });
+</script>
+
+</body>
+</html>
