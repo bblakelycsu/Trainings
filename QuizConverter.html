@@ -524,7 +524,7 @@ function parseQuestions(raw) {
       const pairs = [];
       i++;
       while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('/')) {
-        const raw = lines[i].trim().replace(/^\d+[\.\)\:]?\s*/, '');
+        const raw = lines[i].trim();
         const slashIdx = raw.indexOf('/');
         const choice = raw.substring(0, slashIdx).trim();
         const matchText = raw.substring(slashIdx + 1).trim();
