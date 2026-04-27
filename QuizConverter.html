@@ -336,20 +336,37 @@
         </ul>
       </div>
 
+      <div class="rules-box" style="background: linear-gradient(135deg, var(--csu-navy-light), var(--csu-gold-light)); border-color: var(--csu-navy);">
+        <h3 style="color: var(--csu-navy);">Points, Hints &amp; Feedback (Optional)</h3>
+        <ul>
+          <li>To set <span class="hl-navy">point value</span>, add <code>points: 5</code> on its own line after your answer lines. Default is <strong>1 point</strong> if not specified.</li>
+          <li>To add a <span class="hl-gold">hint</span>, add <code>hint: Your hint text here</code> on its own line after your answer lines.</li>
+          <li>To add <span class="hl-green">feedback</span>, add <code>feedback: Your feedback text here</code> on its own line after your answer lines.</li>
+          <li>These optional lines must come <strong>after</strong> all answer lines and <strong>before</strong> the blank line that separates questions.</li>
+          <li>You can use any combination: just points, just a hint, just feedback, or all three together.</li>
+          <li>Order does not matter: <code>points:</code>, <code>hint:</code>, and <code>feedback:</code> can appear in any order.</li>
+        </ul>
+      </div>
+
       <div class="instructions-grid">
         <div class="q-type-card qt-tf">
           <div class="q-label"><span class="badge">T/F</span> True/False</div>
-          <div class="q-notes">Question on one line. Answer (<code>True</code> or <code>False</code>) on the next line. No asterisk needed.</div>
+          <div class="q-notes">Question on one line. Answer (<code>True</code> or <code>False</code>) on the next line. No asterisk needed. Optionally add <code>points:</code>, <code>hint:</code>, and <code>feedback:</code>.</div>
           <pre>Water consists of hydrogen and oxygen.
-True</pre>
+True
+points: 2
+hint: Think about the chemical formula H2O
+feedback: Correct! Water is H2O.</pre>
         </div>
         <div class="q-type-card qt-mc">
           <div class="q-label"><span class="badge">MC</span> Multiple Choice</div>
-          <div class="q-notes">Question on one line. Each answer on a new line. Put <span class="hl-gold">*</span> before the <strong>one</strong> correct answer.</div>
+          <div class="q-notes">Question on one line. Each answer on a new line. Put <span class="hl-gold">*</span> before the <strong>one</strong> correct answer. Optionally add <code>points:</code>, <code>hint:</code>, <code>feedback:</code>.</div>
           <pre>Which of the following is a planet?
 Sun
 *Earth
-Proxima Centauri</pre>
+Proxima Centauri
+points: 5
+feedback: Earth is the only planet listed here.</pre>
         </div>
         <div class="q-type-card qt-ms">
           <div class="q-label"><span class="badge">MS</span> Multi-Select</div>
@@ -431,7 +448,7 @@ Japan / Tokyo"></textarea>
         <div class="preview-table-wrap" style="max-height:400px;overflow-y:auto;">
           <table class="preview-table" id="previewTable">
             <thead>
-              <tr><th>#</th><th>Type</th><th>Question Text</th><th>Options / Answers</th></tr>
+              <tr><th>#</th><th>Type</th><th>Pts</th><th>Question Text</th><th>Options / Answers</th><th>Hint</th><th>Feedback</th></tr>
             </thead>
             <tbody id="previewBody"></tbody>
           </table>
@@ -467,24 +484,36 @@ function loadSample() {
 Sun
 *Earth
 Proxima Centauri
+points: 5
+hint: Think about what orbits our Sun
+feedback: Earth is the only planet in this list.
 
 Water consists of hydrogen and oxygen.
 True
+points: 2
+feedback: Water is H2O - two hydrogen atoms and one oxygen atom.
 
 Which of the following are planets?
 Sun
 *Earth
 *Mars
 Proxima Centauri
+points: 3
+hint: More than one answer is correct
 
 Tell me about yourself.
+points: 10
 
 SA What is your favorite food?
+points: 2
+hint: There is no wrong answer here
 
 match Match the number with its spelling.
 3 / three
 1 / one
-12 / twelve`;
+12 / twelve
+points: 4
+feedback: Great job matching numbers to words!`;
   textarea.dispatchEvent(new Event('input'));
 }
 
@@ -509,6 +538,30 @@ function csvRow(values) {
   return values.map(v => csvEsc(v)).join(',');
 }
 
+// Check if a line is a metadata line (points, hint, feedback)
+function isMetaLine(line) {
+  return /^(points|hint|feedback)\s*:/i.test(line.trim());
+}
+
+// Extract metadata (points, hint, feedback) from lines starting at index i
+// Returns { points, hint, feedback, nextIndex }
+function extractMeta(lines, i) {
+  let points = '1';
+  let hint = '';
+  let feedback = '';
+  while (i < lines.length && lines[i].trim() !== '') {
+    const line = lines[i].trim();
+    const pMatch = line.match(/^points\s*:\s*(.+)/i);
+    const hMatch = line.match(/^hint\s*:\s*(.+)/i);
+    const fMatch = line.match(/^feedback\s*:\s*(.+)/i);
+    if (pMatch) { points = pMatch[1].trim(); i++; }
+    else if (hMatch) { hint = hMatch[1].trim(); i++; }
+    else if (fMatch) { feedback = fMatch[1].trim(); i++; }
+    else { break; }
+  }
+  return { points, hint, feedback, nextIndex: i };
+}
+
 function parseQuestions(raw) {
   const lines = raw.split('\n');
   const questions = [];
@@ -523,7 +576,7 @@ function parseQuestions(raw) {
       const qText = stripEnum(line.replace(/^match\s+/i, '').trim());
       const pairs = [];
       i++;
-      while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('/')) {
+      while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('/') && !isMetaLine(lines[i])) {
         const raw = lines[i].trim();
         const slashIdx = raw.indexOf('/');
         const choice = raw.substring(0, slashIdx).trim();
@@ -531,15 +584,19 @@ function parseQuestions(raw) {
         pairs.push({ choice, match: matchText });
         i++;
       }
-      questions.push({ type: 'M', text: qText, pairs });
+      const meta = extractMeta(lines, i);
+      i = meta.nextIndex;
+      questions.push({ type: 'M', text: qText, pairs, points: meta.points, hint: meta.hint, feedback: meta.feedback });
       continue;
     }
 
     // SHORT ANSWER
     if (/^SA\s+/i.test(line)) {
       const qText = stripEnum(line.replace(/^SA\s+/i, '').trim());
-      questions.push({ type: 'SA', text: qText });
       i++;
+      const meta = extractMeta(lines, i);
+      i = meta.nextIndex;
+      questions.push({ type: 'SA', text: qText, points: meta.points, hint: meta.hint, feedback: meta.feedback });
       continue;
     }
 
@@ -547,23 +604,27 @@ function parseQuestions(raw) {
     const qText = stripEnum(line);
     i++;
 
-    // Collect answer lines until blank line or end
+    // Collect answer lines until blank line, end, or metadata line
     const answers = [];
-    while (i < lines.length && lines[i].trim() !== '') {
+    while (i < lines.length && lines[i].trim() !== '' && !isMetaLine(lines[i])) {
       answers.push(lines[i].trim());
       i++;
     }
 
+    // Extract optional metadata
+    const meta = extractMeta(lines, i);
+    i = meta.nextIndex;
+
     if (answers.length === 0) {
       // Written Response
-      questions.push({ type: 'WR', text: qText });
+      questions.push({ type: 'WR', text: qText, points: meta.points, hint: meta.hint, feedback: meta.feedback });
       continue;
     }
 
     // True/False
     if (answers.length === 1 && /^(true|false)$/i.test(answers[0])) {
       const ans = answers[0].toLowerCase();
-      questions.push({ type: 'TF', text: qText, answer: ans });
+      questions.push({ type: 'TF', text: qText, answer: ans, points: meta.points, hint: meta.hint, feedback: meta.feedback });
       continue;
     }
 
@@ -575,7 +636,8 @@ function parseQuestions(raw) {
         options: answers.map(a => ({
           text: a.startsWith('*') ? stripEnum(a.substring(1).trim()) : stripEnum(a),
           correct: a.startsWith('*')
-        }))
+        })),
+        points: meta.points, hint: meta.hint, feedback: meta.feedback
       });
     } else {
       questions.push({
@@ -583,7 +645,8 @@ function parseQuestions(raw) {
         options: answers.map(a => ({
           text: a.startsWith('*') ? stripEnum(a.substring(1).trim()) : stripEnum(a),
           correct: a.startsWith('*')
-        }))
+        })),
+        points: meta.points, hint: meta.hint, feedback: meta.feedback
       });
     }
   }
@@ -612,6 +675,9 @@ function buildCSV(questions) {
 
   for (const q of questions) {
     const titleText = q.text.length > 80 ? q.text.substring(0, 80) + '...' : q.text;
+    const pts = q.points || '1';
+    const hint = q.hint || '';
+    const fb = q.feedback || '';
 
     switch (q.type) {
 
@@ -620,7 +686,7 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         if (q.answer === 'true') {
@@ -630,8 +696,8 @@ function buildCSV(questions) {
           rows.push(csvRow(['TRUE', '0', '', '', '']));
           rows.push(csvRow(['FALSE', '100', '', '', '']));
         }
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -641,15 +707,15 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         for (const opt of q.options) {
           const weight = opt.correct ? '100' : '0';
           rows.push(csvRow(['Option', weight, opt.text, '', '']));
         }
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -659,7 +725,7 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         rows.push(csvRow(['Scoring', 'AllOrNothing', '', '', '']));
@@ -667,8 +733,8 @@ function buildCSV(questions) {
           const flag = opt.correct ? '1' : '0';
           rows.push(csvRow(['Option', flag, opt.text, '', '']));
         }
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -678,13 +744,13 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         rows.push(csvRow(['InitialText', '', '', '', '']));
         rows.push(csvRow(['AnswerKey', '', '', '', '']));
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -694,12 +760,12 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         rows.push(csvRow(['InputBox', '3', '40', '', '']));
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -709,20 +775,18 @@ function buildCSV(questions) {
         rows.push(csvRow(['ID', '', '', '', '']));
         rows.push(csvRow(['Title', titleText, '', '', '']));
         rows.push(csvRow(['QuestionText', q.text, '', '', '']));
-        rows.push(csvRow(['Points', '1', '', '', '']));
+        rows.push(csvRow(['Points', pts, '', '', '']));
         rows.push(csvRow(['Difficulty', '1', '', '', '']));
         rows.push(csvRow(['Image', '', '', '', '']));
         rows.push(csvRow(['Scoring', 'EquallyWeighted', '', '', '']));
-        // Choice rows: Choice, number, text
         q.pairs.forEach((p, idx) => {
           rows.push(csvRow(['Choice', String(idx + 1), p.choice, '', '']));
         });
-        // Match rows: Match, choice_number_it_matches, match_text
         q.pairs.forEach((p, idx) => {
           rows.push(csvRow(['Match', String(idx + 1), p.match, '', '']));
         });
-        rows.push(csvRow(['Hint', '', '', '', '']));
-        rows.push(csvRow(['Feedback', '', '', '', '']));
+        rows.push(csvRow(['Hint', hint, '', '', '']));
+        rows.push(csvRow(['Feedback', fb, '', '', '']));
         rows.push('');
         break;
       }
@@ -779,17 +843,22 @@ function convertQuestions() {
     } else { optStr = '\u2014'; }
 
     const typeDisplay = q.type === 'M' ? 'MAT' : q.type;
+    const hintDisplay = q.hint || '\u2014';
+    const fbDisplay = q.feedback || '\u2014';
     tbody.innerHTML += `<tr>
       <td>${idx + 1}</td>
       <td><span class="stat-chip ${chipClasses[q.type]}" style="font-size:0.72rem;">${typeDisplay}</span></td>
+      <td>${escHtml(q.points)}</td>
       <td>${escHtml(q.text)}</td>
       <td>${escHtml(optStr)}</td>
+      <td style="font-size:0.78rem;color:#6b7280;">${escHtml(hintDisplay)}</td>
+      <td style="font-size:0.78rem;color:#6b7280;">${escHtml(fbDisplay)}</td>
     </tr>`;
   });
 
   document.getElementById('previewSection').classList.remove('hidden');
   document.getElementById('downloadBtn').disabled = false;
-  alertArea.innerHTML = `<div class="alert alert-success">Successfully parsed <strong>${questions.length} question${questions.length !== 1 ? 's' : ''}</strong>. Preview and raw CSV output shown below. Click "Download CSV" when ready.</div>`;
+  alertArea.innerHTML = `<div class="alert alert-success">Successfully parsed <strong>${questions.length} question${questions.length !== 1 ? 's' : ''}</strong>. Preview below. Click "Download CSV" when ready.</div>`;
 }
 
 function downloadCSV() {
