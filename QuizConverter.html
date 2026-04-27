@@ -370,32 +370,42 @@ feedback: Earth is the only planet listed here.</pre>
         </div>
         <div class="q-type-card qt-ms">
           <div class="q-label"><span class="badge">MS</span> Multi-Select</div>
-          <div class="q-notes">Same as MC, but put <span class="hl-gold">*</span> before <strong>all</strong> correct answers (2 or more).</div>
+          <div class="q-notes">Same as MC, but put <span class="hl-gold">*</span> before <strong>all</strong> correct answers (2 or more). Optionally add <code>points:</code>, <code>hint:</code>, <code>feedback:</code>.</div>
           <pre>Which of the following are planets?
 Sun
 *Earth
 *Mars
-Proxima Centauri</pre>
+Proxima Centauri
+points: 4
+hint: More than one answer is correct
+feedback: Earth and Mars are both planets in our solar system.</pre>
         </div>
         <div class="q-type-card qt-wr">
           <div class="q-label"><span class="badge">WR</span> Written Response</div>
-          <div class="q-notes">Question on one line. <strong>No answer lines.</strong> Leave a blank line after.</div>
+          <div class="q-notes">Question on one line. <strong>No answer lines.</strong> Optionally add <code>points:</code>, <code>hint:</code>, <code>feedback:</code>. Leave a blank line after.</div>
           <pre>Tell me about yourself.
-</pre>
+points: 10
+hint: There is no wrong answer
+feedback: Thank you for sharing!</pre>
         </div>
         <div class="q-type-card qt-sa">
           <div class="q-label"><span class="badge">SA</span> Short Answer</div>
-          <div class="q-notes">Type <code>SA</code> before your question text. <strong>No answer lines.</strong> Leave a blank line after.</div>
+          <div class="q-notes">Type <code>SA</code> before your question text. <strong>No answer lines.</strong> Optionally add <code>points:</code>, <code>hint:</code>, <code>feedback:</code>. Leave a blank line after.</div>
           <pre>SA What is your favorite food?
-</pre>
+points: 2
+hint: Name any food you enjoy
+feedback: Thanks for your response!</pre>
         </div>
         <div class="q-type-card qt-mat">
           <div class="q-label"><span class="badge">MAT</span> Matching</div>
-          <div class="q-notes">Type <code>match</code> before question. Each answer: <code>choice / match</code> with spaces around the slash.</div>
+          <div class="q-notes">Type <code>match</code> before question. Each answer: <code>choice / match</code> with spaces around the slash. Optionally add <code>points:</code>, <code>hint:</code>, <code>feedback:</code>.</div>
           <pre>match Match the number with its spelling.
 3 / three
 1 / one
-12 / twelve</pre>
+12 / twelve
+points: 3
+hint: Spell out each number
+feedback: Great job matching numbers!</pre>
         </div>
       </div>
     </div>
