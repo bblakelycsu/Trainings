@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCE Self-Care Plan for the CSU Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --csu-green: #0D5540;
+    --csu-navy: #17375F;
+    --csu-lime: #7BBA4C;
+    --physical: #E8443A;
+    --psychological: #F7A025;
+    --emotional: #17375F;
+    --social: #2BA5A0;
+    --professional: #E8443A;
+    --environmental: #F7A025;
+    --spiritual: #17375F;
+    --practical: #2BA5A0;
+    --cream: #FDF8F3;
+    --warm-white: #FEFCFA;
+    --text-dark: #1A1A2E;
+    --text-mid: #4A4A5A;
+    --border-light: #E8E4DF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--csu-navy) 0%, var(--csu-green) 60%, var(--csu-lime) 100%);
+    border-radius: 16px;
+    padding: 40px 48px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(123,186,76,0.15);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+  }
+  .header p {
+    color: rgba(255,255,255,0.88);
+    font-size: 1.05rem;
+    margin-top: 10px;
+    max-width: 700px;
+    position: relative;
+    z-index: 1;
+  }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* INSTRUCTIONS BOX */
+  .instructions-box {
+    display: flex;
+    gap: 16px;
+    background: #fff;
+    border-left: 5px solid var(--csu-lime);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    align-items: flex-start;
+  }
+  .instructions-icon {
+    flex-shrink: 0;
+    color: var(--csu-green);
+    margin-top: 2px;
+  }
+  .instructions-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--csu-navy);
+    margin-bottom: 6px;
+  }
+  .instructions-text {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--csu-navy);
+    margin: 36px 0 8px;
+    letter-spacing: -0.3px;
+  }
+  .section-subtitle {
+    color: var(--text-mid);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    max-width: 800px;
+  }
+
+  /* SELF-CARE TYPES GRID */
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    margin-bottom: 40px;
+  }
+  .type-card {
+    background: #fff;
+    border: 1px solid var(--border-light);
+    margin: -0.5px;
+  }
+  .type-card-header {
+    padding: 14px 16px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+  .type-card-body {
+    padding: 14px 16px;
+  }
+  .type-card-body .definition {
+    font-size: 0.92rem;
+    color: var(--text-mid);
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .type-card-body .examples-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-mid);
+    margin-bottom: 4px;
+  }
+  .type-card-body .examples {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .type-card-body textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1.5px dashed var(--border-light);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .type-card-body textarea::placeholder {
+    color: #B0A89E;
+    font-style: italic;
+  }
+  .type-card-body textarea:focus {
+    outline: none;
+    border-color: var(--csu-lime);
+    background: #fff;
+  }
+  .type-card-body .input-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--csu-green);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .type-card-body .input-label svg {
+    width: 14px; height: 14px;
+  }
+
+  /* Row colors */
+  .type-card:nth-child(1) .type-card-header { background: var(--physical); }
+  .type-card:nth-child(2) .type-card-header { background: var(--psychological); }
+  .type-card:nth-child(3) .type-card-header { background: var(--emotional); }
+  .type-card:nth-child(4) .type-card-header { background: var(--social); }
+  .type-card:nth-child(5) .type-card-header { background: var(--professional); }
+  .type-card:nth-child(6) .type-card-header { background: var(--environmental); }
+  .type-card:nth-child(7) .type-card-header { background: var(--spiritual); }
+  .type-card:nth-child(8) .type-card-header { background: var(--practical); }
+
+  /* CARMA SECTION */
+  .carma-banner {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    margin-bottom: 40px;
+  }
+  .carma-item {
+    padding: 20px 16px;
+    text-align: center;
+    color: #fff;
+  }
+  .carma-item h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .carma-item p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    opacity: 0.92;
+  }
+  .carma-item:nth-child(1) { background: var(--physical); }
+  .carma-item:nth-child(2) { background: var(--csu-navy); }
+  .carma-item:nth-child(3) { background: var(--social); }
+  .carma-item:nth-child(4) { background: var(--csu-green); }
+  .carma-item:nth-child(5) { background: var(--csu-lime); color: var(--text-dark); }
+
+  /* PERSONALIZED PLAN TABLE */
+  .plan-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    margin-bottom: 40px;
+    background: #fff;
+  }
+  .plan-table thead th {
+    padding: 16px 18px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #fff;
+  }
+  .plan-table thead th:nth-child(1) { background: var(--csu-navy); width: 15%; }
+  .plan-table thead th:nth-child(2) { background: var(--csu-green); width: 28.3%; }
+  .plan-table thead th:nth-child(3) { background: var(--physical); width: 28.3%; }
+  .plan-table thead th:nth-child(4) { background: var(--csu-lime); color: var(--text-dark); width: 28.3%; }
+
+  .plan-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    font-size: 0.85rem;
+  }
+  .plan-table tbody tr:last-child td { border-bottom: none; }
+  .plan-table tbody td:first-child {
+    font-weight: 700;
+    color: var(--csu-navy);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(23,55,95,0.04);
+    text-align: center;
+  }
+  .plan-table tbody td .prompt {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .plan-table tbody td textarea {
+    width: 100%;
+    min-height: 70px;
+    border: 1.5px dashed var(--border-light);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.84rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .plan-table tbody td textarea:focus {
+    outline: none;
+    border-color: var(--csu-lime);
+    background: #fff;
+  }
+
+  /* REFLECTION GRID */
+  .reflection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .reflection-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border-top: 4px solid var(--csu-green);
+  }
+  .reflection-card:nth-child(2) { border-top-color: var(--csu-navy); }
+  .reflection-card:nth-child(3) { border-top-color: var(--social); }
+  .reflection-card:nth-child(4) { border-top-color: var(--physical); }
+  .reflection-card:nth-child(5) { border-top-color: var(--csu-lime); }
+  .reflection-card:nth-child(6) { border-top-color: var(--psychological); }
+  .reflection-card:nth-child(7) { border-top-color: var(--csu-green); }
+  .reflection-card:nth-child(8) { border-top-color: var(--csu-navy); }
+  .reflection-card:nth-child(9) { border-top-color: var(--social); }
+  .reflection-card .q-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--csu-navy);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .reflection-card textarea {
+    width: 100%;
+    min-height: 80px;
+    border: 1.5px dashed var(--border-light);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.84rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .reflection-card textarea:focus {
+    outline: none;
+    border-color: var(--csu-lime);
+    background: #fff;
+  }
+
+  /* PRINT BUTTON */
+  .print-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+  .btn-primary { background: var(--csu-green); color: #fff; }
+  .btn-secondary { background: var(--csu-navy); color: #fff; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    border-top: 2px solid var(--border-light);
+    margin-top: 20px;
+  }
+  .footer span { font-weight: 700; color: var(--csu-green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .types-grid { grid-template-columns: repeat(2, 1fr); }
+    .carma-banner { grid-template-columns: repeat(2, 1fr); }
+    .carma-banner .carma-item:last-child { grid-column: span 2; }
+    .reflection-grid { grid-template-columns: 1fr; }
+    .plan-table { display: block; overflow-x: auto; }
+  }
+  @media (max-width: 600px) {
+    .types-grid { grid-template-columns: 1fr; }
+    .carma-banner { grid-template-columns: 1fr; }
+    .carma-banner .carma-item:last-child { grid-column: span 1; }
+    .header { padding: 28px 24px; }
+    .header h1 { font-size: 1.5rem; }
+  }
+
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    body { background: #fff; margin: 0; }
+    .print-bar { display: none !important; }
+    .page-container { padding: 10px; max-width: 100%; }
+
+    /* Preserve grid layouts */
+    .types-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+    .carma-banner {
+      display: grid !important;
+      grid-template-columns: repeat(5, 1fr) !important;
+    }
+
+    /* Preserve header gradient */
+    .header {
+      background: linear-gradient(135deg, #17375F 0%, #0D5540 60%, #7BBA4C 100%) !important;
+    }
+
+    /* Preserve card header colors */
+    .type-card:nth-child(1) .type-card-header { background: #E8443A !important; }
+    .type-card:nth-child(2) .type-card-header { background: #F7A025 !important; }
+    .type-card:nth-child(3) .type-card-header { background: #17375F !important; }
+    .type-card:nth-child(4) .type-card-header { background: #2BA5A0 !important; }
+    .type-card:nth-child(5) .type-card-header { background: #E8443A !important; }
+    .type-card:nth-child(6) .type-card-header { background: #F7A025 !important; }
+    .type-card:nth-child(7) .type-card-header { background: #17375F !important; }
+    .type-card:nth-child(8) .type-card-header { background: #2BA5A0 !important; }
+    .type-card-header { color: #fff !important; }
+
+    /* Preserve CARMA colors */
+    .carma-item:nth-child(1) { background: #E8443A !important; color: #fff !important; }
+    .carma-item:nth-child(2) { background: #17375F !important; color: #fff !important; }
+    .carma-item:nth-child(3) { background: #2BA5A0 !important; color: #fff !important; }
+    .carma-item:nth-child(4) { background: #0D5540 !important; color: #fff !important; }
+    .carma-item:nth-child(5) { background: #7BBA4C !important; color: #1A1A2E !important; }
+
+    .instructions-box { border-left: 5px solid #7BBA4C !important; }
+
+    /* Hide textareas, show mirror divs */
+    textarea { display: none !important; }
+    .print-mirror {
+      display: block !important;
+      overflow: visible !important;
+      overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
+      word-break: break-word !important;
+      white-space: pre-wrap !important;
+      max-width: 100% !important;
+      page-break-inside: avoid;
+    }
+    .type-card {
+      page-break-inside: avoid;
+      overflow: hidden;
+    }
+    .type-card-body {
+      overflow: hidden;
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">Healing Centered Engagement</div>
+    <h1>Self-Care Plan for the CSU Community</h1>
+    <p>Create a personalized self-care plan for your HCE certification journey. Intentionally identify and implement self-care practices that align with your educational pedagogy and CARMA.</p>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions-box">
+    <div class="instructions-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    </div>
+    <div>
+      <div class="instructions-title">How to Complete This Form</div>
+      <div class="instructions-text">
+        Review the eight types of self-care below. Each card includes a definition and examples to guide your thinking. Use the text areas to write your own self-care practices for any categories that resonate with you. <strong>You do not need to fill out every section</strong>. Focus on the areas that feel most meaningful to your personal journey.
+      </div>
+      <div class="instructions-text" style="margin-top:8px;">
+        <strong>Privacy notice:</strong> Your responses are not saved or stored anywhere. Once you close or refresh this page, everything you have written will be permanently deleted. To keep a copy of your self-care plan, use the <strong>Print / Save as PDF</strong> button at the bottom of the page before leaving.
+      </div>
+    </div>
+  </div>
+
+  <!-- CARMA PRINCIPLES -->
+  <div class="section-title">CARMA Principles</div>
+  <div class="section-subtitle">The foundation for rooting your self-care in culture, empowerment, connection, purpose, and possibility.</div>
+  <div class="carma-banner">
+    <div class="carma-item">
+      <h3>Culture</h3>
+      <p>Awareness of one's own and others' racial and social identities</p>
+    </div>
+    <div class="carma-item">
+      <h3>Agency</h3>
+      <p>The ability to act, create, and change root causes of personal and community challenges</p>
+    </div>
+    <div class="carma-item">
+      <h3>Relationship</h3>
+      <p>The capacity to create, sustain, and grow healthy connections with others</p>
+    </div>
+    <div class="carma-item">
+      <h3>Meaning</h3>
+      <p>The discovery of who we are, where we are going, and what purpose we serve</p>
+    </div>
+    <div class="carma-item">
+      <h3>Aspirations</h3>
+      <p>Exploring possibilities and accomplishing goals for personal and collective wellbeing</p>
+    </div>
+  </div>
+
+  <!-- TYPES OF SELF-CARE -->
+  <div class="section-title">Different Types of Self-Care</div>
+  <div class="section-subtitle">Review each type and the examples below, then write your own practices in the space provided.</div>
+
+  <div class="types-grid">
+    <!-- Physical -->
+    <div class="type-card">
+      <div class="type-card-header">Physical Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Activities that improve your physical health.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Regular exercise, balanced diet, adequate sleep.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What physical self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Psychological -->
+    <div class="type-card">
+      <div class="type-card-header">Psychological Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Practices that support your mental health.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Mindfulness meditation, therapy, journaling.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What psychological self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Emotional -->
+    <div class="type-card">
+      <div class="type-card-header">Emotional Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Activities that help you process and express your emotions.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Talking to a friend, engaging in hobbies, practicing gratitude.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What emotional self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Social -->
+    <div class="type-card">
+      <div class="type-card-header">Social Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Actions that nurture your relationships and social connections.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Spending time with loved ones, joining a club, volunteering.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What social self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Professional -->
+    <div class="type-card">
+      <div class="type-card-header">Professional Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Strategies to maintain a healthy work-life balance.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Setting boundaries, taking breaks, pursuing professional development.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What professional self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Environmental -->
+    <div class="type-card">
+      <div class="type-card-header">Environmental Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Creating a healthy and supportive environment.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Organizing your space, spending time in nature, reducing clutter.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What environmental self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Spiritual -->
+    <div class="type-card">
+      <div class="type-card-header">Spiritual Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Practices that nurture your spirit and sense of purpose.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Prayer, meditation, attending religious services.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What spiritual self-care will you commit to?"></textarea>
+      </div>
+    </div>
+
+    <!-- Practical -->
+    <div class="type-card">
+      <div class="type-card-header">Practical Self-Care</div>
+      <div class="type-card-body">
+        <div class="definition">Managing daily tasks and responsibilities efficiently.</div>
+        <div class="examples-label">Examples</div>
+        <div class="examples">Budgeting, time management, planning meals.</div>
+        <div class="input-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Your practices:
+        </div>
+        <textarea placeholder="What practical self-care will you commit to?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="print-bar">
+    <button class="btn btn-primary" onclick="window.print()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save as PDF
+    </button>
+    <button class="btn btn-secondary" onclick="clearAll()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+      Clear All Responses
+    </button>
+  </div>
+
+  <div class="footer">
+    <span>Chicago State University</span> &middot; Center for Teaching &amp; Research Excellence &middot; Healing Centered Engagement Self-Care Guide
+  </div>
+
+</div>
+
+<script>
+  function clearAll() {
+    if (confirm('Are you sure you want to clear all your responses? This cannot be undone.')) {
+      document.querySelectorAll('textarea').forEach(t => {
+        t.value = '';
+        autoResize(t);
+      });
+    }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  document.querySelectorAll('textarea').forEach(t => {
+    t.addEventListener('input', function() { autoResize(this); });
+    t.style.overflow = 'hidden';
+  });
+
+  /* Print fix: browsers clip textarea content, so we swap them for plain divs before printing and restore after */
+  window.addEventListener('beforeprint', function() {
+    document.querySelectorAll('textarea').forEach(t => {
+      var div = document.createElement('div');
+      div.className = 'print-mirror';
+      div.textContent = t.value || ' ';
+      div.style.cssText = 'white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:Source Sans Pro,sans-serif;font-size:0.95rem;line-height:1.55;color:#1A1A2E;padding:10px 12px;border:1.5px dashed #E8E4DF;border-radius:8px;min-height:40px;background:#FDF8F3;max-width:100%;overflow:hidden;';
+      t.style.display = 'none';
+      t.parentNode.insertBefore(div, t.nextSibling);
+    });
+  });
+
+  window.addEventListener('afterprint', function() {
+    document.querySelectorAll('.print-mirror').forEach(d => d.remove());
+    document.querySelectorAll('textarea').forEach(t => {
+      t.style.display = '';
+    });
+  });
+</script>
+
+</body>
+</html>
