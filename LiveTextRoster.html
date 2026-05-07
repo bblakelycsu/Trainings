@@ -195,7 +195,8 @@
 
 <div class="footer">
   <strong>Chicago State University</strong> &bull; CTRE / OOIT &bull; Student Roster LiveText Converter<br>
-  Need help? <a href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank">Submit a Zendesk support ticket</a>
+  Need help? <a href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank">Submit a Zendesk support ticket</a><br>
+  <span style="color:#aaa; font-size:11px;">Version 1.2 &bull; Updated May 7, 2026</span>
 </div>
 
 <script>
@@ -284,6 +285,29 @@ function doConvert() {
   let learnerCount = 0;
   let totalRows = fileData.length;
 
+  // --- First pass: detect cross-listed CourseCode groups and collect their CRNs ---
+  // A cross-listed CourseCode (e.g. D2202605) differs from SectionCode and has no dot.
+  // Some rows for the same CRN may show the cross-listed CourseCode while others show
+  // the regular CRN-based CourseCode. We need to map every CRN to its cross-listed group.
+  const courseCodeCRNs = {};  // cross-listed CourseCode -> Set of CRNs
+  const crnToXlstCode = {};  // individual CRN -> cross-listed CourseCode
+
+  fileData.forEach(r => {
+    const sectionCode = getCol(r, ['SectionCode', 'Sectioncode', 'sectioncode']).toString().trim();
+    const courseCode = getCol(r, ['CourseCode', 'Coursecode', 'coursecode']).toString().trim();
+    const sectionParts = sectionCode.split('.');
+    const crn = sectionParts[0] || '';
+    if (courseCode && courseCode !== sectionCode && !courseCode.includes('.')) {
+      // This row has a cross-listed CourseCode (e.g. D2202605)
+      if (!courseCodeCRNs[courseCode]) courseCodeCRNs[courseCode] = new Set();
+      courseCodeCRNs[courseCode].add(crn);
+      crnToXlstCode[crn] = courseCode;
+    }
+  });
+
+  // --- Second pass: build output rows ---
+  const seenCrossListed = new Set();  // Track student+xlstCode to deduplicate cross-listed
+
   fileData.forEach(r => {
     // Only include Learner rows
     const role = getCol(r, ['CourseRoleName', 'Courserolename', 'courserolename']).toString().trim();
@@ -292,29 +316,53 @@ function doConvert() {
 
     const sectionCode = getCol(r, ['SectionCode', 'Sectioncode', 'sectioncode']).toString().trim();
     const courseName = getCol(r, ['CourseName', 'Coursename', 'coursename']).toString().trim();
+
+    // Filter: only include LIS and TPS courses
+    const cnUpper = courseName.toUpperCase();
+    if (!cnUpper.includes('LIS') && !cnUpper.includes('TPS')) return;
+
+    const sectionParts = sectionCode.split('.');
+    const crn = sectionParts[0] || '';
+    const orgId = getCol(r, ['OrgDefinedId', 'OrgDefinedID', 'Orgdefinedid', 'orgdefinedid']).toString().trim();
+
+    // Determine if this CRN belongs to a cross-listed group (even if this row's CourseCode looks normal)
+    const xlstCode = crnToXlstCode[crn] || null;
+    const isCrossListed = xlstCode && courseCodeCRNs[xlstCode] && courseCodeCRNs[xlstCode].size > 1;
+
+    // Deduplicate: for cross-listed courses, only output one row per student per cross-listed group
+    if (isCrossListed) {
+      const dedupKey = orgId + '|' + xlstCode;
+      if (seenCrossListed.has(dedupKey)) return;
+      seenCrossListed.add(dedupKey);
+    }
+
     const firstName = getCol(r, ['FirstName', 'Firstname', 'firstname']).toString().trim();
     const lastName = getCol(r, ['LastName', 'Lastname', 'lastname']).toString().trim();
     const email = getCol(r, ['ExternalEmail', 'Externalemail', 'externalemail']).toString().trim();
-    const orgId = getCol(r, ['OrgDefinedId', 'OrgDefinedID', 'Orgdefinedid', 'orgdefinedid']).toString().trim();
 
     // TERM = last part of SectionCode after the dot (term code, e.g., 202601)
-    const sectionParts = sectionCode.split('.');
     const term = sectionParts.length > 1 ? sectionParts[sectionParts.length - 1] : sectionCode.slice(-6);
 
-    // Parse CourseName: "Spring 2026 ... (SUBJ-CRSE-SEC)"
-    let subj = '', crseNum = '', sec = '';
-    const match = courseName.match(/\(([A-Za-z\s]+)-(\d+)-([^)]+)\)\s*$/);
+    // Parse CourseName for subject and section
+    // Handles single: "(TPS-5960-51)" or cross-listed: "(TPS-5960-51, TPS-4960-51)"
+    let subj = '', sec = '';
+    const match = courseName.match(/\(([A-Za-z\s]+)-(\d+)-([^),]+)/);
     if (match) {
       subj = match[1].trim();
-      crseNum = match[2].trim();
       sec = match[3].trim();
     } else {
       warnings.push('Could not parse course info from: ' + courseName);
     }
 
-    // CRSEID = Subject letters + space + first part of SectionCode (CRN)
-    const crn = sectionParts[0] || '';
-    const crseId = subj + ' ' + crn;
+    let crseId;
+    if (isCrossListed) {
+      // CRSEID = Subject + all CRNs comma-separated (e.g. "TPS 53689, 54045")
+      const allCrns = [...courseCodeCRNs[xlstCode]].sort((a,b) => parseInt(b) - parseInt(a)).join(', ');
+      crseId = subj + ' ' + allCrns;
+    } else {
+      // CRSEID = Subject + CRN
+      crseId = subj + ' ' + crn;
+    }
 
     // Track courses
     courseSet.add(crseId + '-' + sec);
