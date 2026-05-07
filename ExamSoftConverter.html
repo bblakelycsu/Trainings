@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ExamSoft Converter — Chicago State University</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- SheetJS no longer needed - courses.txt is now a tab-delimited text file -->
 <style>
   :root {
     --csu-green: #0d5540;
@@ -477,7 +477,7 @@
       <li>Export the <strong>Section Enrollment Report</strong> from Argos as a <strong>.csv</strong> file.</li>
       <li>Upload the file below. The converter will filter to include <strong>only Pharmacy (PHAR) courses</strong> that have <strong>not been cancelled</strong>, have <strong>credit hours greater than 0</strong>, and <strong>exclude APPE- titled courses</strong>.</li>
       <li>Two files will be generated:</li>
-      <li><strong>courses.txt.xlsx</strong> &mdash; Upload this to <strong>ExamSoft Course Management</strong> to import the new classes for the semester.</li>
+      <li><strong>courses.txt</strong> &mdash; Upload this to <strong>ExamSoft Course Management</strong> to import the new classes for the semester.</li>
       <li><strong>course_sync.csv</strong> &mdash; Add this to the <strong>Course Import Tool within Brightspace</strong> to sync the ExamSoft and Brightspace connection.</li>
     </ol>
   </div>
@@ -494,6 +494,7 @@
     <div class="file-selected" id="fileSelected">
       &#x2705; <span id="fileName"></span>
     </div>
+
     <br>
     <button class="convert-btn" id="convertBtn" disabled onclick="processFile()">
       <span id="btnText">&#x26A1; Convert File</span>
@@ -540,9 +541,9 @@
             <div class="desc">For ExamSoft course import</div>
           </div>
         </div>
-        <div class="filename">courses.txt.xlsx</div>
+        <div class="filename">courses.txt</div>
         <br>
-        <button class="dl-btn green" onclick="downloadXLSX()">&#x2B07; Download courses.txt.xlsx</button>
+        <button class="dl-btn green" onclick="downloadTXT()">&#x2B07; Download courses.txt</button>
       </div>
       <div class="download-card">
         <div class="card-header">
@@ -560,7 +561,7 @@
 
     <!-- Preview Table -->
     <div class="preview-card animate-in">
-      <h2>&#x1F4CB; Data Preview — courses.txt.xlsx</h2>
+      <h2>&#x1F4CB; Data Preview — courses.txt</h2>
       <div class="table-wrap">
         <table>
           <thead>
@@ -584,7 +585,7 @@
 
 <!-- Footer -->
 <div class="footer">
-  <span>Chicago State University</span> &bull; CTRE / OOIT &bull; ExamSoft Converter Tool
+  <span>Chicago State University</span> &bull; CTRE / OOIT &bull; ExamSoft Converter Tool &bull; v2.0 &bull; Last Updated: May 7, 2026
 </div>
 
 <script>
@@ -718,6 +719,8 @@ function processFile() {
       const iSEC = hMap['SEC'];
       const iPRI_LNAME = hMap['PRI_LNAME'];
       const iPRI_FNAME = hMap['PRI_FNAME'];
+      const iSTART_DATE = hMap['PTRM_START_DATE'];
+      const iEND_DATE = hMap['PTRM_END_DATE'];
 
       // Filter steps
       let pharCourses = rows.slice(1).filter(r => r.length > 5 && r[iSUBJ] === 'PHAR');
@@ -755,14 +758,18 @@ function processFile() {
         const lname = r[iPRI_LNAME] || '';
         const fname = r[iPRI_FNAME] || '';
 
+        // Get start/end dates from PTRM_START_DATE and PTRM_END_DATE columns
+        const startDate = (iSTART_DATE !== undefined) ? (r[iSTART_DATE] || '') : '';
+        const endDate = (iEND_DATE !== undefined) ? (r[iEND_DATE] || '') : '';
+
         return {
           courseID,
           courseName,
           lname,
           fname,
           title: 'Dr.',
-          startDate: '',
-          endDate: ''
+          startDate,
+          endDate
         };
       });
 
@@ -791,7 +798,7 @@ function processFile() {
       tbody.innerHTML = '';
       processedData.forEach(d => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${esc(d.courseID)}</td><td>${esc(d.courseName)}</td><td>${esc(d.lname)}</td><td>${esc(d.fname)}</td><td>${esc(d.title)}</td><td></td><td></td>`;
+        tr.innerHTML = `<td>${esc(d.courseID)}</td><td>${esc(d.courseName)}</td><td>${esc(d.lname)}</td><td>${esc(d.fname)}</td><td>${esc(d.title)}</td><td>${esc(d.startDate)}</td><td>${esc(d.endDate)}</td>`;
         tbody.appendChild(tr);
       });
 
@@ -816,39 +823,21 @@ function esc(str) {
   return div.innerHTML;
 }
 
-function downloadXLSX() {
-  const wsData = [['Course ID', 'Course Name', 'Instructor Lname', 'Instructor Fname', 'Instructor Title', 'StartDate', 'EndDate']];
-  processedData.forEach(d => {
-    wsData.push([d.courseID, d.courseName, d.lname, d.fname, d.title, d.startDate, d.endDate]);
-  });
+function downloadTXT() {
+  // Build tab-delimited text file for ExamSoft Course Management import
+  const header = ['Course ID', 'Course Name', 'Instructor Lname', 'Instructor Fname', 'Instructor Title', 'StartDate', 'EndDate'].join('\t');
+  const rows = processedData.map(d =>
+    [d.courseID, d.courseName, d.lname, d.fname, d.title, d.startDate, d.endDate].join('\t')
+  );
+  const txtContent = header + '\n' + rows.join('\n');
 
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Force Course ID column (column A) to be text so Excel doesn't truncate numbers
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let row = 1; row <= range.e.r; row++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: 0 });
-    if (ws[cellRef]) {
-      ws[cellRef].t = 's'; // force type to string
-      ws[cellRef].v = String(ws[cellRef].v); // ensure value is string
-      delete ws[cellRef].w; // remove cached formatted text
-    }
-  }
-
-  // Set column widths
-  ws['!cols'] = [
-    { wch: 16 },
-    { wch: 52 },
-    { wch: 18 },
-    { wch: 18 },
-    { wch: 15 },
-    { wch: 12 },
-    { wch: 12 }
-  ];
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  XLSX.writeFile(wb, 'courses.txt.xlsx');
+  const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'courses.txt';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function downloadCSV() {
