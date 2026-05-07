@@ -426,7 +426,8 @@
 </div>
 
 <div class="footer">
-  <strong>Chicago State University</strong> &bull; CTRE / OOIT &bull; LiveText Converter Tool
+  <strong>Chicago State University</strong> &bull; CTRE / OOIT &bull; LiveText Converter Tool<br>
+  <span style="color:#aaa; font-size:11px;">Version 1.2 &bull; Updated May 7, 2026</span>
 </div>
 
 <script>
@@ -614,6 +615,10 @@ function doConvert() {
     'TERMACTION','CRSEACTION','SECTIONACTION','INSTRACTION'
   ];
 
+  // --- First pass: extract valid rows, group cross-listed by XLST ---
+  const xlstGroups = {};  // XLST code -> array of parsed row objects
+  const standaloneRows = [];
+
   file1Data.forEach(r => {
     // Filter to only LIS and TPS subjects
     const subjectCheck = (r['SUBJ'] || '').toString().trim().toUpperCase();
@@ -623,33 +628,33 @@ function doConvert() {
     const stat = (r['STAT'] || '').toString().trim().toUpperCase();
     if (stat === 'C') { skippedCount++; return; }
 
-    const termCode = (r['TERM_CODE_KEY'] || '').toString().trim();
-    const termDesc = (r['TERM_DESC'] || '').toString().trim();
-    const subj = (r['SUBJ'] || '').toString().trim();
-    const crn  = (r['CRN'] || '').toString().trim();
-    const crse = (r['CRSE'] || '').toString().trim();
-    const sec  = (r['SEC'] || '').toString().trim();
-    const title = (r['TITLE'] || '').toString().trim();
-    const ctHr = (r['CT_HR'] || '').toString().trim();
-    const priId = (r['PRI_ID'] || '').toString().trim();
-    const priFname = (r['PRI_FNAME'] || '').toString().trim();
-    const priLname = (r['PRI_LNAME'] || '').toString().trim();
-    const dept = (r['DEPT'] || '').toString().trim();
+    const parsed = {
+      termCode: (r['TERM_CODE_KEY'] || '').toString().trim(),
+      termDesc: (r['TERM_DESC'] || '').toString().trim(),
+      subj: (r['SUBJ'] || '').toString().trim(),
+      crn:  (r['CRN'] || '').toString().trim(),
+      crse: (r['CRSE'] || '').toString().trim(),
+      sec:  (r['SEC'] || '').toString().trim(),
+      title: (r['TITLE'] || '').toString().trim(),
+      ctHr: (r['CT_HR'] || '').toString().trim(),
+      priId: (r['PRI_ID'] || '').toString().trim(),
+      priFname: (r['PRI_FNAME'] || '').toString().trim(),
+      priLname: (r['PRI_LNAME'] || '').toString().trim(),
+      dept: (r['DEPT'] || '').toString().trim(),
+      xlst: (r['XLST'] || '').toString().trim()
+    };
 
-    // TERMNAME: TERM_CODE + first word of TERM_DESC (e.g. "202601 Spring")
-    const termFirstWord = termDesc.split(' ')[0] || '';
-    const termName = termCode + ' ' + termFirstWord;
+    if (parsed.xlst) {
+      if (!xlstGroups[parsed.xlst]) xlstGroups[parsed.xlst] = [];
+      xlstGroups[parsed.xlst].push(parsed);
+    } else {
+      standaloneRows.push(parsed);
+    }
+  });
 
-    // CRSECODE: TERM_CODE - SUBJ CRSE
-    const crseCode = termCode + ' - ' + subj + ' ' + crse;
-
-    // CRSEID: SUBJ CRN
-    const crseId = subj + ' ' + crn;
-
-    // Lookup email & dates from File 2 (try exact match, then normalized match)
-    let email = '';
-    let startDate = '';
-    let endDate = '';
+  // --- Helper: lookup email & dates for a row ---
+  function lookupBrightspace(priId, priFname, priLname) {
+    let email = '', startDate = '', endDate = '', matched = false;
     let matchEntry = null;
     if (priId) {
       if (lookup[priId]) {
@@ -657,7 +662,6 @@ function doConvert() {
       } else if (lookupNorm[normalizeId(priId)]) {
         matchEntry = lookupNorm[normalizeId(priId)];
       } else {
-        // Last resort: numeric comparison
         const priNum = parseFloat(priId);
         if (!isNaN(priNum)) {
           for (const [id, entry] of Object.entries(lookup)) {
@@ -670,12 +674,11 @@ function doConvert() {
       email = matchEntry.email;
       startDate = matchEntry.start;
       endDate = matchEntry.end;
-      matchedCount++;
+      matched = true;
     } else if (priId) {
       warnings.push('No Brightspace match for PRI_ID: ' + priId + ' (' + priFname + ' ' + priLname + ')');
     }
-
-    // If no startDate/endDate from match, try to get it from any matching file2 row (term-wide dates)
+    // Fallback: term-wide dates
     if (!startDate || !endDate) {
       for (const fr of file2Data) {
         const cn = getCol(fr, ['CourseName','Course Name','courseName']).toString().toUpperCase();
@@ -689,11 +692,14 @@ function doConvert() {
         if (startDate && endDate) break;
       }
     }
+    return { email, startDate, endDate, matched };
+  }
 
-    // Build original instructor row
+  // --- Helper: build instructor + admin duplicate rows ---
+  function buildOutputRows(termCode, crseId, sec, termName, crseCode, title, sectionCode, priFname, priLname, priId, email, startDate, endDate, ctHr, dept) {
     const origRow = [
       termCode, crseId, sec, termName, crseCode, title,
-      sec, priFname, priLname, priId, email,
+      sectionCode, priFname, priLname, priId, email,
       'NONE', 'NONE', 'NONE',
       startDate, endDate, title, ctHr,
       'CAS', dept,
@@ -701,16 +707,68 @@ function doConvert() {
     ];
     outputRows.push({ data: origRow, isDuplicate: false });
 
-    // Build duplicate row for Department of LIMS
     const dupRow = [
       termCode, crseId, sec, termName, crseCode, title,
-      sec, 'Department of LIMS', 'CSU Administrator', 'csuadminlims', 'livetext@csu.edu',
+      sectionCode, 'Department of LIMS', 'CSU Administrator', 'csuadminlims', 'livetext@csu.edu',
       '1', '1', '2000',
       startDate, endDate, title, ctHr,
       'CAS', dept,
       'A', 'A', 'A', 'A'
     ];
     outputRows.push({ data: dupRow, isDuplicate: true });
+  }
+
+  // --- Process standalone (non-cross-listed) rows ---
+  standaloneRows.forEach(p => {
+    const termFirstWord = p.termDesc.split(' ')[0] || '';
+    const termName = p.termCode + ' ' + termFirstWord;
+    const crseCode = p.termCode + ' - ' + p.subj + ' ' + p.crse;
+    const crseId = p.subj + ' ' + p.crn;
+    const sectionCode = p.crn + '.' + p.termCode;
+
+    const bs = lookupBrightspace(p.priId, p.priFname, p.priLname);
+    if (bs.matched) matchedCount++;
+
+    buildOutputRows(p.termCode, crseId, p.sec, termName, crseCode, p.title,
+      sectionCode, p.priFname, p.priLname, p.priId, bs.email,
+      bs.startDate, bs.endDate, p.ctHr, p.dept);
+  });
+
+  // --- Process cross-listed groups ---
+  Object.entries(xlstGroups).forEach(([xlst, rows]) => {
+    // Use first row for shared fields (instructor, term, dept, etc.)
+    const first = rows[0];
+    const termFirstWord = first.termDesc.split(' ')[0] || '';
+    const termName = first.termCode + ' ' + termFirstWord;
+
+    // CRSEID: Subject + all CRNs comma-separated (e.g. "TPS 54045, 53689")
+    const allCrns = rows.map(r => r.crn).sort((a,b) => parseInt(b) - parseInt(a)).join(', ');
+    const crseId = first.subj + ' ' + allCrns;
+
+    // CRSECODE: combine course numbers (e.g. "202605 - TPS 4960, 5960")
+    const allCrseNums = rows.map(r => r.crse).sort((a,b) => parseInt(b) - parseInt(a)).join(', ');
+    const crseCode = first.termCode + ' - ' + first.subj + ' ' + allCrseNums;
+
+    // SECTIONCODE: XLST + TERMCODE (e.g. "D2202605") — matches Brightspace CourseCode
+    const sectionCode = xlst + first.termCode;
+
+    // Combine sections if different, otherwise use single
+    const uniqueSecs = [...new Set(rows.map(r => r.sec))];
+    const sec = uniqueSecs.join(', ');
+
+    // Combine titles if different
+    const uniqueTitles = [...new Set(rows.map(r => r.title))];
+    const title = uniqueTitles.join(' / ');
+
+    // Use max credit hours
+    const ctHr = Math.max(...rows.map(r => parseFloat(r.ctHr) || 0)).toString();
+
+    const bs = lookupBrightspace(first.priId, first.priFname, first.priLname);
+    if (bs.matched) matchedCount++;
+
+    buildOutputRows(first.termCode, crseId, sec, termName, crseCode, title,
+      sectionCode, first.priFname, first.priLname, first.priId, bs.email,
+      bs.startDate, bs.endDate, ctHr, first.dept);
   });
 
   // Build workbook
