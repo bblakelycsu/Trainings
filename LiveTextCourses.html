@@ -586,13 +586,9 @@ function doConvert() {
     if (!orgId) return;
     let start = getCol(r, ['StartDate','Start Date','startDate']);
     let end = getCol(r, ['EndDate','End Date','endDate']);
-    // Handle Excel date serial numbers
-    if (typeof start === 'number') start = excelDateToStr(start);
-    else if (start instanceof Date) start = formatDate(start);
-    else start = start.toString().trim();
-    if (typeof end === 'number') end = excelDateToStr(end);
-    else if (end instanceof Date) end = formatDate(end);
-    else end = end.toString().trim();
+    // Handle Excel date serial numbers, Date objects, or date strings
+    start = normalizeDate(start);
+    end = normalizeDate(end);
 
     const email = getCol(r, ['ExternalEmail','External Email','externalEmail']).toString().trim();
     const entry = { email, start, end };
@@ -686,12 +682,8 @@ function doConvert() {
         if (!cn.includes('LIS') && !cn.includes('TPS')) continue;
         let s = getCol(fr, ['StartDate','Start Date','startDate']);
         let e = getCol(fr, ['EndDate','End Date','endDate']);
-        if (typeof s === 'number') s = excelDateToStr(s);
-        else if (s instanceof Date) s = formatDate(s);
-        else s = s.toString().trim();
-        if (typeof e === 'number') e = excelDateToStr(e);
-        else if (e instanceof Date) e = formatDate(e);
-        else e = e.toString().trim();
+        s = normalizeDate(s);
+        e = normalizeDate(e);
         if (!startDate && s) startDate = s;
         if (!endDate && e) endDate = e;
         if (startDate && endDate) break;
@@ -812,6 +804,22 @@ function downloadFile() {
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────
+function normalizeDate(val) {
+  if (val == null || val === '') return '';
+  if (typeof val === 'number') return excelDateToStr(val);
+  if (val instanceof Date) return formatDate(val);
+  let s = val.toString().trim();
+  // Handle "YYYY-MM-DD HH:MM:SS" or "YYYY-MM-DD" from CSV
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return parseInt(m[2],10) + '/' + parseInt(m[3],10) + '/' + m[1];
+  // Handle "MM/DD/YYYY" already correct
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)) return s;
+  // Try parsing as Date
+  const d = new Date(s);
+  if (!isNaN(d)) return formatDate(d);
+  return s;
+}
+
 function excelDateToStr(serial) {
   const utcDays = Math.floor(serial - 25569);
   const d = new Date(utcDays * 86400 * 1000);
