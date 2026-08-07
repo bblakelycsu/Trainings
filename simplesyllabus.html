@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Syllabus - CSU Faculty Guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #4a8a2a;
+    --csu-light-green: #e8f5e0;
+    --csu-light-navy: #e6eaf0;
+    --gold: #fbbf24;
+    --gold-hover: #fcd34d;
+    --orange: #d97706;
+    --orange-light: #fef3c7;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --radius: 10px;
+  }
+  body { font-family: 'Segoe UI', Arial, Calibri, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; }
+  .skip-link { position: absolute; top: -100%; left: 1rem; background: var(--csu-navy); color: #fff; padding: 0.75rem 1.25rem; border-radius: 0 0 var(--radius) var(--radius); z-index: 1000; font-weight: 600; text-decoration: none; }
+  .skip-link:focus { top: 0; outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+  *:focus-visible { outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+
+  .site-header { background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%); color: #fff; padding: 2.5rem 2rem 0; text-align: center; }
+  .header-badge { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .site-header p { font-size: 1rem; max-width: 720px; margin: 0 auto; color: rgba(255,255,255,0.95); padding-bottom: 1.75rem; }
+
+  /* TABS */
+  .tab-nav { display: flex; gap: 0; max-width: 1140px; margin: 0 auto; padding: 0 1.25rem; }
+  .tab-btn { flex: 1; padding: 0.85rem 1.25rem; font-size: 0.95rem; font-weight: 600; border: none; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); cursor: pointer; border-radius: var(--radius) var(--radius) 0 0; transition: background 0.2s, color 0.2s; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .tab-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+  .tab-btn[aria-selected="true"] { background: var(--gray-50); color: var(--csu-navy); }
+  .tab-btn svg { flex-shrink: 0; }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* TWO-COLUMN LAYOUT */
+  .setup-layout { display: grid; grid-template-columns: 1fr 280px; gap: 1.5rem; align-items: start; }
+  .setup-main { min-width: 0; }
+  .setup-sidebar { position: sticky; top: 1rem; }
+  .sidebar-panel { background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius); padding: 1.25rem; }
+  .sidebar-panel h2 { font-size: 0.95rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--csu-accent); display: flex; align-items: center; gap: 0.4rem; }
+  .sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+  .sidebar-list a { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 6px; text-decoration: none; color: var(--gray-700); font-size: 0.82rem; font-weight: 500; min-height: 36px; transition: background 0.15s, color 0.15s; }
+  .sidebar-list a:hover { background: var(--csu-light-green); color: var(--csu-green); }
+  .sidebar-list .link-icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .sidebar-list .ext-icon { width: 12px; height: 12px; margin-left: auto; flex-shrink: 0; opacity: 0.5; }
+  .sidebar-kb { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--gray-200); }
+  .sidebar-kb a { font-size: 0.8rem; color: var(--csu-navy); font-weight: 600; }
+  .sidebar-kb a:hover { color: var(--csu-green); }
+
+  /* VIDEO */
+  .video-section { background: var(--csu-navy); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; text-align: center; box-shadow: 0 4px 20px rgba(23,55,95,0.25); }
+  .video-section h2 { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+  .video-section p { font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-bottom: 1.25rem; }
+  .video-btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--gold); color: var(--csu-navy); font-size: 1rem; font-weight: 700; padding: 0.85rem 1.75rem; border-radius: 8px; text-decoration: none; min-height: 44px; transition: background 0.2s, transform 0.2s; }
+  .video-btn:hover { background: var(--gold-hover); transform: translateY(-1px); }
+  .video-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .video-pw { display: inline-block; margin-top: 0.75rem; background: rgba(255,255,255,0.15); border-radius: 6px; padding: 0.35rem 0.85rem; font-size: 0.85rem; color: rgba(255,255,255,0.9); }
+
+  /* GUIDE TOPICS */
+  .guide-topic { background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius); padding: 1.4rem 1.5rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+  .guide-topic:hover { border-color: var(--csu-accent); }
+  .guide-topic h3 { font-size: 1rem; font-weight: 700; color: var(--csu-green); margin-bottom: 0.4rem; }
+  .guide-topic p { font-size: 0.92rem; color: var(--gray-700); margin-bottom: 0.5rem; }
+  .guide-topic p:last-child { margin-bottom: 0; }
+  .guide-topic ul, .guide-topic ol { margin: 0.4rem 0 0.5rem 1.4rem; font-size: 0.92rem; color: var(--gray-700); }
+  .guide-topic li { margin-bottom: 0.3rem; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 2rem; }
+  .section-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--csu-accent); }
+  .section-icon { background: var(--csu-green); color: #fff; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section h2 { font-size: 1.2rem; font-weight: 700; color: var(--csu-navy); }
+
+  /* LINK LIST */
+  .link-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .link-list li { background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius); transition: border-color 0.2s, box-shadow 0.2s; }
+  .link-list li:hover { border-color: var(--csu-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .link-list a { display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.1rem; text-decoration: none; color: var(--gray-800); font-size: 0.92rem; font-weight: 500; min-height: 44px; }
+  .link-list a:hover { color: var(--csu-green); }
+  .link-icon { color: var(--csu-green); flex-shrink: 0; }
+  .ext-icon { margin-left: auto; color: var(--gray-600); flex-shrink: 0; }
+
+  /* FAQ */
+  .faq-item { background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius); margin-bottom: 0.75rem; overflow: hidden; }
+  .faq-q { font-size: 0.95rem; font-weight: 600; color: var(--csu-navy); padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; min-height: 44px; border: none; background: none; width: 100%; text-align: left; }
+  .faq-q:hover { background: var(--gray-100); }
+  .faq-arrow { transition: transform 0.2s; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(90deg); }
+  .faq-a { display: none; padding: 0 1.25rem 1.1rem 2.5rem; font-size: 0.92rem; color: var(--gray-700); }
+  .faq-item.open .faq-a { display: block; }
+  .faq-a ol { margin: 0.4rem 0 0.5rem 1.2rem; }
+  .faq-a li { margin-bottom: 0.3rem; }
+
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+  .contact-card { border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+  .contact-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .contact-card p { font-size: 0.88rem; margin-bottom: 0.75rem; }
+  .contact-card ul { list-style: none; font-size: 0.88rem; margin-bottom: 1rem; }
+  .contact-card li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+  .contact-card li::before { content: "\2713"; position: absolute; left: 0; font-weight: 700; }
+  .contact-ss { background: var(--csu-light-navy); border: 1.5px solid var(--csu-navy); }
+  .contact-ss h3, .contact-ss p, .contact-ss li { color: var(--csu-navy); }
+  .contact-ss li::before { color: var(--csu-navy); }
+  .contact-ctre { background: var(--csu-light-green); border: 1.5px solid var(--csu-accent); }
+  .contact-ctre h3, .contact-ctre p, .contact-ctre li { color: var(--csu-green); }
+  .contact-ctre li::before { color: var(--csu-green); }
+  .contact-btn { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.88rem; padding: 0.65rem 1.2rem; border-radius: 8px; text-decoration: none; min-height: 44px; transition: background 0.2s; }
+  .contact-btn-ss { background: var(--csu-navy); color: #fff; }
+  .contact-btn-ss:hover { background: var(--csu-green); }
+  .contact-btn-ctre { background: var(--csu-green); color: #fff; }
+  .contact-btn-ctre:hover { background: var(--csu-navy); }
+
+  /* HELP EMAIL BANNER */
+  .help-email-banner { background: var(--csu-light-navy); border: 1.5px solid var(--csu-navy); border-radius: var(--radius); padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+  .help-email-banner h3 { font-size: 1rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 0.15rem; }
+  .help-email-banner p { font-size: 0.9rem; color: var(--csu-navy); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .site-footer { text-align: center; padding: 1.5rem 1rem; font-size: 0.85rem; color: var(--gray-600); border-top: 1px solid var(--gray-200); margin-top: 2rem; }
+
+  @media (max-width: 600px) {
+    .site-header h1 { font-size: 1.4rem; }
+    .tab-btn { font-size: 0.85rem; padding: 0.75rem 0.75rem; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .setup-layout { grid-template-columns: 1fr; }
+    .setup-sidebar { position: static; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
+  <h1>Simple Syllabus</h1>
+  <p>Faculty guide for creating, editing, and publishing your course syllabus in Brightspace using Simple Syllabus.</p>
+
+  <nav class="tab-nav" aria-label="Page sections">
+    <button class="tab-btn" id="tab-setup" role="tab" aria-selected="true" aria-controls="panel-setup">
+      <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Setting Up Your Syllabus
+    </button>
+    <button class="tab-btn" id="tab-support" role="tab" aria-selected="false" aria-controls="panel-support">
+      <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Support
+    </button>
+  </nav>
+</header>
+
+<main id="main-content" class="container">
+
+  <!-- ==================== SETUP TAB ==================== -->
+  <div class="tab-panel active" id="panel-setup" role="tabpanel" aria-labelledby="tab-setup">
+    <div class="setup-layout">
+    <div class="setup-main">
+
+    <!-- VIDEO -->
+    <div class="video-section">
+      <h2>Instructor Quick Start Guide</h2>
+      <p>Watch the video walkthrough to get up and running with Simple Syllabus.</p>
+      <a class="video-btn" href="https://csu0.sharepoint.com/:v:/s/CenterforTeachingResearchExcellence/IQAiKBcYzFpnToLry2SG6_kwAVmmFl0BkfW-mLCDlsbtEQo?e=BoCaIA" target="_blank" rel="noopener">
+        <svg aria-hidden="true" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Watch Quick Start Video<span class="sr-only"> (opens in new tab)</span>
+      </a>
+    </div>
+
+    <!-- Accessing Your Syllabus -->
+    <div class="guide-topic">
+      <h3>How Do I Access and Edit My Syllabus?</h3>
+      <p>You can access your syllabus in two ways:</p>
+      <ul>
+        <li><strong>From Brightspace:</strong> Go to <a href="https://brightspace.csu.edu" target="_blank" rel="noopener">brightspace.csu.edu<span class="sr-only"> (opens in new tab)</span></a>, click into your course, select the <strong>My Materials</strong> tab, then click <strong>My Syllabus</strong> to begin editing.</li>
+        <li><strong>From Simple Syllabus directly:</strong> Go to <a href="https://chicagostate.simplesyllabus.com/en-US/" target="_blank" rel="noopener">chicagostate.simplesyllabus.com<span class="sr-only"> (opens in new tab)</span></a> and log in with your CSU Single Sign-On (SSO). Click the edit icon on your syllabus to begin.</li>
+      </ul>
+    </div>
+
+    <!-- Home Page & Syllabus Library -->
+    <div class="guide-topic">
+      <h3>Instructor View in Simple Syllabus</h3>
+      <p><strong>Home Page:</strong> Contains your syllabi organized as To Do and Completed items.</p>
+      <p><strong>Syllabus Library Tab:</strong> Filter by term to view previously published syllabi. The View, Print, and Share icons appear when you hover over a syllabus.</p>
+    </div>
+
+    <!-- General Editing Tips -->
+    <div class="guide-topic">
+      <h3>General Editing Tips</h3>
+      <ul>
+        <li>Your most recent content will automatically import when editing a syllabus if you have previously submitted the same course.</li>
+        <li>After the first set of syllabi are published for Fall 2026, you will see the option to <strong>Import</strong> ("Would you like to import a different syllabus?"), which lets you pull from any syllabus you have published in the past.</li>
+        <li>All changes are <strong>automatically saved</strong> while editing. Your syllabus will not be live until the publishing process is initiated.</li>
+        <li>Help text is included on the right side of the syllabus to guide you through editing each component.</li>
+        <li>For best results, <strong>type new content</strong> rather than pasting. Use the built-in editor to set font, size, color, style, and spacing. Pasting can cause unpredictable formatting.</li>
+      </ul>
+    </div>
+
+    <!-- Required Components -->
+    <div class="guide-topic" style="border-color: var(--orange); border-width: 2px;">
+      <h3 style="color: #b45309;">
+        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Required Components (Orange Outline)
+      </h3>
+      <p>Components with an <strong style="color: var(--orange);">orange border</strong> and a <strong style="color: var(--orange);">"Required"</strong> label at the bottom must be completed before you can submit. For example, <strong>Course Requirements and/or Course Policies</strong> is a required component where you add your attendance policy, class participation, exams, quizzes, papers, technology assignments, clinical/field experiences, lab sessions, makeup policy, etc.</p>
+      <p>Each required component includes a rich text editor with formatting tools and a help text panel on the right side with guidance on what to include. You can also toggle whether a section is <strong>Visible</strong> or <strong>Public</strong>.</p>
+    </div>
+
+    <!-- Sections That Don't Apply -->
+    <div class="guide-topic" style="background: #f0f7ff; border-color: var(--csu-navy);">
+      <h3>
+        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Sections That Don't Apply to Your Course
+      </h3>
+      <p>If a non-required section does not apply to your course, simply leave it blank. Blank sections will <strong>not appear</strong> on the published version of your syllabus that students see.</p>
+    </div>
+
+    <!-- Visible vs Public -->
+    <div class="guide-topic">
+      <h3>
+        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Understanding Visible/Hidden vs. Public/Private
+      </h3>
+      <p>Each component has two toggle sliders that control who can see it:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
+        <div style="background: var(--gray-50); border-radius: var(--radius); padding: 1rem; border-left: 3px solid var(--csu-navy);">
+          <strong style="color: var(--csu-navy);">Visible / Hidden</strong>
+          <p style="margin-top: 0.35rem; font-size: 0.9rem;">Controls whether a component appears in your syllabus at all. If a component is <strong>required</strong>, this toggle is disabled and locked to Visible (a lock icon will display next to the slider).</p>
+        </div>
+        <div style="background: var(--gray-50); border-radius: var(--radius); padding: 1rem; border-left: 3px solid var(--csu-accent);">
+          <strong style="color: var(--csu-navy);">Public / Private</strong>
+          <p style="margin-top: 0.35rem; font-size: 0.9rem;">Protects your intellectual property. <strong>Public</strong> components are viewable by anyone in the Syllabus Library. <strong>Private</strong> components are only accessible to enrolled students, the instructor, and administrators.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locked Sections -->
+    <div class="guide-topic" style="border-color: var(--csu-green); border-width: 2px;">
+      <h3>
+        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Locked Sections (Institutional Content)
+      </h3>
+      <p>Some sections are <strong>locked and cannot be edited</strong> by instructors. These contain campus-wide policies managed at the institutional level, such as <strong>Campus Policies</strong> and the <strong>Statement from Abilities Office</strong>. This ensures all syllabi include consistent, university-approved language.</p>
+      <p>If you notice an error in a locked section, contact CTRE/OOIT so it can be corrected at the template level.</p>
+    </div>
+
+    <!-- Printing / Downloading -->
+    <div class="guide-topic">
+      <h3>Printing Your Document / Downloading PDF</h3>
+      <p>Once your document is complete, you will be able to View, Print, and Share:</p>
+      <ul>
+        <li><strong>View:</strong> Click the View button to see a digital version of your syllabus.</li>
+        <li><strong>Download or Print:</strong> Click the Print button to download a PDF or send it to a printer.</li>
+        <li><strong>Share:</strong> Click the Share button to copy the syllabus URL or PDF URL.</li>
+      </ul>
+    </div>
+
+    <!-- Help Email -->
+    <div class="help-email-banner">
+      <div>
+        <h3>Need Help Building Your Syllabus?</h3>
+        <p>Contact Simple Syllabus support for help with the editor, formatting, components, or any platform questions.</p>
+      </div>
+      <a class="contact-btn contact-btn-ss" href="mailto:support@simplesyllabus.com" style="white-space: nowrap;">
+        <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        support@simplesyllabus.com
+      </a>
+    </div>
+
+    </div><!-- end .setup-main -->
+
+    <!-- SIDEBAR -->
+    <aside class="setup-sidebar" aria-label="Important links">
+      <nav class="sidebar-panel">
+        <h2>
+          <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Important Links
+        </h2>
+        <ul class="sidebar-list" role="list">
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/22718855627789-Instructor-Editing-Guide" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Instructor Editing Guide
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16103995966093-Component-type-Content" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Content Components
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16105267504781-Component-type-Material" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Material Components
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16136575285517-Visible-and-Public-Toggles" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Visible/Hidden &amp; Public/Private
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16105734575757-Component-type-Schedule" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedule Components
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16105495973005-Component-type-Objectives" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Objective Components
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16104107580941-Component-type-Instruct" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Instructor Components
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16135509356941-Tracking-student-engagement-in-my-class" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Tracking Student Engagement
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+          <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/categories/16740554765325-FAQ-Instructors" target="_blank" rel="noopener">
+            <svg class="link-icon" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Instructor FAQs
+            <svg class="ext-icon" aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span class="sr-only"> (opens in new tab)</span>
+          </a></li>
+        </ul>
+        <div class="sidebar-kb">
+          <a href="https://simplesyllabus.zendesk.com/hc/en-us" target="_blank" rel="noopener">
+            <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.25rem;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Knowledge Base<span class="sr-only"> (opens in new tab)</span>
+          </a>
+          <p style="font-size: 0.75rem; color: var(--gray-600); margin-top: 0.2rem;">Separate credentials required</p>
+        </div>
+      </nav>
+    </aside>
+
+    </div><!-- end .setup-layout -->
+  </div>
+
+  <!-- ==================== SUPPORT TAB ==================== -->
+  <div class="tab-panel" id="panel-support" role="tabpanel" aria-labelledby="tab-support">
+
+    <!-- WHO TO CONTACT -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h2>Who to Contact</h2>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card contact-ss">
+          <h3>Contact Simple Syllabus</h3>
+          <p>For help with the Simple Syllabus platform itself:</p>
+          <ul>
+            <li>Help building or editing your syllabus content</li>
+            <li>Questions about formatting, components, or the editor</li>
+            <li>Technical errors within the Simple Syllabus tool</li>
+            <li>Account login issues or password resets</li>
+            <li>Browser or cookie issues specific to Simple Syllabus</li>
+          </ul>
+          <a class="contact-btn contact-btn-ss" href="mailto:support@simplesyllabus.com">
+            <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            support@simplesyllabus.com
+          </a>
+        </div>
+        <div class="contact-card contact-ctre">
+          <h3>Contact CTRE / OOIT</h3>
+          <p>For help with CSU-specific setup or Brightspace:</p>
+          <ul>
+            <li>Accessing Simple Syllabus through Brightspace</li>
+            <li>Course or section information pulled from the LMS</li>
+            <li>Template or institutional component questions</li>
+            <li>Errors in locked campus policy sections</li>
+            <li>General Brightspace or LMS support</li>
+          </ul>
+          <a class="contact-btn contact-btn-ctre" href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">
+            <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Submit a Request<span class="sr-only"> (opens in new tab)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          When I try to login, it says "we cannot find a matching account" or "Account not found"
+        </button>
+        <div class="faq-a">
+          <p>Your account information (email, ID number, etc.) may not be correct in Simple Syllabus, or your enrollment may have had an issue during the file import. Contact <a href="mailto:support@simplesyllabus.com">support@simplesyllabus.com</a> so they can verify the email address on file and reset your password if needed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          I can't submit my syllabus because the submit button is grayed out
+        </button>
+        <div class="faq-a">
+          <p>Review your syllabus and ensure all required fields have been completed. Required components will be outlined in orange with "Required" visible at the bottom. All required components must have content before the submit button becomes active.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          I'm seeing a "refused to connect" error or "sit tight" message
+        </button>
+        <div class="faq-a">
+          <p>Please ensure third-party cookies are not blocked. To unblock in <strong>Google Chrome</strong>:</p>
+          <ol>
+            <li>Open Chrome</li>
+            <li>Click More (three dots) then Settings in the top right</li>
+            <li>Click Privacy and Security</li>
+            <li>Click Third-party cookies</li>
+            <li>Select Allow third-party cookies</li>
+          </ol>
+          <p style="margin-top: 0.5rem;"><strong>On iPad, iPhone, and mobile devices:</strong> Ensure "Allow Cross-Website Tracking" is enabled.</p>
+          <p><strong>Safari:</strong> Ensure "Prevent Cross-Site Tracking" is disabled.</p>
+          <p><strong>Pulse, Chrome, and other 3rd-party apps:</strong> Ensure "Allow Cross-Site Tracking" is enabled.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Additional Help Articles -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h2>Additional Help Articles</h2>
+      </div>
+      <ul class="link-list" role="list">
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/26721875516429-How-to-access-all-Instructor-help-articles" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          How to access all Instructor help articles
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/26722878239245-When-will-students-see-my-document" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          When will students see my document?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/26742748361613-Why-can-t-I-edit-certain-parts-of-my-syllabus" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Why can't I edit certain parts of my syllabus?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16119928486029-How-do-I-remove-a-component-from-my-syllabus" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          How do I remove a component from my syllabus?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16135418825357-There-is-incorrect-course-information-being-populated-onto-my-syllabus-how-can-I-fix-this" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Incorrect course information - how to fix
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/16120884587533-If-I-am-teaching-multiple-sections-of-the-same-course-when-I-submit-one-section-does-it-automatically-update-the-other-sections" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Multiple sections - does submitting one update the others?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/26722792048781-Why-can-t-I-submit-my-document" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Why can't I submit my document?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/26723090757517-How-can-I-download-a-PDF-or-print-my-document" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          How can I download a PDF or print my document?
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/46598589106957-Resolving-Accessibility-Errors" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/></svg>
+          Resolving Accessibility Errors
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/35656319756685-Browser-Support-and-Troubleshooting" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Browser Support and Troubleshooting
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+        <li><a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/30022823696653-Using-a-mobile-device-to-access-your-document" target="_blank" rel="noopener">
+          <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Using a mobile device to access your document
+          <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a></li>
+      </ul>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
+  Questions? Contact CTRE/OOIT for support.</p>
+</footer>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+    });
+    tab.addEventListener('keydown', (e) => {
+      const tabArr = Array.from(tabs);
+      const idx = tabArr.indexOf(tab);
+      let target;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); target = tabArr[(idx + 1) % tabArr.length]; }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); target = tabArr[(idx - 1 + tabArr.length) % tabArr.length]; }
+      if (target) { target.click(); target.focus(); }
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', !isOpen);
+    });
+  });
+</script>
+
+</body>
+</html>
