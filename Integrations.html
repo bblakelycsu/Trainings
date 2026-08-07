@@ -222,6 +222,7 @@
   .cat-video { background: #ede9fe; color: #4c1d95; }
   .cat-field { background: var(--csu-light-green); color: #064e3b; }
   .cat-simulation { background: #e0f2fe; color: #075985; }
+  .cat-exam { background: #fce7f3; color: #831843; }
 
   .card-desc {
     font-size: 0.9rem;
@@ -334,6 +335,65 @@
     color: #fbbf24;
   }
 
+  /* NEW INTEGRATION CALLOUTS */
+  .callouts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    margin-bottom: 1.75rem;
+  }
+  .callout {
+    background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 4px 16px rgba(13, 85, 64, 0.2);
+  }
+  .callout-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255,255,255,0.18);
+    color: #fbbf24;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    width: fit-content;
+  }
+  .callout h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .callout p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.5;
+  }
+  .callout-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fbbf24;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0.15rem 0;
+  }
+  .callout-link:hover,
+  .callout-link:focus-visible { color: #fff; }
+  .callout-link svg { flex-shrink: 0; }
+  @media (max-width: 750px) {
+    .callouts { grid-template-columns: 1fr; }
+  }
+
   /* FOOTER */
   .site-footer {
     text-align: center;
@@ -389,6 +449,21 @@
     </div>
   </div>
 
+  <section class="callouts" aria-label="New integrations">
+    <div class="callout">
+      <span class="callout-badge">New Integration</span>
+      <h3>Simple Syllabus</h3>
+      <p>Template-driven syllabus creation tool now available in Brightspace. Ensures accreditation compliance while giving you full control over your course content.</p>
+      <a class="callout-link" href="https://simplesyllabus.com/brightspace-syllabus-creation/" target="_blank" rel="noopener">Learn More <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
+    </div>
+    <div class="callout">
+      <span class="callout-badge">New Integration</span>
+      <h3>Integrity Advocate</h3>
+      <p>Remote proctoring and identity verification now integrated into Brightspace. Add exam monitoring to any Quiz or Assignment with just a few clicks.</p>
+      <a class="callout-link" href="https://integrityadvocate.com/reference-guide/d2l/" target="_blank" rel="noopener">Instructor Guide <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
+    </div>
+  </section>
+
   <div class="controls">
     <div class="search-box">
       <label for="searchInput">Search integrations</label>
@@ -403,6 +478,7 @@
         <button class="pill" aria-pressed="false" data-filter="Video &amp; Collaboration">Video</button>
         <button class="pill" aria-pressed="false" data-filter="Field Experience">Field Exp.</button>
         <button class="pill" aria-pressed="false" data-filter="Simulation &amp; Practice">Simulation</button>
+        <button class="pill" aria-pressed="false" data-filter="Exam Monitoring">Exam Monitoring</button>
       </div>
     </nav>
   </div>
@@ -565,6 +641,25 @@ const integrations = [
       { label: "Student: Understanding the Standard Assignment", url: "https://guides.turnitin.com/hc/en-us/articles/38265013496589--Student-Understanding-the-Standard-Assignment" }
     ]
   },
+  {
+    name: "Simple Syllabus",
+    category: "Assessment & Discussion",
+    desc: "Template-driven syllabus creation tool integrated into Brightspace. Ensures compliance with accreditation standards while giving faculty autonomy to personalize content. Tracks syllabus views and student acknowledgements.",
+    links: [
+      { label: "Brightspace Syllabus Creation", url: "https://simplesyllabus.com/brightspace-syllabus-creation/" },
+      { label: "D2L Integration Hub", url: "https://integrationhub.brightspace.com/details/simple-syllabus" }
+    ]
+  },
+  {
+    name: "Integrity Advocate",
+    category: "Exam Monitoring",
+    desc: "Remote proctoring and identity verification tool integrated directly into Brightspace. Add monitoring to any Quiz, Assignment, or Content activity with just a few clicks. No additional downloads required for students.",
+    links: [
+      { label: "D2L Instructor Guide", url: "https://integrityadvocate.com/reference-guide/d2l/" },
+      { label: "About Integrity Advocate in Brightspace", url: "https://community.d2l.com/brightspace/kb/articles/23692-about-integrity-advocate" },
+      { label: "Remote Proctoring Setup", url: "https://community.d2l.com/brightspace/kb/articles/25586-integrity-advocate-remote-proctoring-in-d2l-brightspace" }
+    ]
+  },
   // ── Video & Collaboration ──
   {
     name: "Bongo Video Assignment",
@@ -648,7 +743,8 @@ const catClass = {
   "Assessment & Discussion": "cat-assessment",
   "Video & Collaboration": "cat-video",
   "Field Experience": "cat-field",
-  "Simulation & Practice": "cat-simulation"
+  "Simulation & Practice": "cat-simulation",
+  "Exam Monitoring": "cat-exam"
 };
 
 const grid = document.getElementById("cardGrid");
