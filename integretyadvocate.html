@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrity Advocate - CSU Faculty Guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #4a8a2a;
+    --csu-light-green: #e8f5e0;
+    --csu-light-navy: #e6eaf0;
+    --gold: #fbbf24;
+    --gold-hover: #fcd34d;
+    --red-bg: #fef2f2;
+    --red-border: #dc2626;
+    --red-text: #991b1b;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --radius: 10px;
+  }
+  body { font-family: 'Segoe UI', Arial, Calibri, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; }
+  .skip-link { position: absolute; top: -100%; left: 1rem; background: var(--csu-navy); color: #fff; padding: 0.75rem 1.25rem; border-radius: 0 0 var(--radius) var(--radius); z-index: 1000; font-weight: 600; text-decoration: none; }
+  .skip-link:focus { top: 0; outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+  *:focus-visible { outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+
+  /* HEADER */
+  .site-header { background: linear-gradient(135deg, var(--csu-green) 0%, var(--csu-navy) 100%); color: #fff; padding: 2.5rem 2rem 2rem; text-align: center; }
+  .header-badge { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .site-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .site-header p { font-size: 1rem; max-width: 720px; margin: 0 auto; color: rgba(255,255,255,0.95); }
+
+  .container { max-width: 920px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: var(--red-bg);
+    border: 2px solid var(--red-border);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .alert-icon {
+    background: var(--red-border);
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.3rem; font-weight: 800;
+  }
+  .alert-banner h2 { font-size: 1.05rem; font-weight: 700; color: var(--red-text); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 0.3rem; }
+  .alert-banner p { font-size: 0.95rem; color: var(--red-text); }
+  .alert-banner a { color: var(--red-text); font-weight: 700; text-decoration: underline; }
+  .alert-banner a:hover { color: var(--csu-navy); }
+
+  /* VIDEO SECTION */
+  .video-section { background: var(--csu-navy); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; text-align: center; box-shadow: 0 4px 20px rgba(23,55,95,0.25); }
+  .video-section h2 { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+  .video-section p { font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-bottom: 1.25rem; }
+  .video-btn { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--gold); color: var(--csu-navy); font-size: 1rem; font-weight: 700; padding: 0.85rem 1.75rem; border-radius: 8px; text-decoration: none; min-height: 44px; transition: background 0.2s, transform 0.2s; }
+  .video-btn:hover { background: var(--gold-hover); transform: translateY(-1px); }
+  .video-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* INSTRUCTOR GUIDE CARD */
+  .guide-card {
+    background: linear-gradient(135deg, var(--csu-green), var(--csu-navy));
+    border-radius: var(--radius);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .guide-card-text { color: #fff; }
+  .guide-card-text h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .guide-card-text p { font-size: 0.9rem; color: rgba(255,255,255,0.85); }
+  .guide-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; color: var(--csu-navy); font-weight: 700; font-size: 0.95rem; padding: 0.7rem 1.4rem; border-radius: 8px; text-decoration: none; min-height: 44px; transition: background 0.2s; }
+  .guide-btn:hover { background: var(--gold); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 2rem; }
+  .section-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--csu-accent); }
+  .section-icon { background: var(--csu-green); color: #fff; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section h2 { font-size: 1.2rem; font-weight: 700; color: var(--csu-navy); }
+
+  /* LINK LIST */
+  .link-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .link-list li { background: #fff; border: 1.5px solid var(--gray-200); border-radius: var(--radius); transition: border-color 0.2s, box-shadow 0.2s; }
+  .link-list li:hover { border-color: var(--csu-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .link-list a { display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.1rem; text-decoration: none; color: var(--gray-800); font-size: 0.92rem; font-weight: 500; min-height: 44px; }
+  .link-list a:hover { color: var(--csu-green); }
+  .link-icon { color: var(--csu-green); flex-shrink: 0; }
+  .ext-icon { margin-left: auto; color: var(--gray-600); flex-shrink: 0; }
+
+  /* STUDENT INFO */
+  .student-section { background: var(--csu-light-navy); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 2rem; }
+  .student-section > h2 { font-size: 1.2rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--csu-navy); }
+  .student-topic { margin-bottom: 1.5rem; }
+  .student-topic:last-child { margin-bottom: 0; }
+  .student-topic h3 { font-size: 1rem; font-weight: 700; color: var(--csu-green); margin-bottom: 0.5rem; }
+  .student-topic p, .student-topic li { font-size: 0.92rem; color: var(--gray-700); }
+  .student-topic ol, .student-topic ul { margin-left: 1.5rem; margin-top: 0.4rem; }
+  .student-topic li { margin-bottom: 0.35rem; }
+  .student-topic ul ul { margin-top: 0.3rem; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #fff; border-radius: 8px; overflow: hidden; }
+  th { background: var(--csu-navy); color: #fff; text-align: left; padding: 0.65rem 0.85rem; font-weight: 600; white-space: nowrap; }
+  td { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--gray-200); }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gray-100); }
+  .yes { color: #16a34a; font-weight: 600; }
+  .no { color: var(--red-border); font-weight: 600; }
+  caption { font-size: 0.9rem; font-weight: 600; color: var(--csu-navy); text-align: left; margin-bottom: 0.4rem; caption-side: top; }
+
+  /* PRACTICE LINK CALLOUT */
+  .practice-callout { background: var(--csu-light-green); border: 1.5px solid var(--csu-accent); border-radius: var(--radius); padding: 1.2rem 1.4rem; margin: 1rem 0; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .practice-callout p { font-size: 0.92rem; color: var(--csu-green); font-weight: 500; flex: 1; min-width: 200px; }
+  .practice-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--csu-green); color: #fff; font-weight: 600; font-size: 0.9rem; padding: 0.65rem 1.2rem; border-radius: 8px; text-decoration: none; min-height: 44px; transition: background 0.2s; white-space: nowrap; }
+  .practice-btn:hover { background: var(--csu-navy); }
+
+  /* HELP BANNER */
+  .help-banner { background: var(--csu-light-green); border: 1.5px solid var(--csu-accent); border-radius: var(--radius); padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+  .help-banner-text { font-size: 0.95rem; color: var(--csu-green); font-weight: 500; }
+  .help-banner-text strong { font-weight: 700; }
+  .help-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--csu-green); color: #fff; border: none; border-radius: 8px; padding: 0.7rem 1.3rem; min-height: 44px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+  .help-btn:hover { background: var(--csu-navy); }
+
+  .site-footer { text-align: center; padding: 1.5rem 1rem; font-size: 0.85rem; color: var(--gray-600); border-top: 1px solid var(--gray-200); margin-top: 2rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  @media (max-width: 600px) {
+    .site-header h1 { font-size: 1.4rem; }
+    .alert-banner { flex-direction: column; }
+    .guide-card { flex-direction: column; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
+  <h1>Integrity Advocate</h1>
+  <p>Faculty guide for using Integrity Advocate exam monitoring in Brightspace, including instructor setup, student support resources, and system requirements.</p>
+</header>
+
+<main id="main-content" class="container">
+
+  <!-- CRITICAL ALERT -->
+  <div class="alert-banner" role="alert">
+    <div class="alert-icon" aria-hidden="true">!</div>
+    <div>
+      <h2>Do Not Create Fake Tests for Student Practice</h2>
+      <p>Do not schedule a fake quiz or test to verify that students can access Integrity Advocate. Each monitored session uses a license. Instead, direct students to the official <a href="https://www.integrityadvocateserver.com/Demo?level=6" target="_blank" rel="noopener">Integrity Advocate Practice Session<span class="sr-only"> (opens in new tab)</span></a> so they can test their camera, microphone, and browser settings without consuming licenses.</p>
+    </div>
+  </div>
+
+  <!-- INTRO VIDEO -->
+  <div class="video-section">
+    <h2>Integrity Advocate Overview</h2>
+    <p>Watch this short introduction to learn how Integrity Advocate works and what your students will experience.</p>
+    <a class="video-btn" href="https://www.youtube.com/watch?v=0TipoFZclMk&t=26s" target="_blank" rel="noopener">
+      <svg aria-hidden="true" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Watch Intro Video<span class="sr-only"> (opens in new tab)</span>
+    </a>
+  </div>
+
+  <!-- INSTRUCTOR GUIDE -->
+  <div class="guide-card">
+    <div class="guide-card-text">
+      <h2>D2L Brightspace Instructor Reference Guide</h2>
+      <p>Step-by-step guide to setting up and reviewing Integrity Advocate sessions in Brightspace. Note: You will not have administrator access.</p>
+    </div>
+    <a class="guide-btn" href="https://integrityadvocate.com/reference-guide/d2l/" target="_blank" rel="noopener">
+      Open Guide
+      <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <span class="sr-only"> (opens in new tab)</span>
+    </a>
+  </div>
+
+  <!-- SUPPORT ARTICLES -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h2>Support Topics</h2>
+    </div>
+    <ul class="link-list" role="list">
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Questions%20by%20Topic-,Access%20%26%20Login,-Screen%20Recording" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Access &amp; Login
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Screen-,Recording,-Looking%20for%20a" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Screen Recording
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Screen%20Recording-,Looking,-for%20a%20practice" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Looking for a Practice Test?
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Video%20%26%20Audio-,Setup,-ID%20Verification" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        Video &amp; Audio Setup
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=ID-,Verification,-Potential%20Violations" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        ID Verification
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Potential-,Violations,-Device%20%26%20Browser%20Compatibility" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Potential Violations
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Device%20%26%20Browser-,Compatibility,-Starting%20a%20Session" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Device &amp; Browser Compatibility
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=Starting%20a-,Session,-User%20Privacy" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Starting a Session
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+      <li><a href="https://integrityadvocate.com/support/#:~:text=User-,Privacy,-Access%20%26%20Login" target="_blank" rel="noopener">
+        <svg class="link-icon" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        User Privacy
+        <svg class="ext-icon" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a></li>
+    </ul>
+  </section>
+
+  <!-- SHARE WITH STUDENTS SECTION -->
+  <section class="student-section" aria-label="Information to share with students">
+    <h2>Share With Your Students</h2>
+
+    <!-- Practice Session Callout -->
+    <div class="practice-callout">
+      <p><strong>Student Practice Session:</strong> Have students use the official practice link to test their camera, mic, and browser before their first monitored activity.</p>
+      <a class="practice-btn" href="https://www.integrityadvocateserver.com/Demo?level=6" target="_blank" rel="noopener">
+        Open Practice Session
+        <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a>
+    </div>
+
+    <!-- Camera Troubleshooting -->
+    <div class="student-topic">
+      <h3>How can I make sure my camera is working before starting my activity?</h3>
+      <p>If your camera is not loading, follow these troubleshooting steps in order:</p>
+      <ol>
+        <li><strong>Free Up Your Camera</strong> &mdash; Close any other applications that might be using your camera (e.g., Zoom, Teams, FaceTime) and close other browser tabs.</li>
+        <li><strong>Check &amp; Reset Browser Permissions</strong> &mdash; If you accidentally blocked the camera previously, you will need to reset your permissions:
+          <ul>
+            <li>Click the Lock icon in the address bar next to the website URL.</li>
+            <li>Locate the Camera setting and ensure it is set to "Allow" or click "Reset Permissions."</li>
+            <li>Refresh the page to apply the changes.</li>
+          </ul>
+        </li>
+        <li><strong>Still having trouble?</strong>
+          <ul>
+            <li><strong>Clear Cache:</strong> Clear your browser cache or perform a hard refresh, then try again.</li>
+            <li><strong>Check Device Settings:</strong> Ensure your operating system (Windows/macOS) has allowed the browser to access the camera in your privacy settings.</li>
+            <li><strong>Try a Different Device:</strong> Work-managed computers often have strict firewalls. If possible, switch to a personal computer.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Device Compatibility -->
+    <div class="student-topic">
+      <h3>What devices and browsers can I use with Integrity Advocate?</h3>
+      <p>Integrity Advocate works on most modern computers, phones, and tablets as long as your device has a working camera, microphone, and stable internet. However, certain monitoring features (like full-screen monitoring or screen capture) are only supported on desktop and laptop browsers.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Device Compatibility &amp; Feature Support</caption>
+          <thead>
+            <tr>
+              <th scope="col">Device Type</th>
+              <th scope="col">Operating System</th>
+              <th scope="col">Supported Browsers</th>
+              <th scope="col">Full-Screen</th>
+              <th scope="col">Legacy-Full Screen</th>
+              <th scope="col">Screen Only</th>
+              <th scope="col">Standard Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Desktop / Laptop</td>
+              <td>Windows 10+</td>
+              <td>Chrome, Edge, Opera</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+            </tr>
+            <tr>
+              <td>Desktop / Laptop</td>
+              <td>macOS 11+</td>
+              <td>Chrome, Safari, Opera</td>
+              <td class="yes">Yes (except Safari)</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes (except Safari)</td>
+              <td class="yes">Yes</td>
+            </tr>
+            <tr>
+              <td>Chromebook (Laptop)</td>
+              <td>Chrome OS</td>
+              <td>Chrome</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+              <td class="yes">Yes</td>
+            </tr>
+            <tr>
+              <td>Mobile / Tablet</td>
+              <td>Android 8.0+</td>
+              <td>Chrome, Firefox</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="yes">Yes</td>
+            </tr>
+            <tr>
+              <td>Mobile / Tablet</td>
+              <td>iOS 11.0+</td>
+              <td>Safari</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="no">No</td>
+              <td class="yes">Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>System Requirements</caption>
+          <thead>
+            <tr>
+              <th scope="col">Component</th>
+              <th scope="col">Minimum Requirements</th>
+              <th scope="col">Recommended Requirements</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Processor</td><td>2.0 GHz dual-core</td><td>2.5 GHz quad-core</td></tr>
+            <tr><td>RAM</td><td>4 GB</td><td>8 GB</td></tr>
+            <tr><td>Internet Speed</td><td>3 Mbps upload/download</td><td>10+ Mbps upload/download</td></tr>
+            <tr><td>Webcam</td><td>Built-in or external</td><td>HD webcam</td></tr>
+            <tr><td>Microphone</td><td>Built-in or external</td><td>External or noise-cancelling mic (optional)</td></tr>
+            <tr><td>Storage</td><td>Not required (no installation needed)</td><td>Not applicable</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ID Privacy -->
+    <div class="student-topic">
+      <h3>Can I hide sensitive details on my ID and only show my face and name?</h3>
+      <p>Yes. When you are asked to take a photo of your ID, you can block out sensitive information before submitting it. After taking the photo, look for the Edit button. Then:</p>
+      <ol>
+        <li>Click and drag over the area you want to block (like your ID number or address).</li>
+        <li>Release your mouse or finger &mdash; the selected area will be covered.</li>
+        <li>Once you are satisfied, submit the edited photo.</li>
+      </ol>
+      <p>This allows you to show only what is needed: your name and face.</p>
+    </div>
+
+  </section>
+
+  <!-- INTEGRITY ADVOCATE SUPPORT -->
+  <div class="help-banner" style="margin-bottom: 0.75rem;">
+    <p class="help-banner-text"><strong>Integrity Advocate Support:</strong> For technical issues with Integrity Advocate, contact the vendor directly.</p>
+    <a class="help-btn" href="mailto:support@integrityadvocate.com">
+      <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      support@integrityadvocate.com
+    </a>
+  </div>
+
+  <!-- CTRE/OOIT HELP BANNER -->
+  <div class="help-banner">
+    <p class="help-banner-text"><strong>CSU Support:</strong> For help with Brightspace setup or general questions, submit a request to CTRE/OOIT.</p>
+    <a class="help-btn" href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">
+      <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Submit a Request<span class="sr-only"> (opens in new tab)</span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
+  Questions? Contact CTRE/OOIT for support.</p>
+</footer>
+
+</body>
+</html>
