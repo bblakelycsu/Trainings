@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fall 2026 Faculty Institute Day Digital Agenda</title>
+<style>
+  :root{
+    --green:#0D5540;--navy:#17375F;--accent:#7BBA4C;--gold:#7a5410;
+    --ink:#12212b;--muted:#4f5c66;--paper:#ffffff;--wash:#f4f8f5;--line:#dbe3de;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--wash);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  ul{list-style:none;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 18px;}
+
+  /* Accessibility helpers */
+  .skip{position:absolute;left:-999px;top:0;background:#fff;color:var(--green);padding:10px 16px;border-radius:0 0 8px 0;z-index:100;font-weight:bold;}
+  .skip:focus{left:0;}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--navy);outline-offset:2px;border-radius:6px;}
+  .hero a:focus-visible{outline-color:#fff;}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+  /* Nav */
+  nav.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);}
+  nav.top .wrap{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 18px;}
+  nav.top .brand{font-weight:bold;color:var(--green);margin-right:auto;font-size:15px;}
+  nav.top a{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:999px;}
+  nav.top a:hover,nav.top a:focus-visible{background:var(--wash);color:var(--green);}
+  nav.top a.reg{background:var(--green);color:#fff;font-weight:bold;}
+  nav.top a.reg:hover,nav.top a.reg:focus-visible{background:#0a4433;color:#fff;}
+
+  /* Hero */
+  header.hero{position:relative;overflow:hidden;color:#fff;text-align:center;padding:64px 18px 72px;
+    background:linear-gradient(125deg,#0D5540 0%,#0f6349 42%,#17375F 100%);}
+  header.hero::before,header.hero::after{content:"";position:absolute;border-radius:50%;opacity:.14;background:var(--accent);}
+  header.hero::before{width:420px;height:420px;top:-160px;right:-120px;}
+  header.hero::after{width:320px;height:320px;bottom:-150px;left:-90px;background:#fff;opacity:.07;}
+  .hero .kick{position:relative;letter-spacing:3px;text-transform:uppercase;font-size:13px;color:#d6efe0;font-weight:bold;}
+  .hero h1{position:relative;font-size:40px;line-height:1.1;margin:10px auto 6px;max-width:760px;}
+  .hero .theme{position:relative;font-style:italic;color:#e3f1dc;font-size:20px;margin-bottom:20px;}
+  .hero .meta{position:relative;display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:14px;}
+  .hero .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);border-radius:999px;padding:7px 15px;}
+  .hero .cta{position:relative;display:inline-block;margin-top:24px;background:var(--accent);color:#0a3320;font-weight:bold;
+    text-decoration:none;padding:13px 28px;border-radius:999px;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.2);}
+  .hero .cta:hover{background:#8ecb5c;}
+
+  section.block{padding:42px 0 6px;}
+  h2.sec{font-size:26px;color:var(--green);text-align:center;margin-bottom:4px;}
+  .sec-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:22px;}
+
+  /* animation (only when body.anim; disabled for reduced motion) */
+  .reveal{opacity:1;transform:none;}
+  body.anim .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease;}
+  body.anim .reveal.in{opacity:1;transform:none;}
+
+  /* Timeline */
+  .tl{position:relative;margin-left:8px;padding-left:26px;border-left:3px solid var(--line);}
+  .item{position:relative;margin:0 0 12px;}
+  .item::before{content:"";position:absolute;left:-35px;top:20px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--accent);}
+  .item.key::before{border-color:var(--gold);width:16px;height:16px;left:-36px;}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:0;}
+  .card>.pad{padding:14px 18px;}
+  .disc{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;color:inherit;cursor:pointer;padding:14px 18px;}
+  .disc:hover{background:#fbfdfb;}
+  .time{color:var(--gold);font-weight:bold;font-size:13px;display:block;}
+  .ttl{font-size:16px;font-weight:bold;color:var(--navy);margin:2px 0;display:block;}
+  .tog{float:right;color:var(--navy);font-weight:bold;font-size:18px;line-height:1;}
+  .disc[aria-expanded="true"] .tog::after{content:"\2013";}
+  .disc[aria-expanded="false"] .tog::after{content:"+";}
+  .pres{color:var(--muted);font-size:13px;display:block;}
+  .room{display:inline-block;margin-top:8px;background:var(--wash);border:1px solid var(--line);border-radius:8px;padding:4px 11px;font-size:12px;color:var(--green);font-weight:bold;}
+  .badge{display:inline-block;background:var(--accent);color:#0a3320;font-size:11px;font-weight:bold;border-radius:999px;padding:3px 11px;margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase;}
+  .item.update .card{border-color:var(--accent);box-shadow:0 0 0 2px rgba(123,186,76,.30);}
+  .item.update::before{border-color:var(--green);background:var(--accent);}
+  .desc{padding:0 18px 16px;font-size:14px;color:#2c3941;}
+  .desc[hidden]{display:none;}
+
+  /* Breakouts tabs */
+  .blocktabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
+  .blocktabs [role=tab]{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 20px;cursor:pointer;font-family:inherit;text-align:center;min-width:150px;}
+  .blocktabs [role=tab] .bt{font-weight:bold;color:var(--navy);font-size:15px;display:block;}
+  .blocktabs [role=tab] .bh{font-size:12px;color:var(--muted);}
+  .blocktabs [role=tab][aria-selected=true]{border-color:var(--green);background:var(--green);}
+  .blocktabs [role=tab][aria-selected=true] .bt,.blocktabs [role=tab][aria-selected=true] .bh{color:#fff;}
+  .rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px;}
+  .bcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+  body.anim .bcard{opacity:0;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease;}
+  body.anim .bcard.show{opacity:1;transform:none;}
+  .bcard:hover{box-shadow:0 12px 26px rgba(0,0,0,.12);}
+  .bcard .head{padding:14px 16px;color:#fff;}
+  .bcard .rm{font-size:26px;font-weight:bold;line-height:1;}
+  .bcard .fl{font-size:12.5px;margin-top:4px;}
+  .bcard .body{padding:14px 16px;flex:1;}
+  .bcard .btitle{font-weight:bold;color:var(--navy);font-size:15px;margin-bottom:4px;}
+  .bcard .bplain{font-style:italic;color:var(--muted);font-size:12px;margin-bottom:6px;}
+  .bcard .bpres{font-size:12.5px;color:var(--green);font-weight:bold;margin-bottom:6px;}
+  .bcard .baud{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+  .bcard .bdesc{font-size:13px;color:#2c3941;}
+  .rGREEN .head{background:#0D5540;}
+  .rNAVY .head{background:#17375F;}
+  .rGOLD .head{background:#6f4a0e;}
+  .legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15);}
+
+  /* Directory */
+  .dir{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .dir dt{font-weight:bold;color:var(--navy);font-size:14px;}
+  .dir dd{margin:0 0 8px;font-size:13.5px;}
+  .dir a{color:var(--green);}
+  .dir .todo{color:var(--muted);font-style:italic;}
+
+  /* Thanks */
+  .thanks{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:24px;}
+  .thanks h3{color:var(--navy);font-size:16px;margin:16px 0 6px;}
+  .thanks h3:first-child{margin-top:0;}
+  .thanks p,.thanks li{font-size:14px;}
+  .thanks .people{color:#2c3941;}
+  .lead{text-align:center;color:var(--muted);font-size:14.5px;max-width:640px;margin:0 auto 18px;}
+
+  .infocard{background:linear-gradient(135deg,#17375F,#0D5540);color:#fff;border-radius:18px;padding:26px 24px;text-align:center;margin:14px 0 36px;}
+  .infocard h3{font-size:22px;margin-bottom:8px;}
+  .infocard p{color:#e6efe9;font-size:14.5px;max-width:640px;margin:0 auto 6px;}
+  .infocard .cta{display:inline-block;margin-top:16px;background:var(--accent);color:#0a3320;font-weight:bold;text-decoration:none;padding:12px 26px;border-radius:999px;}
+  .infocard .cta:hover{background:#8ecb5c;}
+  .foodstrip{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0 6px;}
+  .foodstrip .f{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;text-align:center;min-width:150px;}
+  .foodstrip .f b{color:var(--green);}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:22px 0 52px;}
+
+  @media(max-width:720px){.hero h1{font-size:30px;}.rooms{grid-template-columns:1fr;}.dir{grid-template-columns:1fr;}nav.top .brand{width:100%;}}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation:none!important;transition:none!important;}
+    body.anim .reveal,body.anim .bcard{opacity:1!important;transform:none!important;}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to main content</a>
+
+<nav class="top" aria-label="Agenda sections">
+  <div class="wrap">
+    <span class="brand">Faculty Institute Day 2026</span>
+    <a href="#morning">Morning</a>
+    <a href="#breakouts">Breakouts</a>
+    <a href="#closing">Closing</a>
+    <a href="#thanks">Thanks</a>
+    <a href="https://app.hi.events/event/10069/ctre-fall-2026-faculty-institute-day" class="reg" target="_blank" rel="noopener">Register</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <p class="kick">Chicago State University &nbsp;•&nbsp; CTRE and OOIT</p>
+  <h1>Fall 2026 Faculty Institute Day</h1>
+  <p class="theme">The Engaged Classroom: Connection, Challenge, and Care</p>
+  <div class="meta">
+    <span class="chip">Wednesday, August 19, 2026</span>
+    <span class="chip">8:30 AM to 4:30 PM</span>
+    <span class="chip">Gwendolyn Brooks Library</span>
+  </div>
+  <br><a href="https://app.hi.events/event/10069/ctre-fall-2026-faculty-institute-day" class="cta" target="_blank" rel="noopener" aria-label="Register to attend, opens in a new tab">Register to attend</a>
+</header>
+
+<main class="wrap" id="main">
+
+  <!-- MORNING -->
+  <section class="block" id="morning" aria-labelledby="h-morning">
+    <h2 class="sec reveal" id="h-morning">Morning in the Atrium</h2>
+    <p class="sec-sub reveal">4th Floor Atrium. Select a session to read more.</p>
+    <ul class="tl reveal">
+      <li class="item"><div class="card"><div class="pad">
+        <span class="time">8:30 to 9:00 AM</span>
+        <span class="ttl">Check-In and Breakfast</span>
+        <span class="pres">Start your day with us</span>
+        <span class="room">4th Floor Atrium check-in &nbsp;|&nbsp; Breakfast in the Sunroom</span>
+      </div></div></li>
+
+      <li class="item"><div class="card"><div class="pad">
+        <span class="time">9:00 to 9:35 AM</span>
+        <span class="ttl">Welcome and Opening</span>
+        <span class="pres">Dr. Brandle Blakely, President Z. Scott, and Provost Dr. Sonja Feist-Price</span>
+        <span class="room">4th Floor Atrium</span>
+      </div></div></li>
+
+      <li class="item key"><div class="card">
+        <button class="disc" aria-expanded="false" aria-controls="d-key">
+          <span class="tog" aria-hidden="true"></span>
+          <span class="time">9:35 to 10:05 AM &nbsp;•&nbsp; Keynote</span>
+          <span class="ttl">Making Classrooms More Engaging, With or Without Learning Assistants</span>
+          <span class="pres">Dr. Mel Sabella and Dr. Andrea Van Duzor</span>
+          <span class="room">4th Floor Atrium</span>
+        </button>
+        <div class="desc" id="d-key" role="region" aria-label="Keynote description" hidden>This keynote addresses the central question of the day: what makes a classroom engaging, and what can faculty change without redesigning a course from scratch. Drawing on research on active learning and inclusive classroom spaces, we describe how this type of classroom supports student success. We will discuss approaches that faculty can adopt and how practices can be enhanced with Learning Assistants and the LA Model. The session sets up the strands that run through the rest of the day, including active learning, feedback that motivates, and academic challenge paired with structure.</div>
+      </div></li>
+
+      <li class="item update"><div class="card">
+        <button class="disc" aria-expanded="false" aria-controls="d-vital">
+          <span class="tog" aria-hidden="true"></span>
+          <span class="badge">Agenda update</span>
+          <span class="time">10:15 to 11:00 AM</span>
+          <span class="ttl">Accessible Course Materials from Day One</span>
+          <span class="pres">Presentation by VitalSource</span>
+          <span class="room">4th Floor Atrium</span>
+        </button>
+        <div class="desc" id="d-vital" role="region" aria-label="VitalSource description" hidden>New to this year's program: VitalSource will share practical options for making course books and learning resources accessible to every student from the first day of class, so that cost and access are never barriers to getting started. Faculty will see how to connect students to their required materials on day one and support equitable access across their courses.</div>
+      </div></li>
+
+      <li class="item"><div class="card">
+        <button class="disc" aria-expanded="false" aria-controls="d-cougar">
+          <span class="tog" aria-hidden="true"></span>
+          <span class="time">11:00 to 11:45 AM</span>
+          <span class="ttl">The Cougar Commitment and the Student Lifecycle</span>
+          <span class="pres">Dr. Concetta Williams and Delonte LeFlore</span>
+          <span class="room">4th Floor Atrium</span>
+        </button>
+        <div class="desc" id="d-cougar" role="region" aria-label="Cougar Commitment description" hidden>This session examines how the Cougar Commitment supports students across the full lifecycle, from recruitment and onboarding through persistence, completion, and post-graduation success. Participants will look at how the Cougar Commitment aligns with key touchpoints in the student experience and the role faculty play in fostering belonging, engagement, academic success, and retention. It is designed to be interactive, helping faculty see where their work intersects with the broader student success ecosystem.</div>
+      </div></li>
+
+      <li class="item"><div class="card">
+        <button class="disc" aria-expanded="false" aria-controls="d-lunch">
+          <span class="tog" aria-hidden="true"></span>
+          <span class="time">11:45 AM to 12:30 PM</span>
+          <span class="ttl">Lunch, Networking, and a New Faculty Meet and Greet</span>
+          <span class="pres">Guided table discussion on AI in the Classroom in the second half</span>
+          <span class="room">Lunch in the Sunroom &nbsp;|&nbsp; Discussion in the Atrium</span>
+        </button>
+        <div class="desc" id="d-lunch" role="region" aria-label="Lunch discussion description" hidden>A guided table discussion during the second half of lunch. Rather than a presentation, faculty will talk through how AI is showing up in their own courses, what they have tried, and where they are stuck. Prompts will be provided at each table so groups can begin without a facilitator at every seat.</div>
+      </div></li>
+    </ul>
+  </section>
+
+  <!-- BREAKOUTS -->
+  <section class="block" id="breakouts" aria-labelledby="h-break">
+    <h2 class="sec reveal" id="h-break">Afternoon Breakouts</h2>
+    <p class="sec-sub reveal">Nine sessions, three rooms, three time blocks. Choose a block, then choose your room.</p>
+    <div class="blocktabs reveal" role="tablist" aria-label="Breakout time blocks">
+      <button role="tab" id="tab1" aria-selected="true" aria-controls="roomgrid" onclick="showBlock('1',this)"><span class="bt">Block 1</span><span class="bh">12:30 to 1:20 PM</span></button>
+      <button role="tab" id="tab2" aria-selected="false" aria-controls="roomgrid" onclick="showBlock('2',this)"><span class="bt">Block 2</span><span class="bh">1:30 to 2:20 PM</span></button>
+      <button role="tab" id="tab3" aria-selected="false" aria-controls="roomgrid" onclick="showBlock('3',this)"><span class="bt">Block 3</span><span class="bh">2:30 to 3:20 PM</span></button>
+    </div>
+    <div class="rooms" id="roomgrid" role="tabpanel" aria-labelledby="tab1" aria-live="polite"></div>
+    <ul class="legend reveal">
+      <li><span class="dot" style="background:#0D5540"></span> Auditorium</li>
+      <li><span class="dot" style="background:#17375F"></span> Room 301/302 (3rd Floor)</li>
+      <li><span class="dot" style="background:#6f4a0e"></span> Room 210 (2nd Floor Computer Lab)</li>
+    </ul>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="block" id="closing" aria-labelledby="h-close">
+    <h2 class="sec reveal" id="h-close">Closing</h2>
+    <p class="sec-sub reveal">4th Floor Atrium</p>
+    <ul class="tl reveal">
+      <li class="item"><div class="card">
+        <button class="disc" aria-expanded="false" aria-controls="d-close">
+          <span class="tog" aria-hidden="true"></span>
+          <span class="time">3:30 to 4:15 PM</span>
+          <span class="ttl">Course Design for an Engaged Classroom</span>
+          <span class="pres">Ms. Rochelle Johnson</span>
+          <span class="room">4th Floor Atrium</span>
+        </button>
+        <div class="desc" id="d-close" role="region" aria-label="Closing session description" hidden>The closing session connects the theme back to course design. Participants will look at how course structure, pacing, and assignment design either invite engagement or work against it, and will identify one change to carry into the coming term. The session is intended to send faculty out with something concrete rather than a summary of the day.</div>
+      </div></li>
+      <li class="item"><div class="card"><div class="pad">
+        <span class="time">4:15 to 4:30 PM</span>
+        <span class="ttl">Adjourn</span>
+        <span class="room">4th Floor Atrium</span>
+      </div></div></li>
+    </ul>
+  </section>
+
+  <!-- THANKS -->
+  <section class="block" id="thanks" aria-labelledby="h-thanks">
+    <h2 class="sec reveal" id="h-thanks">With Gratitude</h2>
+    <p class="lead reveal">Faculty Institute Day happens because of many hands and hearts. Thank you to everyone who made this day possible.</p>
+    <div class="thanks reveal">
+      <h3>University Leadership</h3>
+      <p class="people">With sincere appreciation to President Z. Scott, JD, and Provost Dr. Sonja Feist-Price for their leadership and steadfast support of teaching and learning at Chicago State University.</p>
+
+      <h3>Volunteers</h3>
+      <p class="people">Dr. Trishia Shaw, Dr. Red Lhota, Dr. Kristy Mardis, Mrs. Teresa Bates, Dr. Jane Stout, Ms. Taylor Palmer, Dr. Carolyn Rodgers, Dr. Karla Horton, and Dr. George Smith.</p>
+
+      <h3>Student Volunteers</h3>
+      <p class="people">Anika Thomas, Saima Khurram, Molly Dunson, Joyline Jebiwott, Samanta Alam, Wanda Woods, and Kimberly Holmes.</p>
+
+      <h3>The CTRE Team</h3>
+      <p class="people">Ms. Rochelle Johnson and Ms. Shawna Jennings, with gratitude for their tireless work behind the scenes.</p>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section class="block" id="register" aria-labelledby="h-reg">
+    <h2 class="visually-hidden" id="h-reg">Registration and meals</h2>
+    <div class="foodstrip reveal">
+      <div class="f"><b>Breakfast</b><br>Sunroom, morning</div>
+      <div class="f"><b>All-day coffee</b><br>Sunroom</div>
+      <div class="f"><b>Lunch</b><br>Sunroom, 11:45 AM</div>
+      <div class="f"><b>Afternoon snack</b><br>Sunroom, 2:00 PM</div>
+    </div>
+    <div class="infocard reveal">
+      <h3>Registration is required</h3>
+      <p>Please register so we can prepare your name tag and your Certificate of Attendance. Both are provided to registered attendees.</p>
+      <p>All guests check in at the 4th Floor Atrium, and again at each breakout room.</p>
+      <a href="https://app.hi.events/event/10069/ctre-fall-2026-faculty-institute-day" class="cta" id="reglink" target="_blank" rel="noopener" aria-label="Register now on Hi.Events, opens in a new tab">Register now</a>
+    </div>
+  </section>
+
+  <footer>
+    Chicago State University &nbsp;•&nbsp; Center for Teaching and Research Excellence and Office of Online and Innovative Teaching<br>
+    Questions? <a href="mailto:CTRE@csu.edu">CTRE@csu.edu</a>
+  </footer>
+</main>
+
+<script>
+  document.body.classList.add('anim');
+
+  // Accessible disclosures
+  document.querySelectorAll('.disc').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const expanded=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',String(!expanded));
+      const panel=document.getElementById(btn.getAttribute('aria-controls'));
+      if(panel) panel.hidden=expanded;
+    });
+  });
+
+  // Breakout tabs
+  const DATA={
+    "1":[
+      {room:"Auditorium",floor:"Breakout Block 1",color:"GREEN",title:"Keeping Student-Athletes in the Game: The Reports Behind Eligibility",plain:"Athletic Academic Requirements",pres:"Mr. Alvin Daniels and Ms. Whitley Bradley",aud:"Faculty who teach or advise student athletes",desc:"Walks faculty through the academic eligibility requirements student athletes must meet and the faculty reporting that supports them, including progress reports, grade checks, and early alerts, and who to contact in Athletics when a student is at risk."},
+      {room:"Room 301/302",floor:"3rd Floor, connected room",color:"NAVY",title:"Library: The OG Student Success Engine That Serves Students Today and Beyond",plain:"Library Resources",pres:"Dean Gabrielle Toth",aud:"All",desc:"Learn how you and your students can use the many services and resources of the Gwendolyn Brooks Library. This session covers research, instruction, and course support, including how to request course specific instruction, connect students to research help, and build library materials into assignments."},
+      {room:"Room 210",floor:"2nd Floor Computer Lab",color:"GOLD",title:"Two New Tools, Zero Headaches: Simple Syllabus and Integrity Advocate",plain:"CTRE New Technology",pres:"Dr. Brandle Blakely",aud:"All",desc:"Introduces two tools new to faculty workflows: Simple Syllabus, which standardizes syllabus creation and policy language, and Integrity Advocate, which supports academic integrity in online and remote assessment."}
+    ],
+    "2":[
+      {room:"Auditorium",floor:"Breakout Block 2",color:"GREEN",title:"Show Me the Funding: Money for Your Research and Creative Work",plain:"Grant and Funding Resources",pres:"Dr. Edmundo Garcia and Dr. Daniel Block",aud:"All, especially research and creative work",desc:"Outlines the internal and external funding resources available to CSU faculty, including support for proposal development, where to find funding opportunities, and what the submission process requires."},
+      {room:"Room 301/302",floor:"3rd Floor, connected room",color:"NAVY",title:"Advise with Confidence: What Changed and How to Help Them Succeed",plain:"Advisor Refresher Training",pres:"Dr. Concetta Williams",aud:"Faculty Advisors",desc:"A refresher covering current degree requirements, registration processes, and CSU advising tools, with common advising scenarios and where students most often get stuck, to help advisors give accurate, timely guidance."},
+      {room:"Room 210",floor:"2nd Floor Computer Lab",color:"GOLD",title:"From Empty Shell to Ready to Launch: Your Brightspace Course in 50 Minutes",plain:"Starting the New Semester in Brightspace",pres:"Dr. Brandle Blakely and Ms. Rochelle Johnson",aud:"All, designed for new faculty",desc:"Covers the practical steps for opening a course in Brightspace: copying content forward, setting up the gradebook, checking dates and release conditions, and publishing to students. New faculty are especially encouraged to attend."}
+    ],
+    "3":[
+      {room:"Auditorium",floor:"Breakout Block 3",color:"GREEN",title:"Rebuild It Better: An Open Table for Rethinking Your Course",plain:"Course Re-Design open discussion",pres:"Facilitator to be announced",aud:"All",desc:"An open, faculty led discussion for colleagues rethinking a course. Faculty bring a course they want to change, hear how others approached redesign, and work through specific obstacles together."},
+      {room:"Room 301/302",floor:"3rd Floor, connected room",color:"NAVY",title:"From Approved to Enrolled: How Course Changes Actually Happen",plain:"Curriculum and the Registrar",pres:"Dr. Kristy Mardis and Mr. Luis Barahona",aud:"Chairs, Curriculum Committee, and faculty proposing changes",desc:"Connects the curriculum approval process to what happens in the Registrar office once a change is approved, including how changes move through review, required documentation, and how timing affects catalog and registration."},
+      {room:"Room 210",floor:"2nd Floor Computer Lab",color:"GOLD",title:"Let AI Do the Busywork: Practical Moves for Teaching and Beyond",plain:"AI for Faculty",pres:"Dr. Brandle Blakely and Jorie (Packback)",aud:"All",desc:"Covers practical uses of AI in teaching and routine faculty work, including course planning, materials development, feedback, and communication, and how to guide students toward responsible AI use while protecting integrity."}
+    ]
+  };
+  function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+  function showBlock(b,btn){
+    document.querySelectorAll('.blocktabs [role=tab]').forEach(x=>x.setAttribute('aria-selected','false'));
+    if(btn){btn.setAttribute('aria-selected','true');document.getElementById('roomgrid').setAttribute('aria-labelledby',btn.id);}
+    const grid=document.getElementById('roomgrid');
+    grid.innerHTML='';
+    DATA[b].forEach((s,i)=>{
+      const el=document.createElement('div');
+      el.className='bcard r'+s.color;
+      el.innerHTML='<div class="head"><div class="rm">'+esc(s.room)+'</div><div class="fl">'+esc(s.floor)+'</div></div>'+
+        '<div class="body"><h3 class="btitle">'+esc(s.title)+'</h3><div class="bplain">('+esc(s.plain)+')</div>'+
+        '<div class="bpres">'+esc(s.pres)+'</div><div class="baud">'+esc(s.aud)+'</div><div class="bdesc">'+esc(s.desc)+'</div></div>';
+      grid.appendChild(el);
+      requestAnimationFrame(()=>setTimeout(()=>el.classList.add('show'),50*i));
+    });
+  }
+  // keyboard arrow support for tabs
+  const tabs=[...document.querySelectorAll('.blocktabs [role=tab]')];
+  tabs.forEach((t,i)=>t.addEventListener('keydown',e=>{
+    let n=null;
+    if(e.key==='ArrowRight')n=tabs[(i+1)%tabs.length];
+    if(e.key==='ArrowLeft')n=tabs[(i-1+tabs.length)%tabs.length];
+    if(n){e.preventDefault();n.focus();n.click();}
+  }));
+  showBlock('1',document.getElementById('tab1'));
+
+  // Reveal on scroll
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }else{
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  }
+</script>
+</body>
+</html>
