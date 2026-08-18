@@ -26,8 +26,8 @@
   nav.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);}
   nav.top .wrap{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 18px;}
   nav.top .brand{font-weight:bold;color:var(--green);margin-right:auto;font-size:15px;}
-  nav.top a{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:999px;}
-  nav.top a:hover,nav.top a:focus-visible{background:var(--wash);color:var(--green);}
+  nav.top a{font-size:13px;color:var(--green);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid #cfe0d6;background:#fff;font-weight:bold;transition:transform .12s ease,background .15s ease,color .15s ease;}
+  nav.top a:hover,nav.top a:focus-visible{background:var(--green);color:#fff;border-color:var(--green);transform:translateY(-1px);}
   nav.top a.reg{background:var(--green);color:#fff;font-weight:bold;}
   nav.top a.reg:hover,nav.top a.reg:focus-visible{background:#0a4433;color:#fff;}
 
@@ -78,12 +78,17 @@
   .desc[hidden]{display:none;}
 
   /* Breakouts tabs */
-  .blocktabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
-  .blocktabs [role=tab]{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 20px;cursor:pointer;font-family:inherit;text-align:center;min-width:150px;}
+  .blocktabs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
+  .blocktabs [role=tab]{border:2px solid var(--green);background:#fff;border-radius:12px;padding:12px 22px 28px;cursor:pointer;font-family:inherit;text-align:center;min-width:162px;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.10);transition:transform .15s ease,box-shadow .15s ease,background .15s ease;}
+  .blocktabs [role=tab]::after{content:"Tap to view \25BE";position:absolute;left:0;right:0;bottom:7px;font-size:10.5px;font-weight:bold;letter-spacing:.4px;color:var(--green);text-transform:uppercase;}
+  .blocktabs [role=tab]:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(0,0,0,.15);}
   .blocktabs [role=tab] .bt{font-weight:bold;color:var(--navy);font-size:15px;display:block;}
   .blocktabs [role=tab] .bh{font-size:12px;color:var(--muted);}
-  .blocktabs [role=tab][aria-selected=true]{border-color:var(--green);background:var(--green);}
+  .blocktabs [role=tab][aria-selected=true]{border-color:var(--green);background:var(--green);box-shadow:0 8px 18px rgba(13,85,64,.28);}
   .blocktabs [role=tab][aria-selected=true] .bt,.blocktabs [role=tab][aria-selected=true] .bh{color:#fff;}
+  .blocktabs [role=tab][aria-selected=true]::after{content:"Now viewing \25B4";color:#cfe8bf;}
+  .bcard .survey-link{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:bold;color:var(--green);text-decoration:none;border:1px solid var(--green);border-radius:8px;padding:7px 13px;}
+  .bcard .survey-link:hover,.bcard .survey-link:focus-visible{background:var(--green);color:#fff;}
   .rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px;}
   .bcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
   body.anim .bcard{opacity:0;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease;}
@@ -147,6 +152,7 @@
     <a href="#morning">Morning</a>
     <a href="#breakouts">Breakouts</a>
     <a href="#closing">Closing</a>
+    <a href="#feedback">Feedback</a>
     <a href="#thanks">Thanks</a>
     <a href="https://app.hi.events/event/10069/ctre-fall-2026-faculty-institute-day" class="reg" target="_blank" rel="noopener">Register</a>
   </div>
@@ -235,7 +241,7 @@
   <!-- BREAKOUTS -->
   <section class="block" id="breakouts" aria-labelledby="h-break">
     <h2 class="sec reveal" id="h-break">Afternoon Breakouts</h2>
-    <p class="sec-sub reveal">Nine sessions, three rooms, three time blocks. Choose a block, then choose your room.</p>
+    <p class="sec-sub reveal">Nine sessions, three rooms, three time blocks. Tap a block below to switch between the three time slots, then choose your room.</p>
     <div class="blocktabs reveal" role="tablist" aria-label="Breakout time blocks">
       <button role="tab" id="tab1" aria-selected="true" aria-controls="roomgrid" onclick="showBlock('1',this)"><span class="bt">Block 1</span><span class="bh">12:30 to 1:20 PM</span></button>
       <button role="tab" id="tab2" aria-selected="false" aria-controls="roomgrid" onclick="showBlock('2',this)"><span class="bt">Block 2</span><span class="bh">1:30 to 2:20 PM</span></button>
@@ -270,6 +276,20 @@
         <span class="room">4th Floor Atrium</span>
       </div></div></li>
     </ul>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="block" id="feedback" aria-labelledby="h-feedback">
+    <h2 class="sec reveal" id="h-feedback">Share Your Feedback</h2>
+    <p class="sec-sub reveal">Your responses are anonymous and help shape future events. Please complete both after your sessions.</p>
+    <div class="infocard reveal">
+      <h3>We want to hear from you</h3>
+      <p>Two quick surveys, about five minutes each.</p>
+      <p>
+        <a href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=ZRDrjL14YUeRYo7jUhWvv9yuc99RLylJs8FHDJ6XnoZUQ0s3WkVYNUwwWUY3MVZWM0FUODZHNkxCQi4u" class="cta" target="_blank" rel="noopener" aria-label="Main Session Feedback survey, opens in a new tab" style="margin:8px 8px 0">Main Session Feedback</a>
+        <a href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=ZRDrjL14YUeRYo7jUhWvv9yuc99RLylJs8FHDJ6XnoZURERBQ1RaVlA4OEpPVFRYMFpTTUM3OFpQTC4u" class="cta" target="_blank" rel="noopener" aria-label="Breakout Session Feedback survey, opens in a new tab" style="margin:8px 8px 0">Breakout Session Feedback</a>
+      </p>
+    </div>
   </section>
 
   <!-- THANKS -->
@@ -356,7 +376,8 @@
       el.className='bcard r'+s.color;
       el.innerHTML='<div class="head"><div class="rm">'+esc(s.room)+'</div><div class="fl">'+esc(s.floor)+'</div></div>'+
         '<div class="body"><h3 class="btitle">'+esc(s.title)+'</h3><div class="bplain">('+esc(s.plain)+')</div>'+
-        '<div class="bpres">'+esc(s.pres)+'</div><div class="baud">'+esc(s.aud)+'</div><div class="bdesc">'+esc(s.desc)+'</div></div>';
+        '<div class="bpres">'+esc(s.pres)+'</div><div class="baud">'+esc(s.aud)+'</div><div class="bdesc">'+esc(s.desc)+'</div>'+
+        '<a class="survey-link" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=ZRDrjL14YUeRYo7jUhWvv9yuc99RLylJs8FHDJ6XnoZURERBQ1RaVlA4OEpPVFRYMFpTTUM3OFpQTC4u" target="_blank" rel="noopener" aria-label="Give feedback on this session, opens in a new tab">Give feedback on this session</a></div>';
       grid.appendChild(el);
       requestAnimationFrame(()=>setTimeout(()=>el.classList.add('show'),50*i));
     });
