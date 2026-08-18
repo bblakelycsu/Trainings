@@ -84,6 +84,13 @@
     margin: 0 auto;
     color: rgba(255, 255, 255, 0.95);
   }
+  .last-updated {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.02em;
+  }
 
   /* CONTAINER */
   .container {
@@ -438,6 +445,11 @@
   <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
   <h1>Brightspace Approved Integrations</h1>
   <p>Faculty resource for all approved third-party tools integrated into Brightspace. Find instructor guides, vendor documentation, and access details below.</p>
+  <a href="https://csu0.sharepoint.com/sites/CenterforTeachingResearchExcellence/SitePages/Brightspace.aspx" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;background:rgba(255,255,255,0.15);color:#fff;font-size:0.88rem;font-weight:600;padding:0.5rem 1.1rem;border-radius:8px;text-decoration:none;transition:background 0.2s;">
+    <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    CTRE Brightspace SharePoint<span class="sr-only"> (opens in new tab)</span>
+  </a>
+  <br><span class="last-updated">Last Updated: August 18, 2026</span>
 </header>
 
 <main id="main-content" class="container">
@@ -454,13 +466,13 @@
       <span class="callout-badge">New Integration</span>
       <h3>Simple Syllabus</h3>
       <p>Template-driven syllabus creation tool now available in Brightspace. Ensures accreditation compliance while giving you full control over your course content.</p>
-      <a class="callout-link" href="https://simplesyllabus.com/brightspace-syllabus-creation/" target="_blank" rel="noopener">Learn More <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
+      <a class="callout-link" href="https://bblakelycsu.github.io/Trainings/simplesyllabus.html" target="_blank" rel="noopener">Faculty Guide <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
     </div>
     <div class="callout">
       <span class="callout-badge">New Integration</span>
       <h3>Integrity Advocate</h3>
       <p>Remote proctoring and identity verification now integrated into Brightspace. Add exam monitoring to any Quiz or Assignment with just a few clicks.</p>
-      <a class="callout-link" href="https://integrityadvocate.com/reference-guide/d2l/" target="_blank" rel="noopener">Instructor Guide <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
+      <a class="callout-link" href="https://bblakelycsu.github.io/Trainings/integrityadvocate.html" target="_blank" rel="noopener">Faculty Guide <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="sr-only"> (opens in new tab)</span></a>
     </div>
   </section>
 
@@ -479,6 +491,7 @@
         <button class="pill" aria-pressed="false" data-filter="Field Experience">Field Exp.</button>
         <button class="pill" aria-pressed="false" data-filter="Simulation &amp; Practice">Simulation</button>
         <button class="pill" aria-pressed="false" data-filter="Exam Monitoring">Exam Monitoring</button>
+        <button class="pill" aria-pressed="false" data-filter="Syllabus">Syllabus</button>
       </div>
     </nav>
   </div>
@@ -643,11 +656,10 @@ const integrations = [
   },
   {
     name: "Simple Syllabus",
-    category: "Assessment & Discussion",
+    category: "Syllabus",
     desc: "Template-driven syllabus creation tool integrated into Brightspace. Ensures compliance with accreditation standards while giving faculty autonomy to personalize content. Tracks syllabus views and student acknowledgements.",
     links: [
-      { label: "Brightspace Syllabus Creation", url: "https://simplesyllabus.com/brightspace-syllabus-creation/" },
-      { label: "D2L Integration Hub", url: "https://integrationhub.brightspace.com/details/simple-syllabus" }
+      { label: "Faculty Guide", url: "https://bblakelycsu.github.io/Trainings/simplesyllabus.html" }
     ]
   },
   {
@@ -655,9 +667,7 @@ const integrations = [
     category: "Exam Monitoring",
     desc: "Remote proctoring and identity verification tool integrated directly into Brightspace. Add monitoring to any Quiz, Assignment, or Content activity with just a few clicks. No additional downloads required for students.",
     links: [
-      { label: "D2L Instructor Guide", url: "https://integrityadvocate.com/reference-guide/d2l/" },
-      { label: "About Integrity Advocate in Brightspace", url: "https://community.d2l.com/brightspace/kb/articles/23692-about-integrity-advocate" },
-      { label: "Remote Proctoring Setup", url: "https://community.d2l.com/brightspace/kb/articles/25586-integrity-advocate-remote-proctoring-in-d2l-brightspace" }
+      { label: "Faculty Guide", url: "https://bblakelycsu.github.io/Trainings/integrityadvocate.html" }
     ]
   },
   // ── Video & Collaboration ──
