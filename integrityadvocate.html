@@ -217,7 +217,7 @@
   <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
   <h1>Integrity Advocate</h1>
   <p>Faculty guide for using Integrity Advocate (IA) exam monitoring in Brightspace, including setup, reviewing results, Proctor Pro configuration, and student support.</p>
-  <span class="last-updated">Last Updated: August 18, 2026</span>
+  <span class="last-updated">Last Updated: September 5, 2026</span>
 </header>
 
 <!-- TABS -->
@@ -320,19 +320,59 @@
         <div class="section-icon"><svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <h2>Enable IA on an Activity</h2>
       </div>
+
       <div class="guide-topic">
-        <h3>Enabling Monitoring</h3>
-        <ol>
-          <li>From within the IA Widget on the course homepage, click the <strong>Activities</strong> tab. Each quiz, assignment, and content activity will appear in the list. Check the <strong>Enable Integrity Advocate</strong> box associated with the desired activity.</li>
-          <li>Next, select <strong>Yes</strong> if the quiz will be auto-graded (quizzes only). Select <strong>No</strong> if your quiz does not use a Submission View (the last page of the quiz process in D2L) and is manually graded (e.g., long-answer questions).</li>
-          <li>Select the <strong>Rules level</strong>.</li>
-          <li>Click <strong>Select Rules</strong> to set the rules for the quiz, then click <strong>Submit</strong>. Learners will be informed of the chosen rules at the start of the quiz.</li>
-        </ol>
+        <h3>Finding the IA Widget</h3>
+        <p>Scroll to the bottom of your course home page to find the section labeled <strong>Integrity Advocate - Secure Proctoring Platform</strong>. This is the IA widget where you will enable monitoring, review results, and manage sessions.</p>
       </div>
+
       <div class="guide-topic">
-        <h3>Optional: Use Grade Item</h3>
-        <p>Once the test session is complete, you can review the session results of each learner via the IA widget on the course homepage. Additionally, you can add a session status column in the course Gradebook.</p>
-        <p>Check <strong>Use Grade Item</strong> if you would like to create an IA Status grade column in the Gradebook. This column provides another way to view whether the learner passed or failed the session rules.</p>
+        <h3>Step-by-Step: Enabling Monitoring on a Quiz</h3>
+        <p><strong>Important:</strong> You must create your quiz in Brightspace first. IA can only be enabled on activities that already exist.</p>
+        <ol>
+          <li>In the IA widget, click the <strong>Activities</strong> tab. A table of all quizzes, assignments, and content activities in your course will appear.</li>
+          <li>Find the quiz you want to monitor. Each row in the table has three options:
+            <ul>
+              <li><strong>Enable Integrity Advocate</strong> (checkbox) &mdash; Check this box to turn on IA proctoring for this activity.</li>
+              <li><strong>Use Grade Item</strong> (checkbox) &mdash; Check this box to create an IA Status column in the Gradebook that automatically updates with each student's proctoring result (Valid or Invalid).</li>
+              <li><strong>Rules Selection</strong> &mdash; Choose either <strong>Demo</strong> (for testing purposes only) or <strong>Level 4</strong> (CSU's standard proctoring level with all rules enabled).</li>
+            </ul>
+          </li>
+          <li>Select <strong>Level 4</strong> as the rules level, then click <strong>Select Rules</strong>.</li>
+          <li>Review the rules that will apply (see below), then click <strong>Submit</strong>. Students will be informed of these rules when they begin the quiz.</li>
+        </ol>
+        <p>If you do not have more than one activation package, simply click <strong>Select Rules</strong> to proceed with the default configuration.</p>
+      </div>
+
+      <div class="guide-topic">
+        <h3>Level 4 Proctoring Rules</h3>
+        <p>When you select Level 4, the following rules are enabled. Students are shown these rules before the exam begins and must acknowledge them to proceed.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Rule</th><th scope="col">What It Means</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Do not disengage from the session</strong></td><td>The student must remain actively engaged with the exam throughout. Extended periods of looking away, sleeping, or appearing distracted will be flagged.</td></tr>
+              <tr><td><strong>Do not leave the view of the camera</strong></td><td>The student must remain visible on camera for the entire session. Leaving the frame, covering the camera, or turning away will be flagged.</td></tr>
+              <tr><td><strong>Do not use messaging applications</strong></td><td>Collaborative or messaging apps such as Zoom, Slack, Discord, Microsoft Teams, or similar must not be open or used during the session.</td></tr>
+              <tr><td><strong>Do not talk to someone else</strong></td><td>The student must not communicate verbally with another person during the exam. Brief interruptions (e.g., telling someone they are in an exam) are reviewed with discretion; sustained conversation will be flagged.</td></tr>
+              <tr><td><strong>Do not be in the presence of others</strong></td><td>No other person should be present in the testing area for an extended period. Someone briefly passing through the background is reviewed with discretion; someone sitting nearby will be flagged.</td></tr>
+              <tr><td><strong>Do not disconnect from the session</strong></td><td>The student must maintain a continuous connection. If the camera feed, screen share, or internet connection drops, the session may be flagged or terminated.</td></tr>
+              <tr><td><strong>Do not have active AI applications running</strong></td><td>AI browser extensions (ChatGPT, Copilot, etc.) must be disabled or removed before starting the exam. If detected, the student is blocked from proceeding.</td></tr>
+              <tr><td><strong>Must not have an active remote access application</strong></td><td>Remote desktop tools (TeamViewer, AnyDesk, Chrome Remote Desktop, etc.) must not be running. If detected, the student is immediately blocked from continuing.</td></tr>
+              <tr><td><strong>Do not use additional devices</strong></td><td>Phones, tablets, smartwatches, and other smart devices must not be used during the exam. A brief glance (e.g., silencing a notification) is reviewed with discretion; active use will be flagged.</td></tr>
+              <tr><td><strong>Do not use headphones or earbuds</strong></td><td>Headphones, earbuds, or any audio device must not be worn during the session. Momentary use (putting them on then quickly removing) is reviewed with discretion; sustained use will be flagged.</td></tr>
+              <tr><td><strong>Do not use any external resources or materials</strong></td><td>No textbooks, notes, websites, or other reference materials may be used unless they appear on the instructor's approved Allow List. AI-detected patterns like repeated off-screen eye movement will be flagged.</td></tr>
+              <tr><td><strong>Must complete room and desk scan</strong></td><td>Before the exam starts, the student must use their camera to slowly scan their entire room and desk area. The reviewer verifies the environment is free of unauthorized materials.</td></tr>
+              <tr><td><strong>Do not leave full screen</strong></td><td>The student must remain in full-screen mode for the entire exam. Switching tabs, opening other windows, or exiting full screen will be flagged. This feature requires Google Chrome.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="guide-topic">
+        <h3>Use Grade Item</h3>
+        <p>When you check <strong>Use Grade Item</strong> next to an activity, IA creates an IA Status column in your Brightspace Gradebook. After a session is reviewed, this column automatically updates to show whether each student's session was Valid or Invalid. This gives you a quick at-a-glance view of proctoring results alongside your other grade columns.</p>
+        <p>If a status is later overridden in the IA widget, you will need to click <strong>Update Grade</strong> in the Participants tab to sync the change to the Gradebook.</p>
       </div>
     </section>
 
@@ -342,40 +382,67 @@
         <div class="section-icon"><svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <h2>Reviewing Proctored Results</h2>
       </div>
+
       <div class="guide-topic">
         <h3>How to Review Results</h3>
         <p>Every proctored session is reviewed by a live person. Results are typically available within <strong>24 hours</strong> after the student completes the session.</p>
-        <p>From within the IA Widget on the course homepage, click the <strong>Participants</strong> tab.</p>
+        <p>From within the IA widget at the bottom of your course home page, click the <strong>Participants</strong> tab to see all session data for a specific activity.</p>
         <ol>
-          <li>Click on the <strong>exam</strong> being reviewed.</li>
-          <li>Click the <strong>Select Status</strong> dropdown and filter on <strong>Invalid (Rules)</strong> or <strong>Invalid IDs</strong>.</li>
+          <li>Select the <strong>exam</strong> you want to review from the activity list.</li>
+          <li>Use the <strong>Select Status</strong> dropdown to filter by status (e.g., <strong>Invalid (Rules)</strong> or <strong>Invalid (ID)</strong>) to quickly find sessions that need attention.</li>
         </ol>
       </div>
+
       <div class="guide-topic">
-        <h3>Understanding Session Statuses</h3>
-        <p>There are four possible statuses in the IA widget under the Participants tab:</p>
-        <div class="status-grid">
-          <div class="status-card"><strong>In Progress</strong><p>If there is an end date and time, the session is being reviewed by a live reviewer. If the end date and time is "Incomplete," the participant is currently taking the quiz or began the session but left without completing it.</p></div>
-          <div class="status-card"><strong>Valid</strong><p>The session is complete with no violations. A live reviewer has confirmed the session was clean.</p></div>
-          <div class="status-card" style="border-left-color: var(--red-border);"><strong>Invalid (ID)</strong><p>The participant submitted an unreadable or non-approved ID and needs to resubmit. IA emails the learner directly with a resubmission link. You can also find this link under the participant's Status in the Participants tab.</p></div>
-          <div class="status-card" style="border-left-color: var(--red-border);"><strong>Invalid (Rules)</strong><p>A live reviewer has confirmed a violation of the selected rules for the quiz.</p></div>
+        <h3>The Participants Tab</h3>
+        <p>The Participants tab is your primary view for reviewing student proctoring sessions. After selecting an activity, the tab displays a table with the following columns:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Column</th><th scope="col">What It Shows</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Participant</strong></td><td>The student's name. Click the name to open their full session details, including captured images and reviewer notes.</td></tr>
+              <tr><td><strong>Status</strong></td><td>The current session status: In Progress, Valid, Invalid (ID), or Invalid (Rules). See the status descriptions below.</td></tr>
+              <tr><td><strong>Start Date</strong></td><td>The date and time the student began the proctored session.</td></tr>
+              <tr><td><strong>End Date</strong></td><td>The date and time the student completed the session. Displays "Incomplete" if the student is still taking the exam or left without finishing.</td></tr>
+              <tr><td><strong>Override</strong></td><td>An action link that allows you to change the session status (e.g., from Invalid to Valid). See "Overriding a Status" below.</td></tr>
+              <tr><td><strong>Update Grade</strong></td><td>If <strong>Use Grade Item</strong> was enabled for this activity, click this button to sync the session status to the Brightspace Gradebook.</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <div class="guide-topic">
+        <h3>Understanding Session Statuses</h3>
+        <p>There are four possible statuses for each participant session:</p>
+        <div class="status-grid">
+          <div class="status-card"><strong>In Progress</strong><p>If an end date and time are shown, the session is being reviewed by a live reviewer. If the end date shows "Incomplete," the student is currently taking the quiz or started the session but left without completing it.</p></div>
+          <div class="status-card"><strong>Valid</strong><p>The session is complete with no violations. A live reviewer has confirmed the session was clean.</p></div>
+          <div class="status-card" style="border-left-color: var(--red-border);"><strong>Invalid (ID)</strong><p>The student submitted an unreadable or non-approved ID and needs to resubmit. IA emails the student directly with a resubmission link. You can also find this link under the participant's Status in the Participants tab.</p></div>
+          <div class="status-card" style="border-left-color: var(--red-border);"><strong>Invalid (Rules)</strong><p>A live reviewer has confirmed a violation of the selected proctoring rules for the quiz.</p></div>
+        </div>
+      </div>
+
       <div class="guide-topic">
         <h3>Reviewing a Learner Attempt</h3>
-        <p>For Invalid statuses, click the <strong>participant's name</strong> to access learner images taken during the quiz.</p>
-        <p><strong>Note:</strong> Images will appear with notes indicating potential flags. You can only view recordings and data for students enrolled in <strong>your own course</strong>. You do not have access to students in other instructors' courses.</p>
+        <p>For Invalid statuses, click the <strong>participant's name</strong> in the Participants tab to access the session details, including images captured during the quiz and reviewer notes indicating what was flagged.</p>
+        <p><strong>Note:</strong> You can only view session recordings and data for students enrolled in <strong>your own course</strong>. You do not have access to sessions from other instructors' courses.</p>
       </div>
+
       <div class="guide-topic">
         <h3>Overriding a Status</h3>
-        <p>You can override a Valid, Invalid (ID), or Invalid (Rules) status from the IA widget:</p>
+        <p>You can override a Valid, Invalid (ID), or Invalid (Rules) status from the Participants tab:</p>
         <ol>
-          <li>Find the participant in the <strong>Participants</strong> tab, then click <strong>Override</strong> under their current status.</li>
-          <li>Click the dropdown under <strong>Status Override</strong>, select the new status, and enter a reason. Click <strong>Submit</strong>.</li>
-          <li>Click <strong>OK</strong> when prompted.</li>
-          <li>Click <strong>Override</strong> again to see the reason and who made the change.</li>
-          <li><strong>Note:</strong> If <strong>Use Grade Item</strong> is selected in the widget for the quiz, click <strong>Update Grade</strong> to update the Gradebook for the learner attempt. The IA Status column associated with the quiz will update.</li>
+          <li>Find the participant in the <strong>Participants</strong> tab, then click <strong>Override</strong> in their row.</li>
+          <li>Click the dropdown under <strong>Status Override</strong>, select the new status, and enter a reason for the change. Click <strong>Submit</strong>.</li>
+          <li>Click <strong>OK</strong> when prompted to confirm.</li>
+          <li>To view the override history, click <strong>Override</strong> again to see the reason and who made the change.</li>
         </ol>
+        <p><strong>Important:</strong> If <strong>Use Grade Item</strong> is enabled for this activity, click the <strong>Update Grade</strong> button in the participant's row after overriding. This syncs the updated status to the IA Status column in your Brightspace Gradebook.</p>
+      </div>
+
+      <div class="guide-topic">
+        <h3>Exporting Results</h3>
+        <p>You can export participant session data for record-keeping or reporting. From the Participants tab, click the <strong>Export</strong> button to download a file containing participant names, statuses, start and end dates, and any override information for the selected activity. This is useful for maintaining records of proctored exam results or sharing data with your department.</p>
       </div>
     </section>
 
