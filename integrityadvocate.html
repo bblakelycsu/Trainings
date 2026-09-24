@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -217,7 +217,7 @@
   <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
   <h1>Integrity Advocate</h1>
   <p>Faculty guide for using Integrity Advocate (IA) exam monitoring in Brightspace, including setup, reviewing results, Proctor Pro configuration, and student support.</p>
-  <span class="last-updated">Last Updated: September 5, 2026</span>
+  <span class="last-updated">Last Updated: September 18, 2026</span>
 </header>
 
 <!-- TABS -->
@@ -240,6 +240,10 @@
       <a href="#getting-started" class="active">
         <svg class="nav-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Getting Started
+      </a>
+      <a href="#requirements">
+        <svg class="nav-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Requirements &amp; Setup
       </a>
       <a href="#enable-activity">
         <svg class="nav-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -282,6 +286,14 @@
         </div>
       </div>
 
+      <div class="alert-banner" role="alert">
+        <div class="alert-icon" aria-hidden="true">!</div>
+        <div>
+          <h3>A Webcam Is Required</h3>
+          <p>IA must be used on a device with a working webcam. Students must show their ID (State ID or CSU Student ID) on camera before beginning. <strong>Do not activate IA for exams or quizzes if students will be using a computer lab without built-in cameras.</strong></p>
+        </div>
+      </div>
+
       <div class="review-note">
         <svg aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="flex-shrink:0; color: var(--csu-navy);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         <p><strong>Every proctored session is reviewed by a live person</strong>, not just AI. Results are typically available within <strong>24 hours</strong> after the student completes their session. You will see the status update in the IA widget under the Participants tab once the review is complete.</p>
@@ -314,6 +326,41 @@
       </div>
     </section>
 
+    <!-- REQUIREMENTS & SETUP -->
+    <section class="section" id="requirements">
+      <div class="section-header">
+        <div class="section-icon"><svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h2>Requirements &amp; Recommended Setup</h2>
+      </div>
+
+      <div class="guide-topic">
+        <h3>What is Integrity Advocate?</h3>
+        <p>Integrity Advocate (IA) allows you to proctor exams inside Brightspace without hosting them in a traditional proctored setting such as a classroom or testing center. Below you will find the recommended setup for students and guidance for lab and classroom environments.</p>
+      </div>
+
+      <div class="guide-topic">
+        <h3>Recommended Setup for Students</h3>
+        <p>Ask students to take the exam on <strong>their own device</strong> whenever possible. Their device must have a working webcam and Google Chrome installed.</p>
+        <p>Students who do not have a personal device can take the exam in the computer lab. However, since lab computers typically do not have webcams, you have two options:</p>
+        <ul>
+          <li><strong>Use a bypass code</strong> to let the student take the same exam without IA monitoring. The student enters the bypass code during the IA pre-check and proceeds directly to the quiz. You can then proctor that student in person. See <a href="#bypass-codes" style="color: var(--csu-green); font-weight: 600;">How to Exclude Learners from IA</a> for details.</li>
+          <li><strong>Allow the student to use a personal device in the lab</strong> with their own webcam, so IA functions normally.</li>
+        </ul>
+      </div>
+
+      <div class="guide-topic">
+        <h3>Lab &amp; Classroom Settings</h3>
+        <p><strong>Lab computers without webcams:</strong> IA cannot run on machines without a camera. If you are giving a group exam in a lab on lab computers, it is best to use traditional in-person proctoring with multiple proctors circulating the room rather than IA.</p>
+        <p><strong>Classroom with a live proctor:</strong> If you are proctoring in a classroom where you are physically present, you can turn off the following rules to avoid unnecessary flags:</p>
+        <ul>
+          <li><strong>Do not talk to someone else</strong> &mdash; prevents flagging when a proctor speaks to the class or individual students.</li>
+          <li><strong>Do not be in the presence of others</strong> &mdash; prevents flagging other students and the proctor in a shared classroom.</li>
+          <li><strong>Must complete room and desk scan</strong> &mdash; not needed since you are proctoring live and can visually verify the environment.</li>
+        </ul>
+        <p>To request these rule adjustments for your course, contact <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>. Support starts with a chatbot for immediate, always-on answers, with a live human available when the issue needs one.</p>
+      </div>
+    </section>
+
     <!-- ENABLE ON AN ACTIVITY -->
     <section class="section" id="enable-activity">
       <div class="section-header">
@@ -335,18 +382,18 @@
             <ul>
               <li><strong>Enable Integrity Advocate</strong> (checkbox) &mdash; Check this box to turn on IA proctoring for this activity.</li>
               <li><strong>Use Grade Item</strong> (checkbox) &mdash; Check this box to create an IA Status column in the Gradebook that automatically updates with each student's proctoring result (Valid or Invalid).</li>
-              <li><strong>Rules Selection</strong> &mdash; Choose either <strong>Demo</strong> (for testing purposes only) or <strong>Level 4</strong> (CSU's standard proctoring level with all rules enabled).</li>
+              <li><strong>Rules Selection</strong> &mdash; Choose either <strong>Demo</strong> (for testing purposes only) or <strong>ProctorPro</strong> (CSU's standard proctoring level with all rules enabled). <strong>Do not select Level 4</strong> &mdash; it has been retired.</li>
             </ul>
           </li>
-          <li>Select <strong>Level 4</strong> as the rules level, then click <strong>Select Rules</strong>.</li>
+          <li>Select <strong>ProctorPro</strong> as the rules level, then click <strong>Select Rules</strong>.</li>
           <li>Review the rules that will apply (see below), then click <strong>Submit</strong>. Students will be informed of these rules when they begin the quiz.</li>
         </ol>
         <p>If you do not have more than one activation package, simply click <strong>Select Rules</strong> to proceed with the default configuration.</p>
       </div>
 
       <div class="guide-topic">
-        <h3>Level 4 Proctoring Rules</h3>
-        <p>When you select Level 4, the following rules are enabled. Students are shown these rules before the exam begins and must acknowledge them to proceed.</p>
+        <h3>ProctorPro Rules</h3>
+        <p>When you select ProctorPro, the following rules are enabled. Students are shown these rules before the exam begins and must acknowledge them to proceed.</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th scope="col">Rule</th><th scope="col">What It Means</th></tr></thead>
@@ -540,7 +587,7 @@
       CSU's Proctoring Activation Level
     </h3>
     <p>Chicago State University uses <strong>Proctor Pro</strong>, Integrity Advocate's (IA) highest-stakes proctoring tier. This includes every available proctoring rule and protection option, designed for high-stakes assessments like exams and quizzes.</p>
-    <p>A lighter-touch tier (Proctor Light) is available for lower-stakes assessments. All settings below are managed by CTRE/OOIT. If you have questions about the configuration, email <a href="mailto:elearning@csu.edu" style="color: var(--csu-green); font-weight: 600;">elearning@csu.edu</a>.</p>
+    <p>A lighter-touch tier (Proctor Light) is available for lower-stakes assessments. All settings below are managed by CTRE/OOIT. If you have questions about the configuration or need help with setup, email <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>.</p>
   </div>
 
   <!-- ACCOUNT & APP SETTINGS -->
@@ -622,55 +669,55 @@
 
     <div class="table-wrap">
       <table>
-        <thead><tr><th scope="col">Rule</th><th scope="col">Level</th><th scope="col">Mode</th><th scope="col">What This Means for Students</th></tr></thead>
+        <thead><tr><th scope="col">Rule</th><th scope="col">Mode</th><th scope="col">What This Means for Students</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Not engaged</strong></td><td>2</td>
+            <td><strong>Not engaged</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>The student appears disengaged from the exam (e.g., looking away from the screen for extended periods). A brief lapse won't be flagged; the reviewer looks for sustained disengagement.</td>
           </tr>
           <tr>
-            <td><strong>Out of view</strong></td><td>2</td>
+            <td><strong>Out of view</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>The student leaves the camera's view. A single brief moment (e.g., reaching for something) won't be flagged, but repeated or extended absence from the frame will.</td>
           </tr>
           <tr>
-            <td><strong>Collaborative applications</strong></td><td>3</td>
+            <td><strong>Collaborative applications</strong></td>
             <td><span class="tag-harsh">Harsh</span></td>
             <td>Any use of a collaborative app (Zoom, Slack, Discord, Teams, etc.) <strong>immediately blocks the student</strong> from continuing. They must close the app and start a new attempt.</td>
           </tr>
           <tr>
-            <td><strong>Communicated with others</strong></td><td>3</td>
+            <td><strong>Communicated with others</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>The student appears to be talking to someone during the exam. A brief interruption (e.g., a child entering the room) won't be flagged; a sustained conversation will.</td>
           </tr>
           <tr>
-            <td><strong>Multiple participants</strong></td><td>3</td>
+            <td><strong>Multiple participants</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>More than one person is visible on camera. Someone briefly passing through the background won't be flagged; someone sitting nearby for an extended period will.</td>
           </tr>
           <tr>
-            <td><strong>Possible use of remote access application</strong></td><td>3</td>
+            <td><strong>Possible use of remote access application</strong></td>
             <td><span class="tag-harsh">Harsh</span></td>
             <td>A remote access tool (TeamViewer, AnyDesk, etc.) is detected on the student's computer. This <strong>immediately blocks the student</strong> from continuing.</td>
           </tr>
           <tr>
-            <td><strong>Smart device was used</strong></td><td>3</td>
+            <td><strong>Smart device was used</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>A phone, tablet, or smartwatch is detected in the camera view. A brief glance (e.g., silencing a notification) won't be flagged; actively using the device will.</td>
           </tr>
           <tr>
-            <td><strong>Headphones / earbuds were used</strong></td><td>4</td>
+            <td><strong>Headphones / earbuds were used</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>The student is wearing headphones or earbuds. Momentary use (putting them on and quickly removing them) won't be flagged; wearing them throughout the session will.</td>
           </tr>
           <tr>
-            <td><strong>Possible use of external resources</strong></td><td>4</td>
+            <td><strong>Possible use of external resources</strong></td>
             <td><span class="tag-harsh">Harsh</span></td>
             <td>AI detects patterns suggesting the student is referencing materials off-screen (e.g., repeated off-screen eye movement). This <strong>immediately blocks the student</strong>. You can use Video Feed Out to review the recording yourself and decide whether to override the flag.</td>
           </tr>
           <tr>
-            <td><strong>Room and desk scan inadequate</strong></td><td>4</td>
+            <td><strong>Room and desk scan inadequate</strong></td>
             <td><span class="tag-disc">Discretion</span></td>
             <td>The student's room or desk scan did not adequately show the testing environment. The reviewer applies judgment (e.g., a family photo on the desk vs. a phone partially hidden behind a book).</td>
           </tr>
@@ -681,10 +728,10 @@
 
   <!-- SUPPORT CONTACT -->
   <div class="help-banner">
-    <p class="help-banner-text"><strong>Questions about these settings?</strong> These configurations are managed by CTRE/OOIT. If you have questions, email <strong>elearning@csu.edu</strong>.</p>
-    <a class="help-btn" href="mailto:elearning@csu.edu">
+    <p class="help-banner-text"><strong>Questions about these settings?</strong> These configurations are managed by CTRE/OOIT. For questions or help with setup, email <strong>support@integrityadvocate.com</strong> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: #fff; text-decoration: underline;">integrityadvocate.com/support</a>.</p>
+    <a class="help-btn" href="mailto:support@integrityadvocate.com">
       <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      elearning@csu.edu
+      support@integrityadvocate.com
     </a>
   </div>
 
@@ -712,7 +759,8 @@
       <h2>What to Expect: Proctor Pro</h2>
     </div>
     <div class="guide-topic">
-      <p>Share this page with students before their first proctored exam. It walks them through exactly what happens during a Proctor Pro session with Integrity Advocate (IA), step by step, and includes a practice test so the real exam isn't the first time they've seen the process.</p>
+      <p>This page walks students through exactly what happens during a Proctor Pro session with Integrity Advocate (IA), step by step, and includes a practice test they can take beforehand so the real exam isn't the first time they've seen the process.</p>
+      <p><strong>Recommendation:</strong> Share this link with students ahead of their first proctored exam, and encourage them to complete the practice test so any camera, ID, or browser issues surface before it counts.</p>
       <div class="practice-callout" style="margin-top: 1rem;">
         <p><strong>What to Expect (Proctor Pro):</strong> Step-by-step walkthrough of the proctoring experience for students.</p>
         <a class="practice-btn" href="https://www.integrityadvocate.com/what-to-expect/what-to-expect-proctorpro" target="_blank" rel="noopener">
@@ -724,13 +772,14 @@
     </div>
   </section>
 
-  <!-- BROWSER RECOMMENDATION -->
+  <!-- BROWSER & DEVICE REQUIREMENTS -->
   <section class="section">
     <div class="section-header">
       <div class="section-icon"><svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg></div>
-      <h2>Browser Recommendation</h2>
+      <h2>Browser &amp; Device Requirements</h2>
     </div>
     <div class="guide-topic">
+      <p><strong>A webcam is required.</strong> You must use a device with a working webcam and microphone. Lab or desktop computers without a built-in camera will not work with IA. Use your own laptop or device whenever possible.</p>
       <p><strong>Google Chrome is highly recommended</strong> for all proctored exams. Screen monitoring and full-screen enforcement only work in Chrome and Chromium-based browsers (such as Edge). Safari and Firefox do not support all IA monitoring features, which may cause issues during your session.</p>
       <p>Make sure to <strong>disable any AI browser extensions</strong> (ChatGPT, Copilot, etc.) before starting your exam. If an AI extension is detected, you will be blocked from proceeding until it is removed or disabled.</p>
     </div>
@@ -791,6 +840,16 @@
         <li>If you have questions or believe there's been a mistake, contact your instructor directly. They are the only ones who can decide what happens next.</li>
       </ol>
       <p><strong>Note:</strong> Integrity Advocate (IA) only provides the proctoring service. Any decisions or actions regarding violations must come from your instructor or institution.</p>
+    </div>
+
+    <div class="guide-topic">
+      <h3>What ID do I need?</h3>
+      <p>You will be asked to show your ID on camera before the exam begins. The following IDs are accepted:</p>
+      <ul>
+        <li><strong>CSU Student ID</strong> issued by Chicago State University</li>
+        <li><strong>Government-issued ID</strong> such as a state ID, driver's license, or passport</li>
+      </ul>
+      <p>Company or employer-issued IDs are not accepted.</p>
     </div>
 
     <div class="guide-topic">
