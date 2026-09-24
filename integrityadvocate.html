@@ -340,24 +340,23 @@
 
       <div class="guide-topic">
         <h3>Recommended Setup for Students</h3>
-        <p>Ask students to take the exam on <strong>their own device</strong> whenever possible. Their device must have a working webcam and Google Chrome installed.</p>
-        <p>Students who do not have a personal device can take the exam in the computer lab. However, since lab computers typically do not have webcams, you have two options:</p>
-        <ul>
-          <li><strong>Use a bypass code</strong> to let the student take the same exam without IA monitoring. The student enters the bypass code during the IA pre-check and proceeds directly to the quiz. You can then proctor that student in person. See <a href="#bypass-codes" style="color: var(--csu-green); font-weight: 600;">How to Exclude Learners from IA</a> for details.</li>
-          <li><strong>Allow the student to use a personal device in the lab</strong> with their own webcam, so IA functions normally.</li>
-        </ul>
+        <p>IA requires a device with a working webcam and Google Chrome installed. Students who do not have access to a webcam-equipped device can be given a <strong>bypass code</strong>. When a bypass code is used, IA will not turn on for that student's session. Use bypass codes with caution and ideally only for students you will be proctoring in person. See <a href="#bypass-codes" style="color: var(--csu-green); font-weight: 600;">How to Exclude Learners from IA</a> for details.</p>
+        <div class="widget-note" style="margin-top: 1rem;">
+          <svg aria-hidden="true" width="20" height="20" fill="none" stroke="var(--csu-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <p><strong>Coming soon:</strong> Integrity Advocate is releasing a no-webcam proctoring option later this year, which will allow IA to be used for lab-based exams on computers without cameras.</p>
+        </div>
       </div>
 
       <div class="guide-topic">
         <h3>Lab &amp; Classroom Settings</h3>
         <p><strong>Lab computers without webcams:</strong> IA cannot run on machines without a camera. If you are giving a group exam in a lab on lab computers, it is best to use traditional in-person proctoring with multiple proctors circulating the room rather than IA.</p>
-        <p><strong>Classroom with a live proctor:</strong> If you are proctoring in a classroom where you are physically present, you can turn off the following rules to avoid unnecessary flags:</p>
+        <p><strong>Classroom with a live proctor:</strong> If you are giving the exam in a classroom where you are physically present, you can turn off the following rules in the IA setup to avoid unnecessary flags:</p>
         <ul>
-          <li><strong>Do not talk to someone else</strong> &mdash; prevents flagging when a proctor speaks to the class or individual students.</li>
-          <li><strong>Do not be in the presence of others</strong> &mdash; prevents flagging other students and the proctor in a shared classroom.</li>
-          <li><strong>Must complete room and desk scan</strong> &mdash; not needed since you are proctoring live and can visually verify the environment.</li>
+          <li><strong>Do not talk to someone else</strong> &mdash; turn this off so students are not flagged when a proctor speaks to the class or to individual students.</li>
+          <li><strong>Do not be in the presence of others</strong> &mdash; turn this off so other students and the proctor in a shared classroom do not trigger a flag.</li>
+          <li><strong>Must complete room and desk scan</strong> &mdash; turn this off since you are proctoring live and can visually verify the environment.</li>
         </ul>
-        <p>To request these rule adjustments for your course, contact <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>. Support starts with a chatbot for immediate, always-on answers, with a live human available when the issue needs one.</p>
+        <p>If you need help adjusting these rules, contact <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>. Support starts with a chatbot for immediate, always-on answers, with a live human available when the issue needs one.</p>
       </div>
     </section>
 
@@ -375,7 +374,7 @@
 
       <div class="guide-topic">
         <h3>Step-by-Step: Enabling Monitoring on a Quiz</h3>
-        <p><strong>Important:</strong> You must create your quiz in Brightspace first. IA can only be enabled on activities that already exist.</p>
+        <p><strong>Important:</strong> You must create your quiz or exam in Brightspace first. IA can only be enabled on activities that already exist. If you need help with setup, contact <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a>.</p>
         <ol>
           <li>In the IA widget, click the <strong>Activities</strong> tab. A table of all quizzes, assignments, and content activities in your course will appear.</li>
           <li>Find the quiz you want to monitor. Each row in the table has three options:
@@ -408,9 +407,9 @@
               <tr><td><strong>Must not have an active remote access application</strong></td><td>Remote desktop tools (TeamViewer, AnyDesk, Chrome Remote Desktop, etc.) must not be running. If detected, the student is immediately blocked from continuing.</td></tr>
               <tr><td><strong>Do not use additional devices</strong></td><td>Phones, tablets, smartwatches, and other smart devices must not be used during the exam. A brief glance (e.g., silencing a notification) is reviewed with discretion; active use will be flagged.</td></tr>
               <tr><td><strong>Do not use headphones or earbuds</strong></td><td>Headphones, earbuds, or any audio device must not be worn during the session. Momentary use (putting them on then quickly removing) is reviewed with discretion; sustained use will be flagged.</td></tr>
-              <tr><td><strong>Do not use any external resources or materials</strong></td><td>No textbooks, notes, websites, or other reference materials may be used unless they appear on the instructor's approved Allow List. AI-detected patterns like repeated off-screen eye movement will be flagged.</td></tr>
+              <tr><td><strong>Do not use any external resources or materials</strong></td><td>No textbooks, notes, websites, or other reference materials may be used unless they appear on the instructor's approved Allow List. If AI detects patterns suggesting the student is referencing materials off-screen (e.g., repeated off-screen eye movement), the student is <strong>immediately blocked from continuing</strong>.</td></tr>
               <tr><td><strong>Must complete room and desk scan</strong></td><td>Before the exam starts, the student must use their camera to slowly scan their entire room and desk area. The reviewer verifies the environment is free of unauthorized materials.</td></tr>
-              <tr><td><strong>Do not leave full screen</strong></td><td>The student must remain in full-screen mode for the entire exam. Switching tabs, opening other windows, or exiting full screen will be flagged. This feature requires Google Chrome.</td></tr>
+              <tr><td><strong>Do not leave full screen</strong></td><td>The student must remain in full-screen mode for the entire exam. Switching tabs, opening other windows, or exiting full screen will be flagged. This feature works in other browsers but <strong>Google Chrome is highly recommended</strong>.</td></tr>
             </tbody>
           </table>
         </div>
@@ -512,7 +511,14 @@
         <h2>How to Exclude Learners from IA</h2>
       </div>
       <div class="guide-topic">
-        <p>When a bypass code is entered during the Integrity Advocate (IA) pre-check process, the learner will be allowed to proceed without IA running during the test session.</p>
+        <p>When a bypass code is entered during the Integrity Advocate (IA) pre-check process, <strong>IA will not turn on</strong> for that student's session. The student proceeds directly to the quiz or exam with no proctoring monitoring.</p>
+        <div class="alert-banner" style="margin: 1rem 0;">
+          <div class="alert-icon">!</div>
+          <div>
+            <h3>Use With Caution</h3>
+            <p>A bypassed student has no IA monitoring. Use bypass codes only for students you will be proctoring in person, such as those taking the exam in a classroom or lab where you are physically present.</p>
+          </div>
+        </div>
         <ol>
           <li>Once the learner is prompted for the IA pre-check, click the <strong>gear icon</strong> located in the upper right corner.</li>
           <li>Manually enter the <strong>bypass code</strong> for the learner, then click the green checkmark to continue. The learner may begin the exam.</li>
@@ -548,7 +554,7 @@
       <div class="support-grid">
         <div class="support-card">
           <h3>Integrity Advocate End User Support</h3>
-          <p>For technical proctoring issues (camera, ID, browser)</p>
+          <p>For technical proctoring issues (camera, ID, browser) and help setting up IA on your Brightspace quiz or exam</p>
           <p><a href="mailto:support@integrityadvocate.com">support@integrityadvocate.com</a></p>
           <p><a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a></p>
           <p style="font-size: 0.82rem; color: var(--gray-600); margin-top: 0.25rem;">Available 24/7/365 via chatbot + live human support</p>
@@ -556,7 +562,7 @@
         <div class="support-card">
           <h3>CSU Support (CTRE / OOIT)</h3>
           <p>For Brightspace setup or general questions</p>
-          <p><a href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">Submit a Request<span class="sr-only"> (opens in new tab)</span></a></p>
+          <p><a href="mailto:elearning@csu.edu">elearning@csu.edu</a></p>
         </div>
       </div>
       <div class="help-banner">
@@ -587,7 +593,7 @@
       CSU's Proctoring Activation Level
     </h3>
     <p>Chicago State University uses <strong>Proctor Pro</strong>, Integrity Advocate's (IA) highest-stakes proctoring tier. This includes every available proctoring rule and protection option, designed for high-stakes assessments like exams and quizzes.</p>
-    <p>A lighter-touch tier (Proctor Light) is available for lower-stakes assessments. All settings below are managed by CTRE/OOIT. If you have questions about the configuration or need help with setup, email <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>.</p>
+    <p>A lighter-touch tier (Proctor Light) is available for lower-stakes assessments. All settings below are managed by CTRE/OOIT. If you have questions about the configuration or need help setting up IA on your Brightspace quiz or exam, email <a href="mailto:support@integrityadvocate.com" style="color: var(--csu-green); font-weight: 600;">support@integrityadvocate.com</a> or visit <a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener" style="color: var(--csu-green); font-weight: 600;">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a>.</p>
   </div>
 
   <!-- ACCOUNT & APP SETTINGS -->
@@ -744,6 +750,20 @@
 <div class="tab-panel" id="panel-students" role="tabpanel" aria-labelledby="tab-students">
 <div class="container">
 
+  <!-- STUDENT PAGE LINK -->
+  <div class="guide-topic" style="background: linear-gradient(135deg, #e8f5e0 0%, #e6eaf0 100%); border: 2px solid var(--csu-green); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+    <p style="font-size: 1rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 0.5rem;">
+      <svg aria-hidden="true" width="18" height="18" fill="none" stroke="var(--csu-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: -3px; margin-right: 0.35rem;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Share this link with your students:
+    </p>
+    <a href="https://bblakelycsu.github.io/Trainings/integrityadvocatestudent.html" target="_blank" rel="noopener" style="display: inline-block; background: var(--csu-green); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 0.65rem 1.25rem; border-radius: var(--radius); text-decoration: none; min-height: 44px;">
+      Open Student Guide Page
+      <span class="sr-only"> (opens in new tab)</span>
+    </a>
+    <span style="display: block; font-size: 0.82rem; color: var(--gray-600); margin-top: 0.4rem; word-break: break-all;">https://bblakelycsu.github.io/Trainings/integrityadvocatestudent.html</span>
+    <p style="font-size: 0.85rem; color: var(--gray-600); margin-top: 0.5rem;">Copy this URL into your Brightspace course announcements, syllabus, or any email to students. The content below is also available on that page.</p>
+  </div>
+
   <!-- PRINT BUTTON -->
   <div class="print-bar">
     <button class="help-btn" onclick="window.print()" type="button">
@@ -779,7 +799,7 @@
       <h2>Browser &amp; Device Requirements</h2>
     </div>
     <div class="guide-topic">
-      <p><strong>A webcam is required.</strong> You must use a device with a working webcam and microphone. Lab or desktop computers without a built-in camera will not work with IA. Use your own laptop or device whenever possible.</p>
+      <p><strong>A webcam is required.</strong> You must use a device with a working webcam and microphone. Lab or desktop computers without a built-in camera will not work with IA.</p>
       <p><strong>Google Chrome is highly recommended</strong> for all proctored exams. Screen monitoring and full-screen enforcement only work in Chrome and Chromium-based browsers (such as Edge). Safari and Firefox do not support all IA monitoring features, which may cause issues during your session.</p>
       <p>Make sure to <strong>disable any AI browser extensions</strong> (ChatGPT, Copilot, etc.) before starting your exam. If an AI extension is detected, you will be blocked from proceeding until it is removed or disabled.</p>
     </div>
@@ -924,7 +944,7 @@
         <div class="support-card">
           <h3>CSU Support (CTRE / OOIT)</h3>
           <p>For Brightspace or course-level questions</p>
-          <p><a href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">Submit a Request<span class="sr-only"> (opens in new tab)</span></a></p>
+          <p><a href="mailto:elearning@csu.edu">elearning@csu.edu</a></p>
         </div>
       </div>
     </div>
