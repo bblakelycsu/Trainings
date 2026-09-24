@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrity Advocate - Student Guide | Chicago State University</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --csu-green: #0d5540;
+    --csu-navy: #17375f;
+    --csu-accent: #4a8a2a;
+    --csu-light-green: #e8f5e0;
+    --csu-light-navy: #e6eaf0;
+    --gold: #fbbf24;
+    --gold-hover: #f59e0b;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+  body { font-family: 'Segoe UI', Arial, Calibri, sans-serif; background: #f0f4f3; color: var(--gray-800); line-height: 1.65; }
+  .skip-link { position: absolute; top: -100%; left: 1rem; background: var(--csu-navy); color: #fff; padding: 0.75rem 1.25rem; border-radius: 0 0 var(--radius-sm) var(--radius-sm); z-index: 1000; font-weight: 600; text-decoration: none; }
+  .skip-link:focus { top: 0; outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+  *:focus-visible { outline: 3px solid var(--csu-accent); outline-offset: 2px; }
+
+  /* HERO HEADER */
+  .hero {
+    background: linear-gradient(135deg, #0d5540 0%, #1a6b52 18%, #17375f 40%, #2a4a7a 60%, #4a8a2a 82%, #0d5540 100%);
+    background-size: 200% 200%;
+    animation: heroShift 12s ease-in-out infinite;
+    color: #fff; padding: 3.5rem 2rem 3rem; text-align: center; position: relative; overflow: hidden;
+  }
+  @keyframes heroShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .hero::before {
+    content: ''; position: absolute; top: -80px; right: -40px; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%); border-radius: 50%;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -60px; left: -30px; width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(74,138,42,0.18) 0%, transparent 70%); border-radius: 50%;
+  }
+  .hero-glow {
+    position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 200px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.06) 0%, transparent 70%); pointer-events: none;
+  }
+  .hero-badge { display: inline-block; background: rgba(251,191,36,0.2); border: 1px solid rgba(251,191,36,0.35); border-radius: 24px; padding: 0.35rem 1.1rem; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem; color: #fef3c7; }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.01em; text-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .hero p { font-size: 1.08rem; max-width: 600px; margin: 0 auto; color: rgba(255,255,255,0.92); }
+  .hero .last-updated { display: inline-block; margin-top: 0.75rem; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+
+  /* QUICK START STRIP */
+  .quick-strip {
+    max-width: 880px; margin: -1.5rem auto 0; padding: 0 1.25rem; position: relative; z-index: 2;
+  }
+  .quick-strip-inner {
+    background: #fff; border-radius: var(--radius); box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; overflow: hidden;
+  }
+  .qs-item {
+    padding: 1.25rem 1rem; text-align: center; text-decoration: none; color: var(--gray-800);
+    transition: background 0.2s; border-right: 1px solid var(--gray-200);
+  }
+  .qs-item:last-child { border-right: none; }
+  .qs-item:hover { background: var(--csu-light-green); }
+  .qs-icon {
+    width: 48px; height: 48px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 0.6rem;
+  }
+  .qs-icon.green { background: var(--csu-light-green); color: var(--csu-green); }
+  .qs-icon.navy { background: var(--csu-light-navy); color: var(--csu-navy); }
+  .qs-icon.gold { background: #fef3c7; color: #92400e; }
+  .qs-label { font-size: 0.82rem; font-weight: 700; color: var(--csu-navy); display: block; }
+  .qs-sub { font-size: 0.75rem; color: var(--gray-600); margin-top: 0.15rem; }
+
+  /* CONTAINER */
+  .container { max-width: 880px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+
+  /* SECTION TITLES */
+  .section { margin-bottom: 2.5rem; scroll-margin-top: 1.5rem; }
+  .section-title {
+    display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.25rem;
+  }
+  .section-num {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--csu-green); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 800; flex-shrink: 0;
+  }
+  .section-title h2 { font-size: 1.25rem; font-weight: 700; color: var(--csu-navy); }
+
+  /* CARDS */
+  .card {
+    background: #fff; border-radius: var(--radius); padding: 1.5rem 1.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 1rem;
+    border-left: 4px solid var(--csu-green);
+  }
+  .card h3 { font-size: 1rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 0.5rem; }
+  .card p { font-size: 0.92rem; color: var(--gray-700); margin-bottom: 0.5rem; }
+  .card p:last-child { margin-bottom: 0; }
+  .card ol, .card ul { margin-left: 1.5rem; margin-top: 0.4rem; margin-bottom: 0.5rem; }
+  .card li { font-size: 0.92rem; color: var(--gray-700); margin-bottom: 0.35rem; }
+  .card.highlight { border-left-color: var(--gold); background: #fffbeb; }
+  .card.alert { border-left-color: #dc2626; background: #fef2f2; }
+
+  /* ACTION BUTTONS */
+  .action-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+  .action-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--csu-green); color: #fff; font-weight: 700; font-size: 0.92rem;
+    padding: 0.75rem 1.5rem; border-radius: 10px; text-decoration: none;
+    min-height: 48px; transition: background 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(13,85,64,0.2);
+  }
+  .action-btn:hover { background: var(--csu-navy); transform: translateY(-1px); }
+  .action-btn.gold { background: var(--gold); color: var(--csu-navy); box-shadow: 0 2px 8px rgba(251,191,36,0.3); }
+  .action-btn.gold:hover { background: var(--gold-hover); }
+  .link-display { display: block; font-size: 0.78rem; color: var(--gray-600); margin-top: 0.35rem; word-break: break-all; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; margin: 0; padding: 0; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.85rem 0;
+    border-bottom: 1px solid var(--gray-200); font-size: 0.92rem; color: var(--gray-700);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-icon {
+    width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .check-icon.green { background: var(--csu-light-green); color: var(--csu-accent); }
+  .check-icon.red { background: #fef2f2; color: #dc2626; }
+
+  /* ID BADGES */
+  .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 0.75rem 0; }
+  .id-badge {
+    background: var(--csu-light-green); border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 0.65rem;
+  }
+  .id-badge.no { background: #fef2f2; }
+  .id-badge-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .id-badge-icon.yes { background: var(--csu-green); color: #fff; }
+  .id-badge-icon.no { background: #dc2626; color: #fff; }
+  .id-badge-text { font-size: 0.88rem; font-weight: 600; color: var(--gray-800); }
+  .id-badge-text span { display: block; font-size: 0.78rem; font-weight: 400; color: var(--gray-600); margin-top: 0.1rem; }
+
+  /* ACCORDION / TROUBLESHOOT */
+  .accordion { border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); overflow: hidden; margin-top: 1rem; }
+  .accordion-trigger {
+    width: 100%; background: var(--gray-50); border: none; padding: 1rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+    font-size: 0.95rem; font-weight: 600; color: var(--csu-navy); text-align: left; min-height: 48px;
+  }
+  .accordion-trigger:hover { background: var(--gray-100); }
+  .accordion-trigger .chevron { transition: transform 0.2s; }
+  .accordion-trigger[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 0 1.25rem 1.25rem; background: #fff; }
+  .accordion-body.open { display: block; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: var(--radius-sm); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #fff; }
+  th { background: var(--csu-navy); color: #fff; text-align: left; padding: 0.7rem 0.85rem; font-weight: 600; white-space: nowrap; }
+  td { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gray-50); }
+  .yes { color: #16a34a; font-weight: 600; }
+  .no { color: #dc2626; font-weight: 600; }
+  caption { font-size: 0.9rem; font-weight: 700; color: var(--csu-navy); text-align: left; margin-bottom: 0.5rem; caption-side: top; }
+  td strong { color: var(--gray-800); }
+
+  /* SUPPORT CARDS */
+  .support-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .support-card {
+    background: #fff; border-radius: var(--radius); padding: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06); text-align: center;
+    border-top: 4px solid var(--csu-green);
+  }
+  .support-card:last-child { border-top-color: var(--csu-navy); }
+  .support-card-icon {
+    width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+  .support-card-icon.green { background: var(--csu-light-green); color: var(--csu-green); }
+  .support-card-icon.navy { background: var(--csu-light-navy); color: var(--csu-navy); }
+  .support-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--csu-navy); margin-bottom: 0.4rem; }
+  .support-card p { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 0.3rem; }
+  .support-card a { color: var(--csu-green); font-weight: 600; text-decoration: none; font-size: 0.9rem; }
+  .support-card a:hover { text-decoration: underline; }
+  .support-card .link-display { text-align: center; }
+  .support-card .avail { font-size: 0.78rem; color: var(--gray-600); margin-top: 0.4rem; background: var(--gray-100); display: inline-block; padding: 0.2rem 0.7rem; border-radius: 12px; }
+
+  .site-footer { text-align: center; padding: 1.5rem 1rem; font-size: 0.82rem; color: var(--gray-600); border-top: 1px solid var(--gray-200); margin-top: 1rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  /* PRINT */
+  @media print {
+    body { background: #fff; }
+    .hero { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 1.5rem 1rem; animation: none; background-size: 100% 100%; }
+    .hero::before, .hero::after, .hero-glow { display: none; }
+    .quick-strip { margin-top: 0; }
+    .quick-strip-inner { box-shadow: none; border: 1px solid var(--gray-300); }
+    .card { box-shadow: none; border: 1px solid var(--gray-200); break-inside: avoid; }
+    .support-card { box-shadow: none; border: 1px solid var(--gray-200); }
+    .action-btn { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .link-display { color: #333 !important; }
+    .accordion-body { display: block !important; }
+    .container { padding: 1rem 0; }
+    @page { margin: 0.75in; }
+  }
+
+  @media (max-width: 768px) {
+    .quick-strip-inner { grid-template-columns: 1fr; }
+    .qs-item { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .qs-item:last-child { border-bottom: none; }
+    .support-grid { grid-template-columns: 1fr; }
+    .id-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .hero { padding: 2rem 1.25rem 2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+    .hero { animation: none !important; background-size: 100% 100% !important; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-badge">Chicago State University</div>
+  <h1>Your Proctor Pro Exam Guide</h1>
+  <p>Everything you need to know before your first proctored exam with Integrity Advocate</p>
+  <span class="last-updated">Last Updated: September 24, 2026</span>
+</header>
+
+<!-- QUICK START -->
+<nav class="quick-strip" aria-label="Quick links">
+  <div class="quick-strip-inner">
+    <a href="#practice" class="qs-item">
+      <div class="qs-icon green">
+        <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <span class="qs-label">Practice First</span>
+      <span class="qs-sub">Test your setup</span>
+    </a>
+    <a href="#checklist" class="qs-item">
+      <div class="qs-icon navy">
+        <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <span class="qs-label">Exam Checklist</span>
+      <span class="qs-sub">What you need ready</span>
+    </a>
+    <a href="#support" class="qs-item">
+      <div class="qs-icon gold">
+        <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <span class="qs-label">Get Help</span>
+      <span class="qs-sub">24/7 support</span>
+    </a>
+  </div>
+</nav>
+
+<main id="main-content" class="container" role="main">
+
+  <!-- 1. WHAT TO EXPECT -->
+  <section class="section" id="expect" aria-labelledby="h-expect">
+    <div class="section-title">
+      <div class="section-num">1</div>
+      <h2 id="h-expect">What to Expect</h2>
+    </div>
+    <div class="card">
+      <p>Before your exam starts, Integrity Advocate (IA) will ask you to turn on your webcam, show your ID, and scan your room. During the exam, IA monitors your session in the background. A real person reviews every session within 24 hours afterward.</p>
+      <p>The link below walks you through the entire process step by step so you know exactly what to expect.</p>
+      <div class="action-row">
+        <a class="action-btn gold" href="https://www.integrityadvocate.com/what-to-expect/what-to-expect-proctorpro" target="_blank" rel="noopener">
+          <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          See What to Expect
+          <span class="sr-only"> (opens in new tab)</span>
+        </a>
+      </div>
+      <span class="link-display">https://www.integrityadvocate.com/what-to-expect/what-to-expect-proctorpro</span>
+    </div>
+  </section>
+
+  <!-- 2. PRACTICE -->
+  <section class="section" id="practice" aria-labelledby="h-practice">
+    <div class="section-title">
+      <div class="section-num">2</div>
+      <h2 id="h-practice">Take a Practice Session</h2>
+    </div>
+    <div class="card highlight">
+      <h3>Try it before exam day</h3>
+      <p>Use the official practice link to test your camera, microphone, and browser. This does not count as a real exam attempt and nothing is recorded. If something isn't working, you'll find out here instead of during your real exam.</p>
+      <div class="action-row">
+        <a class="action-btn" href="https://www.integrityadvocateserver.com/Demo?level=6" target="_blank" rel="noopener">
+          <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Open Practice Session
+          <span class="sr-only"> (opens in new tab)</span>
+        </a>
+      </div>
+      <span class="link-display">https://www.integrityadvocateserver.com/Demo?level=6</span>
+    </div>
+
+    <!-- Camera Troubleshooting Accordion -->
+    <div class="accordion">
+      <button class="accordion-trigger" aria-expanded="false" aria-controls="troubleshoot-body" onclick="let b=this.nextElementSibling;let open=b.classList.toggle('open');this.setAttribute('aria-expanded',open)">
+        <span>Camera not working? Troubleshooting steps</span>
+        <svg class="chevron" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body" id="troubleshoot-body">
+        <ol style="margin: 1rem 0 0 1.5rem;">
+          <li style="margin-bottom: 0.5rem;"><strong>Free up your camera.</strong> Close any other applications using your camera (Zoom, Teams, FaceTime) and close other browser tabs.</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Check browser permissions.</strong> Click the Lock icon in the address bar, find Camera, and set it to "Allow" or click "Reset Permissions." Refresh the page.</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Clear your cache.</strong> Clear your browser cache or perform a hard refresh, then try again.</li>
+          <li style="margin-bottom: 0.5rem;"><strong>Check device settings.</strong> Make sure your operating system has allowed the browser to access the camera in your privacy settings.</li>
+          <li><strong>Try a different device.</strong> Work-managed computers often have strict firewalls. If possible, switch to a personal computer.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EXAM DAY CHECKLIST -->
+  <section class="section" id="checklist" aria-labelledby="h-checklist">
+    <div class="section-title">
+      <div class="section-num">3</div>
+      <h2 id="h-checklist">Exam Day Checklist</h2>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li>
+          <div class="check-icon green"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><strong>Working webcam and microphone</strong> &mdash; Lab or desktop computers without a built-in camera will not work with IA.</div>
+        </li>
+        <li>
+          <div class="check-icon green"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><strong>Google Chrome browser</strong> &mdash; Highly recommended. Screen monitoring and full-screen enforcement work best in Chrome and Chromium-based browsers (such as Edge).</div>
+        </li>
+        <li>
+          <div class="check-icon green"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><strong>Your ID ready</strong> &mdash; CSU Student ID or a government-issued ID (state ID, driver's license, or passport).</div>
+        </li>
+        <li>
+          <div class="check-icon green"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><strong>Stable internet connection</strong> &mdash; At least 3 Mbps up/down. Wired connections are more reliable than Wi-Fi.</div>
+        </li>
+        <li>
+          <div class="check-icon red"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          <div><strong>AI browser extensions disabled</strong> &mdash; ChatGPT, Copilot, and similar extensions must be disabled or removed. You will be blocked from starting until they are off.</div>
+        </li>
+        <li>
+          <div class="check-icon red"><svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          <div><strong>Close other apps</strong> &mdash; Close Zoom, Teams, Discord, and any remote desktop tools before starting. These will block your exam.</div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. YOUR ID -->
+  <section class="section" id="id" aria-labelledby="h-id">
+    <div class="section-title">
+      <div class="section-num">4</div>
+      <h2 id="h-id">Your ID</h2>
+    </div>
+    <div class="card">
+      <p>You will be asked to show your ID on camera before the exam begins.</p>
+      <div class="id-grid">
+        <div class="id-badge">
+          <div class="id-badge-icon yes"><svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="id-badge-text">CSU Student ID<span>Issued by Chicago State University</span></div>
+        </div>
+        <div class="id-badge">
+          <div class="id-badge-icon yes"><svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="id-badge-text">Government ID<span>State ID, driver's license, or passport</span></div>
+        </div>
+      </div>
+      <div class="id-grid">
+        <div class="id-badge no">
+          <div class="id-badge-icon no"><svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          <div class="id-badge-text">Company / Employer ID<span>Not accepted</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Can I hide sensitive details on my ID?</h3>
+      <p>Yes. After taking the photo of your ID, look for the <strong>Edit</strong> button. Click and drag over any area you want to block (like your ID number or address). Release and the selected area will be covered. You only need to show your name and face.</p>
+    </div>
+  </section>
+
+  <!-- 5. VIOLATION EMAILS -->
+  <section class="section" id="violations" aria-labelledby="h-violations">
+    <div class="section-title">
+      <div class="section-num">5</div>
+      <h2 id="h-violations">If You Get a Violation Email</h2>
+    </div>
+    <div class="card alert">
+      <p>If you receive an email about a potential violation, it means there may have been activity during your session that didn't follow the rules set for your exam.</p>
+      <ol>
+        <li>Read the email carefully to understand what was flagged.</li>
+        <li>Contact your <strong>instructor</strong> directly if you have questions or believe there's been a mistake. Your instructor is the only one who can decide what happens next.</li>
+      </ol>
+      <p><strong>Note:</strong> IA only provides the proctoring service. Any decisions about violations come from your instructor or institution.</p>
+    </div>
+  </section>
+
+  <!-- 6. DEVICE COMPATIBILITY -->
+  <section class="section" id="devices" aria-labelledby="h-devices">
+    <div class="section-title">
+      <div class="section-num">6</div>
+      <h2 id="h-devices">Device Compatibility</h2>
+    </div>
+    <div class="card">
+      <p>IA works on most modern computers, phones, and tablets as long as your device has a working camera, microphone, and stable internet.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Device Compatibility &amp; Feature Support</caption>
+          <thead><tr><th scope="col">Device Type</th><th scope="col">OS</th><th scope="col">Browsers</th><th scope="col">Full-Screen</th><th scope="col">Legacy-Full Screen</th><th scope="col">Screen Only</th><th scope="col">Standard</th></tr></thead>
+          <tbody>
+            <tr><td>Desktop / Laptop</td><td>Windows 10+</td><td>Chrome (recommended), Edge, Opera</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Desktop / Laptop</td><td>macOS 11+</td><td>Chrome (recommended), Safari, Opera</td><td class="yes">Yes (not Safari)</td><td class="yes">Yes</td><td class="yes">Yes (not Safari)</td><td class="yes">Yes</td></tr>
+            <tr><td>Chromebook</td><td>Chrome OS</td><td>Chrome</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Mobile / Tablet</td><td>Android 8.0+</td><td>Chrome, Firefox</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+            <tr><td>Mobile / Tablet</td><td>iOS 11.0+</td><td>Safari</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>System Requirements</caption>
+          <thead><tr><th scope="col">Component</th><th scope="col">Minimum</th><th scope="col">Recommended</th></tr></thead>
+          <tbody>
+            <tr><td>Processor</td><td>2.0 GHz dual-core</td><td>2.5 GHz quad-core</td></tr>
+            <tr><td>RAM</td><td>4 GB</td><td>8 GB</td></tr>
+            <tr><td>Internet Speed</td><td>3 Mbps up/down</td><td>10+ Mbps up/down</td></tr>
+            <tr><td>Webcam</td><td>Built-in or external</td><td>HD webcam</td></tr>
+            <tr><td>Microphone</td><td>Built-in or external</td><td>External or noise-cancelling (optional)</td></tr>
+            <tr><td>Storage</td><td>Not required</td><td>N/A</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SUPPORT -->
+  <section class="section" id="support" aria-labelledby="h-support">
+    <div class="section-title">
+      <div class="section-num">7</div>
+      <h2 id="h-support">Need Help?</h2>
+    </div>
+    <p style="font-size: 0.92rem; color: var(--gray-700); margin-bottom: 1rem;">Technical proctoring issue? Contact IA support. Course or Brightspace question? Contact CSU.</p>
+    <div class="support-grid">
+      <div class="support-card">
+        <div class="support-card-icon green">
+          <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>IA Support</h3>
+        <p>Camera, ID, browser, proctoring</p>
+        <p><a href="mailto:support@integrityadvocate.com">support@integrityadvocate.com</a></p>
+        <p><a href="https://www.integrityadvocate.com/support" target="_blank" rel="noopener">integrityadvocate.com/support<span class="sr-only"> (opens in new tab)</span></a></p>
+        <span class="link-display">https://www.integrityadvocate.com/support</span>
+        <div class="avail">24/7/365 &mdash; chatbot + live human</div>
+      </div>
+      <div class="support-card">
+        <div class="support-card-icon navy">
+          <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3>CSU Support</h3>
+        <p>Brightspace, courses, grades</p>
+        <p><a href="mailto:elearning@csu.edu">elearning@csu.edu</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Chicago State University &bull; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)</p>
+</footer>
+
+</body>
+</html>
