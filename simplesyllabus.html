@@ -143,6 +143,23 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
   }
+  .jump-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1.25rem; }
+  .jump-nav a { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 0.45rem 0.9rem; font-size: 0.85rem; font-weight: 600; text-decoration: none; min-height: 36px; display: inline-flex; align-items: center; }
+  .jump-nav a:hover, .jump-nav a:focus-visible { background: #fff; color: var(--csu-navy); outline: none; }
+  .guide-topic { scroll-margin-top: 1rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+  .col-card { background: var(--gray-50); border-radius: var(--radius); padding: 1rem; }
+  .col-card p { margin-top: 0.35rem; font-size: 0.9rem; }
+  .ss-table { width: 100%; border-collapse: collapse; margin: 0.6rem 0; font-size: 0.85rem; display: block; overflow-x: auto; }
+  .ss-table caption { text-align: left; font-weight: 700; color: var(--csu-navy); padding-bottom: 0.35rem; }
+  .ss-table th { background: var(--csu-navy); color: #fff; text-align: left; padding: 0.45rem 0.6rem; }
+  .ss-table td { border-bottom: 1px solid var(--gray-200); padding: 0.45rem 0.6rem; color: var(--gray-700); }
+  .ss-figure { margin: 0.75rem 0 0; }
+  .ss-figure img { max-width: 100%; height: auto; border: 1px solid var(--gray-200); border-radius: var(--radius); }
+  .ss-figure figcaption { font-size: 0.8rem; color: var(--gray-600); margin-top: 0.35rem; }
+  .help-email-banner { margin-bottom: 1.5rem; }
+  .help-email-banner a:not(.contact-btn) { color: var(--csu-navy); font-weight: 600; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -150,10 +167,10 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <header class="site-header">
-  <div class="header-badge">Chicago State University &bull; CTRE / OOIT</div>
+  <div class="header-badge">Chicago State University &bull; CTLI</div>
   <h1>Simple Syllabus</h1>
   <p>Faculty guide for creating, editing, and publishing your course syllabus in Brightspace using Simple Syllabus.</p>
-  <span class="last-updated">Last Updated: August 18, 2026</span>
+  <span class="last-updated">Last Updated: October 22, 2026</span>
 
   <nav class="tab-nav" aria-label="Page sections">
     <button class="tab-btn" id="tab-setup" role="tab" aria-selected="true" aria-controls="panel-setup">
@@ -174,6 +191,18 @@
     <div class="setup-layout">
     <div class="setup-main">
 
+    <!-- Need Help (moved to top) -->
+    <div class="help-email-banner" id="need-help">
+      <div>
+        <h3>Need Help Building Your Syllabus?</h3>
+        <p>For editor, formatting, or browser issues, contact Simple Syllabus support at help@simplesyllabus.com. For login problems, the CSU template and settings, Course Masters, department policies, component resets, and Brightspace questions, email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a>. Students have their own guide: <a href="simplesyllabus-students.html">Simple Syllabus for Students</a>.</p>
+      </div>
+      <a class="contact-btn contact-btn-ss" href="mailto:help@simplesyllabus.com" style="white-space: nowrap;">
+        <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        help@simplesyllabus.com
+      </a>
+    </div>
+
     <!-- VIDEO -->
     <div class="video-section">
       <h2>Instructor Quick Start Guide</h2>
@@ -182,107 +211,244 @@
         <svg aria-hidden="true" width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         Watch Quick Start Video<span class="sr-only"> (opens in new tab)</span>
       </a>
+      <nav class="jump-nav" aria-label="Jump to a topic">
+        <a href="#get-started">1. Get Started</a>
+        <a href="#csu-settings">2. CSU Settings</a>
+        <a href="#editing">3. Edit Components</a>
+        <a href="#required-blank">4. Required &amp; Blank</a>
+        <a href="#ai-policy">5. AI Policy</a>
+        <a href="#privacy">6. Privacy &amp; Import</a>
+        <a href="#schedule">7. Calendar/Schedule</a>
+        <a href="#course-masters">8. Course Masters</a>
+        <a href="#submitting">9. Submit</a>
+        <a href="#after-submit">10. After You Submit</a>
+      </nav>
     </div>
 
-    <!-- Accessing Your Syllabus -->
-    <div class="guide-topic">
-      <h3>How Do I Access and Edit My Syllabus?</h3>
-      <p>You can access your syllabus in two ways:</p>
+    <!-- 1. GET STARTED -->
+    <div class="guide-topic" id="get-started">
+      <h3>1. Get Started: Access Your Syllabus</h3>
       <ul>
-        <li><strong>From Brightspace:</strong> Go to <a href="https://brightspace.csu.edu" target="_blank" rel="noopener">brightspace.csu.edu<span class="sr-only"> (opens in new tab)</span></a>, click into your course, select the <strong>My Materials</strong> tab, then click <strong>My Syllabus</strong> to begin editing.</li>
-        <li><strong>From Simple Syllabus directly:</strong> Go to <a href="https://chicagostate.simplesyllabus.com/en-US/" target="_blank" rel="noopener">chicagostate.simplesyllabus.com<span class="sr-only"> (opens in new tab)</span></a> and log in with your CSU Single Sign-On (SSO). Click the edit icon on your syllabus to begin.</li>
+        <li><strong>From Brightspace:</strong> Go to <a href="https://brightspace.csu.edu" target="_blank" rel="noopener">brightspace.csu.edu<span class="sr-only"> (opens in new tab)</span></a>, open your course, select <strong>My Materials</strong>, then click <strong>My Syllabus</strong>.</li>
+        <li><strong>From Simple Syllabus directly:</strong> Go to <a href="https://chicagostate.simplesyllabus.com/en-US/" target="_blank" rel="noopener">chicagostate.simplesyllabus.com<span class="sr-only"> (opens in new tab)</span></a> and log in with your CSU Single Sign-On (SSO). Make sure third-party cookies are not blocked in your browser.</li>
+      </ul>
+      <p><strong>Your dashboard</strong> sorts your syllabi into two columns: <strong>To Do</strong> (syllabi to complete and submit) and <strong>Completed</strong>. Each item shows the course or section title, term, course number, status, and assigned editors. Click <strong>Edit</strong> to open the syllabus.</p>
+      <p><strong>Your due date is your course start date.</strong> It varies by course length (16-week, 12-week, 8-week, and so on). Students can open Spring 2027 syllabi starting <strong>December 12, 2026</strong>.</p>
+      <p><strong>First time or repeat?</strong> Most faculty (about 90%) are creating their first syllabus in Simple Syllabus this term, so you will build it once. For courses offered again after Fall 2026, your most recent syllabus for that course copies forward automatically to the next term offering.</p>
+    </div>
+
+    <div class="guide-topic" style="border-color: var(--csu-navy);">
+      <h3>Banner Updates and Instructors of Record</h3>
+      <ul>
+        <li>Course details, instructor assignments, and enrollments come from <strong>Banner</strong>. Banner updates Simple Syllabus and Brightspace <strong>twice a day, at 4:00 AM and 4:00 PM</strong>. Once a change is approved, wait for the next update for it to appear.</li>
+        <li>Only <strong>instructors of record</strong> appear on the syllabus. If an instructor who should be listed is missing, or a course is missing from or should be removed from your dashboard, your <strong>department chair completes the Instructor Authorization Form</strong> in Adobe Sign (select <strong>Start from library</strong>, open the workflow, and choose <strong>Instructor Authorization Form</strong>). The registrar then updates Banner. An instructor missing from the record also will not have access to the course in Brightspace.</li>
+        <li><strong>Do not add the instructor manually</strong> in Simple Syllabus. When Banner adds them, the manual entry becomes a duplicate on the syllabus.</li>
+        <li>If course information (title, credit hours, meeting time, catalog description) is wrong, email the registrar at <a href="mailto:registrar@csu.edu">registrar@csu.edu</a> to correct it in Banner. It cannot be edited in Simple Syllabus.</li>
       </ul>
     </div>
 
-    <!-- Home Page & Syllabus Library -->
-    <div class="guide-topic">
-      <h3>Instructor View in Simple Syllabus</h3>
-      <p><strong>Home Page:</strong> Contains your syllabi organized as To Do and Completed items.</p>
-      <p><strong>Syllabus Library Tab:</strong> Filter by term to view previously published syllabi. The View, Print, and Share icons appear when you hover over a syllabus.</p>
-    </div>
-
-    <!-- General Editing Tips -->
-    <div class="guide-topic">
-      <h3>General Editing Tips</h3>
+    <!-- 2. CSU SETTINGS -->
+    <div class="guide-topic" id="csu-settings" style="background: #f0f7ff; border-color: var(--csu-navy);">
+      <h3>2. CSU Settings at a Glance</h3>
       <ul>
-        <li>Your most recent content will automatically import when editing a syllabus if you have previously submitted the same course.</li>
-        <li>After the first set of syllabi are published for Fall 2026, you will see the option to <strong>Import</strong> ("Would you like to import a different syllabus?"), which lets you pull from any syllabus you have published in the past.</li>
-        <li>All changes are <strong>automatically saved</strong> while editing. Your syllabus will not be live until the publishing process is initiated.</li>
-        <li>Help text is included on the right side of the syllabus to guide you through editing each component.</li>
-        <li>For best results, <strong>type new content</strong> rather than pasting. Use the built-in editor to set font, size, color, style, and spacing. Pasting can cause unpredictable formatting.</li>
+        <li><strong>Who can see it:</strong> Campus Community. Only the CSU campus community can view syllabi, through single sign-on. This setting is fixed; instructors cannot change it.</li>
+        <li><strong>Due date:</strong> Your course start date. It varies for 16-, 12-, and 8-week courses.</li>
+        <li><strong>Students:</strong> In Brightspace, open the course, select <strong>My Materials</strong>, then <strong>My Syllabus</strong>. Spring 2027 syllabi open to students on <strong>December 12, 2026</strong>. Students can bookmark <a href="https://chicagostate.simplesyllabus.com/en-US/" target="_blank" rel="noopener">chicagostate.simplesyllabus.com<span class="sr-only"> (opens in new tab)</span></a>.</li>
+        <li><strong>Auto-import:</strong> On. Your most recent syllabus for the same course fills in automatically.</li>
+        <li><strong>Import, Add, and Reorder:</strong> On.</li>
+        <li><strong>Approvals:</strong> Not enabled. When you click Submit, your syllabus publishes.</li>
+        <li><strong>Accessibility check:</strong> Required before you can submit.</li>
+        <li><strong>Attach documents:</strong> Off. Email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> if you need it (see examples below).</li>
+        <li><strong>Brightspace calendar sync:</strong> Not turned on. Build your schedule in the Calendar/Schedule component.</li>
+        <li><strong>Reminder emails:</strong> If you have not completed your syllabus, Simple Syllabus emails you 14, 7, and 3 days before the due date; on the due date; and 3, 7, and 14 days after.</li>
+        <li><strong>Editing window:</strong> You can edit and resubmit through the last day of the term (the Banner term end date). After that, the syllabus is archived and locked.</li>
+        <li><strong>Reset to template:</strong> Email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> to have a component reset to template content.</li>
+        <li><strong>Coming at launch, Auto-follow:</strong> All students enrolled in an active section will be notified of updates to a syllabus.</li>
       </ul>
     </div>
 
-    <!-- Required Components -->
-    <div class="guide-topic" style="border-color: var(--orange); border-width: 2px;">
-      <h3 style="color: #b45309;">
-        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Required Components (Orange Outline)
-      </h3>
-      <p>Components with an <strong style="color: var(--orange);">orange border</strong> and a <strong style="color: var(--orange);">"Required"</strong> label at the bottom must be completed before you can submit. For example, <strong>Course Requirements and/or Course Policies</strong> is a required component where you add your attendance policy, class participation, exams, quizzes, papers, technology assignments, clinical/field experiences, lab sessions, makeup policy, etc.</p>
-      <p>Each required component includes a rich text editor with formatting tools and a help text panel on the right side with guidance on what to include. You can also toggle whether a section is <strong>Visible</strong> or <strong>Public</strong>.</p>
+    <!-- 3. EDITING -->
+    <div class="guide-topic" id="editing">
+      <h3>3. Edit Your Components</h3>
+      <p>Your syllabus is divided into components from the CSU template. Components you cannot edit are still visible to you; everything editable is ready for your content. Help text for each component appears on the right side.</p>
+      <ul>
+        <li><strong>Instructor components:</strong> Click the pencil icon next to your information. Your name and email populate from Banner; add details such as office hours, then save. Do not use Add new instructor for missing instructors (see Banner Updates above).</li>
+        <li><strong>Content components:</strong> Type directly into the text area. Use the toolbar to format text and add links, images, videos, and tables. Add website links in components labeled <strong>HTML</strong> so they convert to clickable links. The <strong>block icon</strong> in the toolbar inserts auto-populated data points into the component; it is not the same as adding a new component.</li>
+        <li><strong>Objectives components:</strong> Click the pencil icon next to <strong>Add new objective</strong>, complete the required fields, and click <strong>Save</strong>. Repeat for each objective. Drag and drop to reorder. To edit one, click its pencil icon; to remove it, click <strong>Delete</strong>.</li>
+        <li><strong>Materials components:</strong> Click the pencil icon, complete the fields, and click <strong>Save</strong>. Repeat for each material. <strong>Follett is the default:</strong> when you add a book, it is linked to Follett for your course. You can add other materials too, including with the Google book search. Drag and drop to reorder.</li>
+        <li><strong>Schedule components:</strong> Click <strong>+ Add new item</strong> to add a row, then click into a cell to type. Highlighted cells are required. Column headers come from the template.</li>
+      </ul>
+      <p><strong>Formatting tips:</strong> For best results, <strong>type new content</strong> rather than pasting. Use the built-in editor to set font, size, color, style, and spacing. If you copy from Word, paste into Notepad (Windows) or TextEdit in plain text mode (Mac) first, then copy from there. Build tables with the table tool; do not insert a screenshot of a table.</p>
+      <p><strong>Good to know:</strong> When you edit a component that has template content, your edits replace that content in your syllabus, and it no longer updates from the template. The <strong>Reset</strong> button returns a component to its template content; resetting removes your edits in that component only. Need help resetting? Email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a>.</p>
     </div>
 
-    <!-- Sections That Don't Apply -->
-    <div class="guide-topic" style="background: #f0f7ff; border-color: var(--csu-navy);">
-      <h3>
-        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        Sections That Don't Apply to Your Course
-      </h3>
-      <p>If a non-required section does not apply to your course, simply leave it blank. Blank sections will <strong>not appear</strong> on the published version of your syllabus that students see.</p>
-    </div>
-
-    <!-- Visible vs Public -->
-    <div class="guide-topic">
-      <h3>
-        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        Understanding Visible/Hidden vs. Public/Private
-      </h3>
-      <p>Each component has two toggle sliders that control who can see it:</p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
-        <div style="background: var(--gray-50); border-radius: var(--radius); padding: 1rem; border-left: 3px solid var(--csu-navy);">
-          <strong style="color: var(--csu-navy);">Visible / Hidden</strong>
-          <p style="margin-top: 0.35rem; font-size: 0.9rem;">Controls whether a component appears in your syllabus at all. If a component is <strong>required</strong>, this toggle is disabled and locked to Visible (a lock icon will display next to the slider).</p>
-        </div>
-        <div style="background: var(--gray-50); border-radius: var(--radius); padding: 1rem; border-left: 3px solid var(--csu-accent);">
-          <strong style="color: var(--csu-navy);">Public / Private</strong>
-          <p style="margin-top: 0.35rem; font-size: 0.9rem;">Protects your intellectual property. <strong>Public</strong> components are viewable by anyone in the Syllabus Library. <strong>Private</strong> components are only accessible to enrolled students, the instructor, and administrators.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Locked Sections -->
     <div class="guide-topic" style="border-color: var(--csu-green); border-width: 2px;">
       <h3>
         <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 0.3rem;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Locked Sections (Institutional Content)
+        Locked Sections
       </h3>
-      <p>Some sections are <strong>locked and cannot be edited</strong> by instructors. These contain campus-wide policies managed at the institutional level, such as <strong>Campus Policies</strong> and the <strong>Statement from Abilities Office</strong>. This ensures all syllabi include consistent, university-approved language.</p>
-      <p>If you notice an error in a locked section, contact CTRE/OOIT so it can be corrected at the template level.</p>
+      <p>Some components are <strong>locked and cannot be edited</strong> by instructors. Course details such as the course title, CRN, credit hours, modality, meeting time, instructor of record, requisites, and catalog description populate from Banner. University statements, such as the <strong>Statement from Abilities Office</strong>, <strong>Emergency Evacuation</strong>, and <strong>Plagiarism/Academic Misconduct</strong>, are managed by the university so every syllabus has consistent, approved language.</p>
+      <p>If you notice an error in a university statement, email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> so it can be corrected at the template level. Errors in Banner data are corrected by the registrar: email <a href="mailto:registrar@csu.edu">registrar@csu.edu</a>.</p>
     </div>
 
-    <!-- Printing / Downloading -->
-    <div class="guide-topic">
-      <h3>Printing Your Document / Downloading PDF</h3>
-      <p>Once your document is complete, you will be able to View, Print, and Share:</p>
+    <!-- 4. REQUIRED AND BLANK -->
+    <div class="guide-topic" id="required-blank" style="border-color: var(--orange); border-width: 2px;">
+      <h3 style="color: #b45309;">4. Required Components (Orange Outline)</h3>
+      <p>Components with an <strong style="color: var(--orange);">orange border</strong> and a <strong style="color: var(--orange);">"Required"</strong> label at the bottom must be completed before you can submit. For example, <strong>Course Requirements and/or Course Policies</strong> is required: add your attendance policy, class participation, exams, quizzes, papers, technology assignments, clinical/field experiences, lab sessions, makeup policy, and similar expectations. Required components are always visible and cannot be hidden.</p>
+      <p><strong>Required in the CSU template:</strong></p>
       <ul>
-        <li><strong>View:</strong> Click the View button to see a digital version of your syllabus.</li>
-        <li><strong>Download or Print:</strong> Click the Print button to download a PDF or send it to a printer.</li>
-        <li><strong>Share:</strong> Click the Share button to copy the syllabus URL or PDF URL.</li>
+        <li>Instructor Information</li>
+        <li>Required Texts, Materials, or Software</li>
+        <li>Course Learning Objectives/Learning Outcomes</li>
+        <li>Course Requirements and/or Course Policies</li>
+        <li>Evaluation Criteria for Course</li>
+        <li>Calendar/Schedule</li>
       </ul>
     </div>
 
-    <!-- Help Email -->
-    <div class="help-email-banner">
-      <div>
-        <h3>Need Help Building Your Syllabus?</h3>
-        <p>Contact Simple Syllabus support for help with the editor, formatting, components, or any platform questions.</p>
-      </div>
-      <a class="contact-btn contact-btn-ss" href="mailto:support@simplesyllabus.com" style="white-space: nowrap;">
-        <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        support@simplesyllabus.com
-      </a>
+    <div class="guide-topic" style="background: #f0f7ff; border-color: var(--csu-navy);">
+      <h3>Sections That Don't Apply to Your Course</h3>
+      <p>If a non-required section does not apply to your course, <strong>leave it blank</strong>. Blank sections will <strong>not appear</strong> on the published version of your syllabus that students see. Required sections cannot be left blank.</p>
     </div>
+
+    <!-- 5. AI POLICY -->
+    <div class="guide-topic" id="ai-policy">
+      <h3>5. Course Artificial Intelligence (AI) Policy: Choose One Option</h3>
+      <p>The <strong>CSU Baseline Statement</strong> is the default. You may keep it or choose one of four options from the <strong>dropdown</strong> in the component. Pick the option that matches what your assignments ask students to do, and keep all AI language in this component only, so your syllabus never gives two different answers.</p>
+      <ul>
+        <li><strong>Default, CSU Baseline:</strong> AI use is permitted only with explicit authorization from the instructor. Unauthorized use is treated as academic misconduct under the CSU Student Code of Conduct.</li>
+        <li><strong>Option 1, GenAI Use Permitted with Disclosure:</strong> Students may use GenAI if all use is disclosed: the tool, the purpose, and how the output was reviewed, revised, or integrated.</li>
+        <li><strong>Option 2, GenAI Use Permitted for Specific Activities Only:</strong> Only the listed uses are allowed. The permitted and prohibited lists are examples; customize them for your course.</li>
+        <li><strong>Option 3, GenAI Use Encouraged (With Attribution):</strong> Students are encouraged to use GenAI, must cite or acknowledge it, and remain accountable for accuracy and originality.</li>
+        <li><strong>Option 4, GenAI Use Prohibited:</strong> GenAI is not permitted for any assignment or activity unless the instructor explicitly authorizes it.</li>
+      </ul>
+    </div>
+
+    <!-- 6. PRIVACY AND IMPORT -->
+    <div class="guide-topic" id="privacy" style="border-color: var(--csu-accent); border-width: 2px;">
+      <h3>6. Protect Your Work: Visible/Hidden and Public/Private</h3>
+      <p>Each component you can edit has two toggles under its name:</p>
+      <div class="two-col">
+        <div class="col-card" style="border-left: 3px solid var(--csu-navy);">
+          <strong style="color: var(--csu-navy);">Visible / Hidden</strong>
+          <p>Controls whether a component appears on your syllabus. Required components are locked to Visible (a lock icon displays next to the slider).</p>
+        </div>
+        <div class="col-card" style="border-left: 3px solid var(--csu-accent);">
+          <strong style="color: var(--csu-navy);">Public / Private: your intellectual property protection</strong>
+          <p><strong>Private</strong> components are visible only to students enrolled in the section, the section's instructors, and Simple Syllabus administrators. <strong>Public</strong> components are visible to anyone who can view the syllabus, which at CSU means the campus community through single sign-on.</p>
+        </div>
+      </div>
+      <p style="margin-top: 0.75rem;"><strong>Why Private matters:</strong> when another instructor imports from your syllabus, <strong>your Private components are not included</strong>. Only Public components can be imported by someone else. Set original work, such as detailed assignment designs, rubrics, or teaching materials, to Private.</p>
+    </div>
+
+    <div class="guide-topic">
+      <h3>Add, Reorder, and Import</h3>
+      <p><strong>Add:</strong> Click <strong>Add</strong>, name your new component, and it is added to the bottom of your syllabus.</p>
+      <p><strong>Reorder:</strong></p>
+      <ol>
+        <li>Click <strong>Reorder</strong> on the left navigation.</li>
+        <li>In the Reorder components pop-up, drag and drop components into your desired order. The reordering happens as you drag.</li>
+        <li>Click <strong>Close</strong> to save the new order.</li>
+      </ol>
+      <p><strong>Replace with a different syllabus:</strong> At the top of the syllabus, click <strong>Replace with a different syllabus</strong> to start from another syllabus you were assigned to. Search by term or keyword, click the syllabus, then update anything specific to the new section and click Submit. Your Private components, including components you added, copy over.</p>
+      <p><strong>Import:</strong> Click <strong>Import</strong> to bring content from another syllabus or Course Master. Select the term, subject, course number, and section, then click <strong>Finalize</strong> to import all eligible components, or turn on <strong>Advanced</strong> to choose which components to copy. Confirm with <strong>Start import of the following content</strong>.</p>
+      <table class="ss-table">
+        <caption>What comes over when you import</caption>
+        <thead><tr><th scope="col">Source</th><th scope="col">Public components</th><th scope="col">Private components</th></tr></thead>
+        <tbody>
+          <tr><td>Your own syllabus (Import or Replace with a different syllabus)</td><td>Included</td><td>Included</td></tr>
+          <tr><td>Another instructor's syllabus (Import)</td><td>Included</td><td><strong>Not included</strong></td></tr>
+        </tbody>
+      </table>
+      <p>If something you expected does not come over, check whether that component is set to Private.</p>
+    </div>
+
+    <!-- 7. SCHEDULE -->
+    <div class="guide-topic" id="schedule">
+      <h3>7. Calendar/Schedule and SmartView Fields</h3>
+      <p>Brightspace calendar sync is not turned on. Build your weekly schedule in the <strong>Calendar/Schedule</strong> component with <strong>+ Add new item</strong>. Write important labels such as "Exam week" in words; do not rely on color.</p>
+      <p><strong>SmartView fields</strong> let a schedule link each row to course objectives or instructors, like the example below. They are not part of the Calendar/Schedule component in the CSU template. If you would like a schedule with SmartView fields, email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> for help setting it up, or read <a href="https://simplesyllabus.zendesk.com/hc/en-us/articles/46779834833805-SmartView-Fields" target="_blank" rel="noopener">SmartView Fields<span class="sr-only"> (opens in new tab)</span></a>.</p>
+      <figure class="ss-figure">
+        <img src="simplesyllabus-smartview-example.png" alt="Example schedule component titled Assignments and Objectives. Each assignment row, such as Module 1 Project Assignment Worksheet and Module 2 Presentation, lists linked objectives (2.1 Professionalism, 2.2 Communication) and the assigned instructor, with Add objective and Add instructor buttons.">
+        <figcaption>Example: a schedule with Objective and Instructor SmartView fields.</figcaption>
+      </figure>
+    </div>
+
+    <div class="guide-topic">
+      <h3>Attaching Documents</h3>
+      <p>Attachments are turned off so syllabi stay readable on any device and pass the accessibility check. If your course truly needs a file, email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a>. Examples of when an attachment may make sense:</p>
+      <ul>
+        <li>A form students must download, complete, and sign, such as a lab safety agreement or field placement agreement</li>
+        <li>A handbook required by an accreditor or program, such as a clinical or practicum handbook</li>
+        <li>A detailed rubric or assignment packet too long for a syllabus component</li>
+      </ul>
+      <p>Any attachment must be accessible. A grading table, schedule, or policy should be built in the syllabus itself, not attached.</p>
+    </div>
+
+    <!-- 8. COURSE MASTERS -->
+    <div class="guide-topic" id="course-masters">
+      <h3>8. Course Masters (Multi-Section Courses)</h3>
+      <p>A <strong>Course Master</strong> is the course-level document that affects all sections of a course. For example, if <strong>ENG-1101</strong> has sections 01, 02, and 03, submitting the ENG-1101 Course Master sends its content to the syllabi for all three sections.</p>
+      <ul>
+        <li>It covers only the components that are editable at the course level on the template.</li>
+        <li>It is edited by a course-level role (called Designer by default).</li>
+        <li>Next term, a Course Master submitted in a past term auto-completes once Course Master editing is turned on; designers can still make changes and resubmit.</li>
+      </ul>
+      <p><strong>Be your department's Course Master champion.</strong> There are currently no Course Master editors, and we welcome a faculty champion from each department. To volunteer, or to request a Course Master for your course, email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a>.</p>
+    </div>
+
+    <!-- 9. SUBMIT -->
+    <div class="guide-topic" id="submitting">
+      <h3>9. Submit Your Syllabus</h3>
+      <ul>
+        <li>All changes <strong>save automatically</strong>. If you close the syllabus before submitting, it stays in your To Do column as In progress.</li>
+        <li>When every required component is complete, click <strong>Submit</strong> at the bottom. You can add an optional comment, which appears in the syllabus History feed.</li>
+        <li><strong>Can't submit?</strong> Click the <strong>warning message</strong> at the bottom of the syllabus to see which components are missing content. Then run the <strong>accessibility checker</strong>; it must pass before you can submit.</li>
+        <li>Approvals are not enabled, so your syllabus moves to the Completed column and publishes when you submit.</li>
+      </ul>
+    </div>
+
+    <!-- 10. AFTER SUBMIT -->
+    <div class="guide-topic" id="after-submit">
+      <h3>10. After You Submit</h3>
+      <p><strong>View, Print, and Share:</strong> Under the Completed column, click <strong>View</strong> for the web version, <strong>Print</strong> to download a PDF or print, and <strong>Share</strong> to copy the syllabus URL or PDF URL.</p>
+      <p><strong>Students read 80%, then acknowledge:</strong> Students have a <strong>minimum read percentage of 80</strong> and must <strong>acknowledge</strong> the syllabus. Simple Syllabus tracks how far each student has gone through the syllabus, measured toward the final component. Acknowledgment shows a student got through the syllabus, not that they understood it. If understanding matters, pair it with a short syllabus quiz or a first-week discussion in Brightspace.</p>
+    </div>
+
+    <div class="guide-topic">
+      <h3>Track Student Engagement</h3>
+      <p><strong>In Brightspace:</strong></p>
+      <ol>
+        <li>Open your course and select <strong>My Materials</strong>, then <strong>My Syllabus</strong>.</li>
+        <li>The horizontal engagement bar shows how many students have viewed the syllabus compared with those who have not.</li>
+        <li>Click the bar or <strong>View Report</strong> for a breakdown by student.</li>
+      </ol>
+      <p><strong>In Simple Syllabus:</strong> In the <strong>Completed</strong> column of your dashboard, click the horizontal bar under the syllabus.</p>
+      <p>The report lists each enrolled student, how many times they viewed the syllabus, and the last viewed date. <strong>Export it as a CSV</strong> to also see percent read, acknowledgment status, and acknowledgment timestamp:</p>
+      <table class="ss-table">
+        <caption>Sample Student Engagement export</caption>
+        <thead><tr><th scope="col">Full Name</th><th scope="col">Count</th><th scope="col">Percent Read</th><th scope="col">Last Viewed</th><th scope="col">Acknowledgement Status</th><th scope="col">Acknowledgement Timestamp</th></tr></thead>
+        <tbody>
+          <tr><td>Samir Student</td><td>9</td><td>64</td><td>Jan 19, 2026 11:29 am</td><td>Not Acknowledged</td><td></td></tr>
+          <tr><td>Santiago Student</td><td>4</td><td>100</td><td>Jan 15, 2026 8:33 am</td><td>Acknowledged</td><td>Jan 23, 2026 9:59 am</td></tr>
+          <tr><td>Susan Student</td><td>0</td><td>0</td><td>Never</td><td>Not Acknowledged</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="guide-topic">
+      <h3>Edit a Completed Syllabus</h3>
+      <ul>
+        <li><strong>During the term:</strong> Click <strong>Edit</strong> in My Syllabus in Brightspace, or under the syllabus in your Completed column. Make your changes (they save automatically), then click <strong>Submit</strong> again.</li>
+        <li><strong>After the term ends:</strong> Syllabi can be edited through the last day of the term (the Banner term end date). After that they are archived, and the edit icon is grayed out.</li>
+      </ul>
+    </div>
+
+    <div class="guide-topic">
+      <h3>Cross-Listed Sections</h3>
+      <p>If you teach cross-listed sections, clicking <strong>My Syllabus</strong> in Brightspace shows an error message. This happens because a cross-listed section is coded differently from a single section, and Brightspace cannot show several syllabi in one view. The error page lists links to the syllabus for each section you are enrolled in, so you can choose the one to edit or view. Students see the same choice.</p>
+    </div>
+
 
     </div><!-- end .setup-main -->
 
@@ -386,29 +552,53 @@
             <li>Help building or editing your syllabus content</li>
             <li>Questions about formatting, components, or the editor</li>
             <li>Technical errors within the Simple Syllabus tool</li>
-            <li>Account login issues or password resets</li>
+            
             <li>Browser or cookie issues specific to Simple Syllabus</li>
           </ul>
-          <a class="contact-btn contact-btn-ss" href="mailto:support@simplesyllabus.com">
+          <a class="contact-btn contact-btn-ss" href="mailto:help@simplesyllabus.com">
             <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            support@simplesyllabus.com
+            help@simplesyllabus.com
           </a>
         </div>
         <div class="contact-card contact-ctre">
-          <h3>Contact CTRE / OOIT</h3>
+          <h3>Contact CTLI</h3>
           <p>For help with CSU-specific setup or Brightspace:</p>
           <ul>
             <li>Accessing Simple Syllabus through Brightspace</li>
-            <li>Course or section information pulled from the LMS</li>
+            <li>Course or section information pulled from Banner</li>
             <li>Template or institutional component questions</li>
             <li>Errors in locked campus policy sections</li>
-            <li>General Brightspace or LMS support</li>
+            <li>Login problems ("cannot find a matching account")</li>
+            <li>Course Master requests, component resets, and requests to attach documents</li>
+            <li>General Brightspace support</li>
           </ul>
-          <a class="contact-btn contact-btn-ctre" href="https://chicagostateuniversity.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noopener">
-            <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Submit a Request<span class="sr-only"> (opens in new tab)</span>
+          <a class="contact-btn contact-btn-ctre" href="mailto:elearning@csu.edu">
+            <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            elearning@csu.edu
           </a>
         </div>
+      </div>
+    </section>
+
+
+    <!-- WHEN TO CONTACT CTLI -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg aria-hidden="true" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h2>When to Contact CTLI</h2>
+      </div>
+      <div class="guide-topic">
+        <p>Email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> for these unless noted. Remember that Banner updates Simple Syllabus and Brightspace twice a day, at 4:00 AM and 4:00 PM, so allow time for an approved change to appear.</p>
+        <ul>
+          <li><strong>Missing course or remove course:</strong> a course you teach is not on your dashboard, or one should not be there. This is corrected in Banner: your <strong>department chair completes the Instructor Authorization Form</strong> in Adobe Sign (select <strong>Start from library</strong>, open the workflow, and choose <strong>Instructor Authorization Form</strong>). The registrar then updates Banner.</li>
+          <li><strong>Missing account:</strong> you see "Sorry, we could not locate a matching account in Simple Syllabus."</li>
+          <li><strong>Missing or incorrect course data:</strong> course information or the catalog description that populates from Banner is missing or wrong. Email the registrar at <a href="mailto:registrar@csu.edu">registrar@csu.edu</a>.</li>
+          <li><strong>Department policies:</strong> send department policies you want included to elearning@csu.edu.</li>
+          <li><strong>Missing instructor:</strong> your <strong>department chair completes the Instructor Authorization Form</strong> in Adobe Sign (select <strong>Start from library</strong>, open the workflow, and choose <strong>Instructor Authorization Form</strong>). The registrar then updates Banner. Do not add the instructor manually.</li>
+          <li><strong>Error in a university statement</strong>, a Course Master request, a component reset, or a request to attach a document.</li>
+        </ul>
       </div>
     </section>
 
@@ -427,7 +617,7 @@
           When I try to login, it says "we cannot find a matching account" or "Account not found"
         </button>
         <div class="faq-a">
-          <p>Your account information (email, ID number, etc.) may not be correct in Simple Syllabus, or your enrollment may have had an issue during the file import. Contact <a href="mailto:support@simplesyllabus.com">support@simplesyllabus.com</a> so they can verify the email address on file and reset your password if needed.</p>
+          <p>Your account information may not be correct in Simple Syllabus, or your enrollment may have had an issue during the import from Banner. Email <a href="mailto:elearning@csu.edu">elearning@csu.edu</a> for help.</p>
         </div>
       </div>
 
@@ -437,7 +627,7 @@
           I can't submit my syllabus because the submit button is grayed out
         </button>
         <div class="faq-a">
-          <p>Review your syllabus and ensure all required fields have been completed. Required components will be outlined in orange with "Required" visible at the bottom. All required components must have content before the submit button becomes active.</p>
+          <p>Review your syllabus and ensure all required fields have been completed. Required components will be outlined in orange with "Required" visible at the bottom. All required components must have content before the submit button becomes active. Click the warning message at the bottom of your syllabus to see which components are missing content. The accessibility check must also pass, so open the accessibility checker and fix any issues it flags.</p>
         </div>
       </div>
 
@@ -458,6 +648,36 @@
           <p style="margin-top: 0.5rem;"><strong>On iPad, iPhone, and mobile devices:</strong> Ensure "Allow Cross-Website Tracking" is enabled.</p>
           <p><strong>Safari:</strong> Ensure "Prevent Cross-Site Tracking" is disabled.</p>
           <p><strong>Pulse, Chrome, and other 3rd-party apps:</strong> Ensure "Allow Cross-Site Tracking" is enabled.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          I see an error message when I open My Syllabus in my course
+        </button>
+        <div class="faq-a">
+          <p>First, check that third-party cookies are allowed (see the question above). If you teach cross-listed sections, the error page lists links to each section's syllabus; choose the one you need. If the error continues, email <a href="mailto:help@simplesyllabus.com">help@simplesyllabus.com</a> with a screenshot of the error. If there is a <strong>More Details</strong> button, click it first and include those details in your screenshot.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          Something didn't come over when I imported a syllabus
+        </button>
+        <div class="faq-a">
+          <p>When you import from another instructor's syllabus, their Private components are not included; only Public components come over. When you import from a syllabus you were assigned to, or use Replace with a different syllabus, your Private components are included. Check whether the missing component is set to Private.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <svg class="faq-arrow" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          The edit icon on my syllabus is grayed out
+        </button>
+        <div class="faq-a">
+          <p>Syllabi can be edited through the last day of the term. After that, the syllabus is archived and can no longer be edited.</p>
         </div>
       </div>
     </section>
@@ -545,8 +765,8 @@
 </main>
 
 <footer class="site-footer">
-  <p>Chicago State University &mdash; Center for Teaching &amp; Research Excellence (CTRE) / Office of Online &amp; Instructional Technology (OOIT)<br>
-  Questions? Contact CTRE/OOIT for support.</p>
+  <p>Chicago State University | Center for Teaching, Learning and Innovation (CTLI)<br>
+  Questions? Contact CTLI at <a href="mailto:elearning@csu.edu">elearning@csu.edu</a>.</p>
 </footer>
 
 <script>
